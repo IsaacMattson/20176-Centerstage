@@ -137,7 +137,7 @@ public class OpMode extends LinearOpMode {
 
 
             if (DPadUp) {
-                targetArmValue = 975;
+                targetArmValue = 1200;
                 armMotorPower = 0.2;
                 targetExtendValue = 1200;
                 upCom = true;
