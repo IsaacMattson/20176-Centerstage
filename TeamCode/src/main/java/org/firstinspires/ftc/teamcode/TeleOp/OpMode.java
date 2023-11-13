@@ -6,25 +6,42 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-
 @TeleOp
 public class OpMode extends LinearOpMode {
     private final double DEAD_ZONE = 0.3;
+    private final double RIGHTOPEN = 0.0;
+    private final double RIGHTCLOSE = 0.2;
+    private final double LEFTOPEN = 0.2;
+    private final double LEFTCLOSE = 0.0;
+    private final int EXTENDUP = 4100;
+    private final int EXTENDDOWN = 0;
+    private final int ARMUP = 1200;
+    private final int ARMDOWN = -5;
+    private final double CLAWUP = 0.0;
+    private final double CLAWDOWN = 0.75;
+    boolean DPadUp = this.gamepad1.dpad_up;
+    private boolean DPadDown = this.gamepad1.dpad_down;
+    private boolean leftClose = this.gamepad1.left_trigger > 0.25;
+    private boolean leftOpen = this.gamepad1.left_bumper;
+    private boolean rightClose = this.gamepad1.right_trigger > 0.25;
+    private boolean rightOpen = this.gamepad1.right_bumper;
+    private boolean openBoth = this.gamepad1.dpad_left;
+    private boolean closeBoth = this.gamepad1.dpad_right;
+    private double leftStickYAxis = -this.gamepad1.left_stick_y;
+    private double leftStickXAxis = this.gamepad1.left_stick_x;
+    private double rightStickXAxis = -this.gamepad1.right_stick_x;
     private double leftFrontMotorPower = 0;
     private double leftBackMotorPower = 0;
     private double rightFrontMotorPower = 0;
     private double rightBackMotorPower = 0;
     private double armMotorPower = 0;
-    private int targetArmValue = 0;
+    private int targetArmValue = ARMDOWN;
     private double extendMotorPower = 0;
-    private int targetExtendValue = 0;
-    private double rightPos = 1.0;
-    private int rightTick = 100;
-    private double leftPos = 0.35;
-    private int leftTick = 100;
-    private double rotatorPos = 1;
+    private int targetExtendValue = EXTENDDOWN;
+    private double rightPos = RIGHTOPEN;
+    private double leftPos = LEFTOPEN;
+    private double rotatorPos = CLAWUP;
     private boolean upCom = false, downCom = false;
-
 
     // Set motors
     private DcMotor motor;
@@ -39,27 +56,22 @@ public class OpMode extends LinearOpMode {
     private Servo rotator = null;
 
 
-
     @Override
     public void runOpMode() {
+        //declare hardware
         leftFrontDrive = hardwareMap.get(DcMotor.class, "driveMotorFour");
         leftBackDrive = hardwareMap.get(DcMotor.class, "driveMotorOne");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "driveMotorThree");
         rightBackDrive = hardwareMap.get(DcMotor.class, "driveMotorTwo");
         arm = hardwareMap.get(DcMotor.class, "armMotorOne");
         extend = hardwareMap.get(DcMotor.class, "armMotorTwo");
-
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
-
         rotator = hardwareMap.get(Servo.class, "rotator");
 
         //Arm settings
-
         armMotorPower = 0.2;
         extendMotorPower = 1;
-
-
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm.setDirection(DcMotorSimple.Direction.REVERSE);
         arm.setTargetPosition(0);
@@ -80,36 +92,25 @@ public class OpMode extends LinearOpMode {
         leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //
+        //initialize terminal
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-
-
         waitForStart();
 
         while (opModeIsActive()) {
-            boolean DPadUp = this.gamepad1.dpad_up;
-            boolean DPadDown = this.gamepad1.dpad_down;
-
-            boolean leftClose = this.gamepad1.left_trigger > 0.25;
-            boolean leftOpen = this.gamepad1.left_bumper;
-
-            boolean rightClose = this.gamepad1.right_trigger > 0.25;
-            boolean rightOpen = this.gamepad1.right_bumper;
-
-            boolean openBoth = this.gamepad1.dpad_left;
-            boolean closeBoth = this.gamepad1.dpad_right;
-
-            boolean x = this.gamepad1.x;
-            boolean b = this.gamepad1.b;
-
-
-
-            double leftStickYAxis = -this.gamepad1.left_stick_y;
-            double leftStickXAxis = this.gamepad1.left_stick_x;
-            double rightStickXAxis = -this.gamepad1.right_stick_x;
+            DPadUp = this.gamepad1.dpad_up;
+            DPadDown = this.gamepad1.dpad_down;
+            leftClose = this.gamepad1.left_trigger > 0.25;
+            leftOpen = this.gamepad1.left_bumper;
+            rightClose = this.gamepad1.right_trigger > 0.25;
+            rightOpen = this.gamepad1.right_bumper;
+            openBoth = this.gamepad1.dpad_left;
+            closeBoth = this.gamepad1.dpad_right;
+            leftStickYAxis = -this.gamepad1.left_stick_y;
+            leftStickXAxis = this.gamepad1.left_stick_x;
+            rightStickXAxis = -this.gamepad1.right_stick_x;
 
             // Movement code
             if (Math.abs(leftStickYAxis) >= DEAD_ZONE) {
@@ -134,100 +135,54 @@ public class OpMode extends LinearOpMode {
                 rightBackMotorPower = 0;
             }
             //arm code
-
-
             if (DPadUp) {
-                targetArmValue = 1200;
+                targetArmValue = ARMUP;
                 armMotorPower = 0.2;
-                targetExtendValue = 1200;
                 upCom = true;
             } else if (DPadDown) {
-                targetExtendValue = 1200;
-                armMotorPower = 0.1;
-                targetArmValue = 0;
+                targetExtendValue = EXTENDDOWN;
                 downCom = true;
             }
-
-            if(upCom && arm.getCurrentPosition() > 800){
-                targetExtendValue = 4150;
-                armMotorPower = 0.05;
+            if(upCom && arm.getCurrentPosition() > 1100){
+                targetExtendValue = EXTENDUP;
                 upCom = false;
             }
-            if(downCom && arm.getCurrentPosition() < 800){
-                targetExtendValue = 600;
+            if(downCom && extend.getCurrentPosition() < 100){
+                armMotorPower = 0.1;
+                targetArmValue = ARMDOWN;
                 downCom = false;
             }
 
 
-
-
-
             //servo code
             if(extend.getCurrentPosition() > 3000){
-                rotatorPos = 0.0;
+                rotatorPos = CLAWUP;
             }else{
-                rotatorPos = 1.0;
+                rotatorPos = CLAWDOWN;
+            }
+            if(leftOpen || openBoth){
+                leftPos = LEFTOPEN;
+            }else if(leftClose || closeBoth){
+                leftPos = LEFTCLOSE;
+            }
+            if(rightOpen || openBoth){
+                rightPos = RIGHTOPEN;
+            }else if(rightClose || closeBoth){
+                rightPos = RIGHTCLOSE;
             }
 
-
-            if(leftOpen){
-                if(leftPos <= 0.45){
-                    leftPos = 0.65;
-                    leftTick = 100;
-                }else if(leftTick < 0){
-                    leftPos = 0.60;
-                }
-            }
-            if(leftClose){
-                leftPos = 0.45;
-            }
-
-            if(rightOpen){
-                if(rightPos >= 0.9){
-                    rightPos = 0.7;
-                    rightTick = 100;
-                }else if(rightTick < 0){
-                    rightPos = 0.75;
-                }
-            }
-            if(rightClose){
-                rightPos = 0.9;
-            }
-
-            if(openBoth){
-                rightPos = 0.7;
-                leftPos = 0.65 ;
-            }
-            if(closeBoth){
-                rightPos = 0.9;
-                leftPos = 0.45;
-            }
-
-//            if(x){
-//                rotatorPos = 1.0;
-//            }if(b){
-//                rotatorPos = 0.0;
-//            }
-
-
-            // Set motor power
+            // Set motor & servo power
             leftFrontDrive.setPower(leftFrontMotorPower);
             leftBackDrive.setPower(leftBackMotorPower);
             rightFrontDrive.setPower(rightFrontMotorPower);
             rightBackDrive.setPower(rightBackMotorPower);
-
             arm.setTargetPosition(targetArmValue);
             arm.setPower(armMotorPower);
             extend.setTargetPosition(targetExtendValue);
             extend.setPower(extendMotorPower);
-
             leftClaw.setPosition(leftPos);
             rightClaw.setPosition(rightPos);
             rotator.setPosition(rotatorPos);
-
-            rightTick --; leftTick --;
-
-
 
             // Debug
             telemetry.addData("Status", "Running");
@@ -235,6 +190,7 @@ public class OpMode extends LinearOpMode {
             telemetry.addData("Extend Position", extend.getCurrentPosition());
             telemetry.addData("Left Trigger", this.gamepad1.left_trigger);
             telemetry.addData("Left Bumper", this.gamepad1.left_bumper);
+            telemetry.addData("Rotator Servo", rotator.getPosition());
 
 
             // Get arm position
