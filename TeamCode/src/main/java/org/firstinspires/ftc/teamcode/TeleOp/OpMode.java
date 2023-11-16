@@ -9,10 +9,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp
 public class OpMode extends LinearOpMode {
     private final double DEAD_ZONE = 0.3;
-    private final double RIGHTOPEN = 0.0;
-    private final double RIGHTCLOSE = 0.2;
+    private final double RIGHTOPEN = 0.00;
+    private final double RIGHTCLOSE = 0.25;
     private final double LEFTOPEN = 0.95;
-    private final double LEFTCLOSE = 0.75;
+    private final double LEFTCLOSE = 0.65;
     private final int EXTENDUP = 4000;
     private final int EXTENDDOWN = 0;
     private final int ARMUP = 1200;
