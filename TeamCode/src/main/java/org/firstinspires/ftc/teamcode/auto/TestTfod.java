@@ -103,6 +103,10 @@ public class TestTfod extends LinearOpMode {
                     }
                 }
 
+                /* We now placed our purple (or Orange???) pixel, and are in a position common to all 3 paths. */
+
+
+
 
 
                 /* Share the CPU.
