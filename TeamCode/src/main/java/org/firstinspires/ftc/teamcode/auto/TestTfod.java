@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -26,6 +27,11 @@ public class TestTfod extends LinearOpMode {
      */
     private VisionPortal visionPortal;
 
+    private DcMotor leftFrontDrive = null;
+    private DcMotor rightFrontDrive = null;
+    private DcMotor leftBackDrive = null;
+    private DcMotor rightBackDrive = null;
+
     @Override
     public void runOpMode() {
 
@@ -35,6 +41,17 @@ public class TestTfod extends LinearOpMode {
         telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
         telemetry.addData(">", "Touch Play to start OpMode");
         telemetry.update();
+        leftFrontDrive = hardwareMap.get(DcMotor.class, "driveMotorFour");
+        leftBackDrive = hardwareMap.get(DcMotor.class, "driveMotorOne");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "driveMotorThree");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "driveMotorTwo");
+
+        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+
+        telemetry.addData("Status", "Initialized");
         waitForStart();
 
         if (opModeIsActive()) {
@@ -45,15 +62,14 @@ public class TestTfod extends LinearOpMode {
                 // Push telemetry to the Driver Station.
                 telemetry.update();
 
-                // Save CPU resources; can resume streaming when needed.
-                if (gamepad1.dpad_down) {
-                    visionPortal.stopStreaming();
-                } else if (gamepad1.dpad_up) {
-                    visionPortal.resumeStreaming();
-                }
+
 
                 // Share the CPU.
                 sleep(20);
+                fdrive(1);
+                ltDrive(1);
+                rtDrive(1);
+
             }
         }
 
@@ -101,5 +117,41 @@ public class TestTfod extends LinearOpMode {
         }   // end for() loop
 
     }   // end method telemetryTfod()
+
+    private void fdrive(int sec){
+        leftBackDrive.setPower(1);
+        rightBackDrive.setPower(1);
+        leftFrontDrive.setPower(1);
+        rightFrontDrive.setPower(1);
+        sleep(sec*100);
+        leftBackDrive.setPower(0);
+        rightBackDrive.setPower(0);
+        leftFrontDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+    }
+
+    private void rtDrive(int sec){
+        leftBackDrive.setPower(1);
+        rightBackDrive.setPower(-1);
+        leftFrontDrive.setPower(-1);
+        rightFrontDrive.setPower(1);
+        sleep(sec*100);
+        leftBackDrive.setPower(0);
+        rightBackDrive.setPower(0);
+        leftFrontDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+    }
+
+    private void ltDrive(int sec){
+        leftBackDrive.setPower(-1);
+        rightBackDrive.setPower(1);
+        leftFrontDrive.setPower(1);
+        rightFrontDrive.setPower(-1);
+        sleep(sec*100);
+        leftBackDrive.setPower(0);
+        rightBackDrive.setPower(0);
+        leftFrontDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+    }
 
 }   // end class
