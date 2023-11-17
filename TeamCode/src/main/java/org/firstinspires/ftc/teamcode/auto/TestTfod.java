@@ -1,8 +1,12 @@
 package org.firstinspires.ftc.teamcode.auto;
 
+// NOTE: THIS ONLY IS GOOD FOR LEFT BLUE START
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -15,22 +19,19 @@ import java.util.List;
 @Autonomous
 public class TestTfod extends LinearOpMode {
 
+    // Cool ass Variables
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
-
-    /**
-     * The variable to store our instance of the TensorFlow Object Detection processor.
-     */
     private TfodProcessor tfod;
-
-    /**
-     * The variable to store our instance of the vision portal.
-     */
     private VisionPortal visionPortal;
-
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
     private DcMotor rightBackDrive = null;
+    private DcMotor arm = null;
+    private DcMotor extend = null;
+    private Servo leftClaw = null;
+    private Servo rightClaw = null;
+    private Servo rotator = null;
 
     @Override
     public void runOpMode() {
@@ -41,15 +42,33 @@ public class TestTfod extends LinearOpMode {
         telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
         telemetry.addData(">", "Touch Play to start OpMode");
         telemetry.update();
+
+        // Declaring things, self explanatory
         leftFrontDrive = hardwareMap.get(DcMotor.class, "driveMotorFour");
         leftBackDrive = hardwareMap.get(DcMotor.class, "driveMotorOne");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "driveMotorThree");
         rightBackDrive = hardwareMap.get(DcMotor.class, "driveMotorTwo");
+        arm = hardwareMap.get(DcMotor.class, "armMotorOne");
+        extend = hardwareMap.get(DcMotor.class, "armMotorTwo");
+        rightClaw = hardwareMap.get(Servo.class, "rightClaw");
+        leftClaw = hardwareMap.get(Servo.class, "leftClaw");
+        rotator = hardwareMap.get(Servo.class, "rotator");
 
+        // Wheel Behaviour
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        // Arm Things
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm.setDirection(DcMotorSimple.Direction.REVERSE);
+        arm.setTargetPosition(0);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         telemetry.addData("Status", "Initialized");
         waitForStart();
@@ -62,14 +81,32 @@ public class TestTfod extends LinearOpMode {
                 // Push telemetry to the Driver Station.
                 telemetry.update();
 
+                // START OF MOVEMENT CODE, ROBOT MUST START FACING SCOREBOARD THING
 
 
-                // Share the CPU.
-                sleep(20);
-                fdrive(1);
-                ltDrive(1);
-                rtDrive(1);
+                fDrive(50); // align self with left blue strip
+                rtDrive(100); // move closer
 
+                sleep(1000); // sleep for One second, give time for Tflow?
+                if (tfod.getRecognitions().size() > 0){ // Condition 1, Prop is on LEFT strip.
+                    // TODO: Code related to putting orange pixel on LEFT strip and then moving to standard position
+
+                } else{ // Not there, so move to middle
+                    bDrive(50); // Must be the same "ms" value as fDrive() earlier
+                    rtDrive(100); // move even closer
+
+                    sleep(1000); // sleep for One second, give time for Tflow
+                    if (tfod.getRecognitions().size() > 0){ // Condition 2, Prop is on MIDDLE strip.
+                        // TODO: Code related to putting orange pixel on MIDDLE strip and then moving to standard position
+                    } else{ // Last Condition, prop is on RIGHT strip
+                        // TODO: Code related to putting orange pixel on RIGHT strip and then moving to standard position
+                    }
+                }
+
+
+
+                /* Share the CPU.
+                sleep(20); // We *maybe* need this, idk */
             }
         }
 
@@ -118,24 +155,37 @@ public class TestTfod extends LinearOpMode {
 
     }   // end method telemetryTfod()
 
-    private void fdrive(int sec){
+
+    private void fDrive(int ms){
         leftBackDrive.setPower(1);
         rightBackDrive.setPower(1);
         leftFrontDrive.setPower(1);
         rightFrontDrive.setPower(1);
-        sleep(sec*100);
+        sleep(ms);
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
         leftFrontDrive.setPower(0);
         rightFrontDrive.setPower(0);
     }
 
-    private void rtDrive(int sec){
+    private void bDrive(int ms){
+        leftBackDrive.setPower(-1);
+        rightBackDrive.setPower(-1);
+        leftFrontDrive.setPower(-1);
+        rightFrontDrive.setPower(-1);
+        sleep(ms);
+        leftBackDrive.setPower(0);
+        rightBackDrive.setPower(0);
+        leftFrontDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+    }
+
+    private void rtDrive(int ms){
         leftBackDrive.setPower(1);
         rightBackDrive.setPower(-1);
         leftFrontDrive.setPower(-1);
         rightFrontDrive.setPower(1);
-        sleep(sec*100);
+        sleep(ms);
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
         leftFrontDrive.setPower(0);
@@ -147,6 +197,18 @@ public class TestTfod extends LinearOpMode {
         rightBackDrive.setPower(1);
         leftFrontDrive.setPower(1);
         rightFrontDrive.setPower(-1);
+        sleep(sec*100);
+        leftBackDrive.setPower(0);
+        rightBackDrive.setPower(0);
+        leftFrontDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+    }
+
+    private void rRotate(int sec){ // Not sure what values to make negative, will test
+        leftBackDrive.setPower(1);
+        rightBackDrive.setPower(-1);
+        leftFrontDrive.setPower(-1);
+        rightFrontDrive.setPower(1);
         sleep(sec*100);
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
