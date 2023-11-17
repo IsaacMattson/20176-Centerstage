@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp
 public class OpMode extends LinearOpMode {
     private final double DEAD_ZONE = 0.3;
-    private final double RIGHTOPEN = 0.00;
+    private final double RIGHTOPEN = 0.02;
     private final double RIGHTCLOSE = 0.25;
     private final double LEFTOPEN = 0.95;
     private final double LEFTCLOSE = 0.65;
@@ -18,7 +18,7 @@ public class OpMode extends LinearOpMode {
     private final int ARMUP = 1200;
     private final int ARMDOWN = 20;
     private final double CLAWUP = 0.0;
-    private final double CLAWDOWN = 0.75;
+    private final double CLAWDOWN = 0.8;
     private boolean DPadUp = false;
     private boolean DPadDown = false;
     private boolean leftClose = false;
@@ -27,6 +27,8 @@ public class OpMode extends LinearOpMode {
     private boolean rightOpen = false;
     private boolean openBoth = false;
     private boolean closeBoth = false;
+    private boolean clawUp = false;
+    private boolean clawDown = false;
     private double leftStickYAxis = 0;
     private double leftStickXAxis = 0;
     private double rightStickXAxis = 0;
@@ -106,11 +108,15 @@ public class OpMode extends LinearOpMode {
             leftOpen = this.gamepad1.left_bumper;
             rightClose = this.gamepad1.right_trigger > 0.25;
             rightOpen = this.gamepad1.right_bumper;
-            openBoth = this.gamepad1.dpad_left;
-            closeBoth = this.gamepad1.dpad_right;
+            openBoth = this.gamepad1.x;
+            closeBoth = this.gamepad1.b;
             leftStickYAxis = -this.gamepad1.left_stick_y;
             leftStickXAxis = this.gamepad1.left_stick_x;
             rightStickXAxis = -this.gamepad1.right_stick_x;
+            clawDown = this.gamepad1.a;
+            clawUp = this.gamepad1.y;
+
+
 
             // Movement code
             if (Math.abs(leftStickYAxis) >= DEAD_ZONE) {
@@ -139,6 +145,7 @@ public class OpMode extends LinearOpMode {
                 targetArmValue = ARMUP;
                 armMotorPower = 0.2;
                 upCom = true;
+                rotatorPos = CLAWUP;
             } else if (DPadDown) {
                 targetExtendValue = EXTENDDOWN;
                 downCom = true;
@@ -155,9 +162,9 @@ public class OpMode extends LinearOpMode {
 
 
             //servo code
-            if(extend.getCurrentPosition() > 3000){
+            if(clawUp){
                 rotatorPos = CLAWUP;
-            }else{
+            }else if(clawDown){
                 rotatorPos = CLAWDOWN;
             }
             if(leftOpen || openBoth){
