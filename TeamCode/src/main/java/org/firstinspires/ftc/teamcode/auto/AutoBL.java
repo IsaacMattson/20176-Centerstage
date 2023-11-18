@@ -52,14 +52,13 @@ public class AutoBL extends LinearOpMode {
         waitForStart();
 
         // This assumes we start facing the scoreboard
-        ltDrive(150);
 
         // TODO: Code for moving arm and placing pixels
 
 
     }
 
-    private void fDrive(int ms){
+    private void forwardDrive(int ms){
         leftBackDrive.setPower(1);
         rightBackDrive.setPower(1);
         leftFrontDrive.setPower(1);
@@ -71,7 +70,7 @@ public class AutoBL extends LinearOpMode {
         rightFrontDrive.setPower(0);
     }
 
-    private void bDrive(int ms){
+    private void backwardsDrive(int ms){
         leftBackDrive.setPower(-1);
         rightBackDrive.setPower(-1);
         leftFrontDrive.setPower(-1);
@@ -83,7 +82,7 @@ public class AutoBL extends LinearOpMode {
         rightFrontDrive.setPower(0);
     }
 
-    private void rtDrive(int ms){
+    private void rightShift(int ms){
         leftBackDrive.setPower(1);
         rightBackDrive.setPower(-1);
         leftFrontDrive.setPower(-1);
@@ -95,24 +94,36 @@ public class AutoBL extends LinearOpMode {
         rightFrontDrive.setPower(0);
     }
 
-    private void ltDrive(int sec){
+    private void leftShift(int ms){
         leftBackDrive.setPower(-1);
         rightBackDrive.setPower(1);
         leftFrontDrive.setPower(1);
         rightFrontDrive.setPower(-1);
-        sleep(sec*100);
+        sleep(ms);
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
         leftFrontDrive.setPower(0);
         rightFrontDrive.setPower(0);
     }
 
-    private void rRotate(int sec){ // Not sure what values to make negative, will test
+    private void rightTurn(int ms){ // Not sure what values to make negative, will test
         leftBackDrive.setPower(1);
         rightBackDrive.setPower(-1);
+        leftFrontDrive.setPower(1);
+        rightFrontDrive.setPower(-1);
+        sleep(ms);
+        leftBackDrive.setPower(0);
+        rightBackDrive.setPower(0);
+        leftFrontDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+    }
+
+    private void leftTurn(int ms){
+        leftBackDrive.setPower(-1);
+        rightBackDrive.setPower(1);
         leftFrontDrive.setPower(-1);
         rightFrontDrive.setPower(1);
-        sleep(sec*100);
+        sleep(ms);
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
         leftFrontDrive.setPower(0);
