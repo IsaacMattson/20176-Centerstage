@@ -154,7 +154,7 @@ public class OpMode extends LinearOpMode {
                 targetExtendValue = EXTENDUP;
                 upCom = false;
             }
-            if(downCom && extend.getCurrentPosition() < 100){
+            if(downCom && extend.getCurrentPosition() < 800){
                 armMotorPower = 0.1;
                 targetArmValue = ARMDOWN;
                 downCom = false;
