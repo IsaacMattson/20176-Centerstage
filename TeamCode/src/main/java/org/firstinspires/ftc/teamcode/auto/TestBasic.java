@@ -8,7 +8,7 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 @Autonomous
-public class TestAuto extends OpMode {
+public class TestBasic extends OpMode {
 
     @Override
     public void init() {
