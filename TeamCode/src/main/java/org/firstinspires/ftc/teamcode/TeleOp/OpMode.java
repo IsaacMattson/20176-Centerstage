@@ -40,8 +40,8 @@ public class OpMode extends LinearOpMode {
     private int targetArmValue = ARMDOWN;
     private double extendMotorPower = 0;
     private int targetExtendValue = EXTENDDOWN;
-    private double rightPos = RIGHTOPEN;
-    private double leftPos = LEFTOPEN;
+    private double rightPos = RIGHTCLOSE;
+    private double leftPos = LEFTCLOSE;
     private double rotatorPos = CLAWUP;
     private boolean upCom = false, downCom = false;
 
@@ -147,7 +147,7 @@ public class OpMode extends LinearOpMode {
                 upCom = true;
                 rotatorPos = CLAWUP;
             } else if (DPadDown) {
-                targetExtendValue = EXTENDDOWN;
+                targetExtendValue = EXTENDDOWN +225;
                 downCom = true;
             }
             if(upCom && arm.getCurrentPosition() > 1100){
