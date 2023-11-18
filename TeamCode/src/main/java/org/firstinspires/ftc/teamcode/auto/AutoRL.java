@@ -51,18 +51,33 @@ public class AutoRL extends LinearOpMode {
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         waitForStart();
-
-        // This assumes we start facing the scoreboard
+        rotator.setPosition(0.0);
+        rightClaw.setPosition(0.25);
+        leftClaw.setPosition(0.65);
+        rightShift(300);
+        backwardsDrive(3600);
+        rightShift(1200);
+        backwardsDrive(100);
+        arm.setPower(0.2);
+        arm.setTargetPosition(1400);
+        sleep(3000);
         //TODO: ARM STUFF!!!
+        rightClaw.setPosition(0.05);
+        leftClaw.setPosition(0.95);
+        sleep(1000);
+        arm.setPower(0.1);
+        arm.setTargetPosition(0);
+        sleep(3000);
+        leftShift(1000);
 
 
     }
 
     private void forwardDrive(int ms){
-        leftBackDrive.setPower(1);
-        rightBackDrive.setPower(1);
-        leftFrontDrive.setPower(1);
-        rightFrontDrive.setPower(1);
+        leftBackDrive.setPower(0.4);
+        rightBackDrive.setPower(0.4);
+        leftFrontDrive.setPower(0.4);
+        rightFrontDrive.setPower(0.4);
         sleep(ms);
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
@@ -71,10 +86,10 @@ public class AutoRL extends LinearOpMode {
     }
 
     private void backwardsDrive(int ms){
-        leftBackDrive.setPower(-1);
-        rightBackDrive.setPower(-1);
-        leftFrontDrive.setPower(-1);
-        rightFrontDrive.setPower(-1);
+        leftBackDrive.setPower(-0.4);
+        rightBackDrive.setPower(-0.4);
+        leftFrontDrive.setPower(-0.4);
+        rightFrontDrive.setPower(-0.4);
         sleep(ms);
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
@@ -83,10 +98,10 @@ public class AutoRL extends LinearOpMode {
     }
 
     private void rightShift(int ms){
-        leftBackDrive.setPower(1);
-        rightBackDrive.setPower(-1);
-        leftFrontDrive.setPower(-1);
-        rightFrontDrive.setPower(1);
+        leftBackDrive.setPower(0.4);
+        rightBackDrive.setPower(-0.4);
+        leftFrontDrive.setPower(-0.4);
+        rightFrontDrive.setPower(0.4);
         sleep(ms);
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
@@ -95,10 +110,10 @@ public class AutoRL extends LinearOpMode {
     }
 
     private void leftShift(int ms){
-        leftBackDrive.setPower(-1);
-        rightBackDrive.setPower(1);
-        leftFrontDrive.setPower(1);
-        rightFrontDrive.setPower(-1);
+        leftBackDrive.setPower(-0.4);
+        rightBackDrive.setPower(0.4);
+        leftFrontDrive.setPower(0.4);
+        rightFrontDrive.setPower(-0.4);
         sleep(ms);
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
@@ -107,10 +122,10 @@ public class AutoRL extends LinearOpMode {
     }
 
     private void rightTurn(int ms){ // Not sure what values to make negative, will test
-        leftBackDrive.setPower(1);
-        rightBackDrive.setPower(-1);
-        leftFrontDrive.setPower(1);
-        rightFrontDrive.setPower(-1);
+        leftBackDrive.setPower(0.4);
+        rightBackDrive.setPower(-0.4);
+        leftFrontDrive.setPower(0.4);
+        rightFrontDrive.setPower(-0.4);
         sleep(ms);
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
@@ -119,10 +134,10 @@ public class AutoRL extends LinearOpMode {
     }
 
     private void leftTurn(int ms){
-        leftBackDrive.setPower(-1);
-        rightBackDrive.setPower(1);
-        leftFrontDrive.setPower(-1);
-        rightFrontDrive.setPower(1);
+        leftBackDrive.setPower(-0.4);
+        rightBackDrive.setPower(0.4);
+        leftFrontDrive.setPower(-0.4);
+        rightFrontDrive.setPower(0.4);
         sleep(ms);
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);

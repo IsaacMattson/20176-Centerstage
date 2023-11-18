@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp
 public class OpMode extends LinearOpMode {
     private final double DEAD_ZONE = 0.3;
-    private final double RIGHTOPEN = 0.02;
+    private final double RIGHTOPEN = 0.05;
     private final double RIGHTCLOSE = 0.25;
     private final double LEFTOPEN = 0.95;
     private final double LEFTCLOSE = 0.65;
@@ -110,7 +110,7 @@ public class OpMode extends LinearOpMode {
             rightOpen = this.gamepad1.right_bumper;
             openBoth = this.gamepad1.x;
             closeBoth = this.gamepad1.b;
-            leftStickYAxis = -this.gamepad1.left_stick_y;
+            leftStickYAxis = -this.gamepad1.left_stick_y*0.8;
             leftStickXAxis = this.gamepad1.left_stick_x;
             rightStickXAxis = -this.gamepad1.right_stick_x;
             clawDown = this.gamepad1.a;
@@ -125,15 +125,15 @@ public class OpMode extends LinearOpMode {
                 leftBackMotorPower = leftStickYAxis;
                 rightBackMotorPower = leftStickYAxis;
             } else if (Math.abs(leftStickXAxis) >= DEAD_ZONE) {
-                leftFrontMotorPower = -leftStickXAxis;
-                rightFrontMotorPower = leftStickXAxis;
-                leftBackMotorPower = -leftStickXAxis;
-                rightBackMotorPower = leftStickXAxis;
+                leftFrontMotorPower = leftStickXAxis;
+                rightFrontMotorPower = -leftStickXAxis;
+                leftBackMotorPower = leftStickXAxis;
+                rightBackMotorPower = -leftStickXAxis;
             } else if (Math.abs(rightStickXAxis) >= DEAD_ZONE) {
-                leftFrontMotorPower = -rightStickXAxis;
-                rightFrontMotorPower = rightStickXAxis;
-                leftBackMotorPower = rightStickXAxis;
-                rightBackMotorPower = -rightStickXAxis;
+                leftFrontMotorPower = rightStickXAxis;
+                rightFrontMotorPower = -rightStickXAxis;
+                leftBackMotorPower = -rightStickXAxis;
+                rightBackMotorPower = rightStickXAxis;
             } else {
                 leftFrontMotorPower = 0;
                 rightFrontMotorPower = 0;
