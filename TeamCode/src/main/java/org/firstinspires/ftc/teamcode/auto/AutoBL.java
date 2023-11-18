@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous
 public class AutoBL extends LinearOpMode {
-
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;

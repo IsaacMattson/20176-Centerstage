@@ -132,7 +132,7 @@ public class OpMode extends LinearOpMode {
             } else if (Math.abs(rightStickXAxis) >= DEAD_ZONE) {
                 leftFrontMotorPower = -rightStickXAxis;
                 rightFrontMotorPower = rightStickXAxis;
-                leftBackMotorPower = -rightStickXAxis;
+                leftBackMotorPower = rightStickXAxis;
                 rightBackMotorPower = -rightStickXAxis;
             } else {
                 leftFrontMotorPower = 0;
