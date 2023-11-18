@@ -16,9 +16,9 @@ public class OpMode extends LinearOpMode {
     private final int EXTENDUP = 4000;
     private final int EXTENDDOWN = 0;
     private final int ARMUP = 1200;
-    private final int ARMDOWN = 20;
+    private final int ARMDOWN = 0;
     private final double CLAWUP = 0.0;
-    private final double CLAWDOWN = 0.8;
+    private final double CLAWDOWN = 0.78;
     private boolean DPadUp = false;
     private boolean DPadDown = false;
     private boolean leftClose = false;
