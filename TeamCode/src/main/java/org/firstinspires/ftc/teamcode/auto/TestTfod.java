@@ -84,16 +84,16 @@ public class TestTfod extends LinearOpMode {
                 // START OF MOVEMENT CODE, ROBOT MUST START FACING SCOREBOARD THING
 
 
-                fDrive(50); // align self with left blue strip
-                rtDrive(100); // move closer
+                forwardDrive(50); // align self with left blue strip
+                rightShift(100); // move closer
 
                 sleep(1000); // sleep for One second, give time for Tflow?
                 if (tfod.getRecognitions().size() > 0){ // Condition 1, Prop is on LEFT strip.
                     // TODO: Code related to putting orange pixel on LEFT strip and then moving to standard position
 
                 } else{ // Not there, so move to middle
-                    bDrive(50); // Must be the same "ms" value as fDrive() earlier
-                    rtDrive(100); // move even closer
+                    backwardsDrive(50); // Must be the same "ms" value as fDrive() earlier
+                    rightShift(100); // move even closer
 
                     sleep(1000); // sleep for One second, give time for Tflow
                     if (tfod.getRecognitions().size() > 0){ // Condition 2, Prop is on MIDDLE strip.
@@ -160,7 +160,7 @@ public class TestTfod extends LinearOpMode {
     }   // end method telemetryTfod()
 
 
-    private void fDrive(int ms){
+    private void forwardDrive(int ms){
         leftBackDrive.setPower(1);
         rightBackDrive.setPower(1);
         leftFrontDrive.setPower(1);
@@ -172,7 +172,7 @@ public class TestTfod extends LinearOpMode {
         rightFrontDrive.setPower(0);
     }
 
-    private void bDrive(int ms){
+    private void backwardsDrive(int ms){
         leftBackDrive.setPower(-1);
         rightBackDrive.setPower(-1);
         leftFrontDrive.setPower(-1);
@@ -184,11 +184,11 @@ public class TestTfod extends LinearOpMode {
         rightFrontDrive.setPower(0);
     }
 
-    private void rtDrive(int ms){
-        leftBackDrive.setPower(1);
-        rightBackDrive.setPower(-1);
-        leftFrontDrive.setPower(-1);
-        rightFrontDrive.setPower(1);
+    private void rightShift(int ms){
+        leftBackDrive.setPower(0.4);
+        rightBackDrive.setPower(-0.4);
+        leftFrontDrive.setPower(-0.4);
+        rightFrontDrive.setPower(0.4);
         sleep(ms);
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
@@ -196,24 +196,36 @@ public class TestTfod extends LinearOpMode {
         rightFrontDrive.setPower(0);
     }
 
-    private void ltDrive(int sec){
-        leftBackDrive.setPower(-1);
-        rightBackDrive.setPower(1);
-        leftFrontDrive.setPower(1);
-        rightFrontDrive.setPower(-1);
-        sleep(sec*100);
+    private void leftShift(int ms){
+        leftBackDrive.setPower(-0.4);
+        rightBackDrive.setPower(0.4);
+        leftFrontDrive.setPower(0.4);
+        rightFrontDrive.setPower(-0.4);
+        sleep(ms);
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
         leftFrontDrive.setPower(0);
         rightFrontDrive.setPower(0);
     }
 
-    private void rRotate(int sec){ // Not sure what values to make negative, will test
-        leftBackDrive.setPower(1);
-        rightBackDrive.setPower(-1);
-        leftFrontDrive.setPower(-1);
-        rightFrontDrive.setPower(1);
-        sleep(sec*100);
+    private void rightTurn(int ms){ // Not sure what values to make negative, will test
+        leftBackDrive.setPower(0.4);
+        rightBackDrive.setPower(-0.4);
+        leftFrontDrive.setPower(0.4);
+        rightFrontDrive.setPower(-0.4);
+        sleep(ms);
+        leftBackDrive.setPower(0);
+        rightBackDrive.setPower(0);
+        leftFrontDrive.setPower(0);
+        rightFrontDrive.setPower(0);
+    }
+
+    private void leftTurn(int ms){
+        leftBackDrive.setPower(-0.4);
+        rightBackDrive.setPower(0.4);
+        leftFrontDrive.setPower(-0.4);
+        rightFrontDrive.setPower(0.4);
+        sleep(ms);
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
         leftFrontDrive.setPower(0);
