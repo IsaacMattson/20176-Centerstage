@@ -7,7 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous
-public class AutoBL extends LinearOpMode {
+public class AutoRedLeft extends LinearOpMode {
+
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
@@ -50,18 +51,13 @@ public class AutoBL extends LinearOpMode {
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         waitForStart();
-        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        arm.setDirection(DcMotorSimple.Direction.REVERSE);
-        arm.setTargetPosition(0);
-        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        waitForStart();
         rotator.setPosition(0.0);
         rightClaw.setPosition(0.25);
         leftClaw.setPosition(0.65);
-        leftShift(300);
-        backwardsDrive(1600);
-        leftShift(1200);
+        rightShift(300);
+        backwardsDrive(3600);
+        rightShift(1200);
+        backwardsDrive(100);
         arm.setPower(0.2);
         arm.setTargetPosition(1400);
         sleep(3000);
@@ -69,9 +65,12 @@ public class AutoBL extends LinearOpMode {
         rightClaw.setPosition(0.05);
         leftClaw.setPosition(0.95);
         sleep(1000);
+        arm.setPower(0.1);
         arm.setTargetPosition(0);
         sleep(3000);
-        rightShift(1000);
+        leftShift(1000);
+
+
     }
 
     private void forwardDrive(int ms){

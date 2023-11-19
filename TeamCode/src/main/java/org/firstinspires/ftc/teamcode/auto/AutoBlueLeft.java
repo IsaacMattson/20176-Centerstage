@@ -7,8 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous
-public class AutoRR extends LinearOpMode {
-
+public class AutoBlueLeft extends LinearOpMode {
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
@@ -56,31 +55,23 @@ public class AutoRR extends LinearOpMode {
         arm.setTargetPosition(0);
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-
-
         waitForStart();
         rotator.setPosition(0.0);
         rightClaw.setPosition(0.25);
         leftClaw.setPosition(0.65);
-        rightShift(300);
+        leftShift(300);
         backwardsDrive(1600);
-        rightShift(1200);
+        leftShift(1200);
         arm.setPower(0.2);
         arm.setTargetPosition(1400);
-        sleep(4000);
+        sleep(3000);
         //TODO: ARM STUFF!!!
         rightClaw.setPosition(0.05);
         leftClaw.setPosition(0.95);
         sleep(1000);
-        arm.setPower(0.1);
         arm.setTargetPosition(0);
         sleep(3000);
-        leftShift(1000);
-
-        // This assumes we start facing the scoreboard
-        // TODO: Code for moving arm and placing pixels
-
-
+        rightShift(1000);
     }
 
     private void forwardDrive(int ms){
