@@ -110,13 +110,11 @@ public class OpMode extends LinearOpMode {
             rightOpen = this.gamepad1.right_bumper;
             openBoth = this.gamepad1.x;
             closeBoth = this.gamepad1.b;
-            leftStickYAxis = -this.gamepad1.left_stick_y*0.8;
+            leftStickYAxis = -this.gamepad1.left_stick_y * 0.8;
             leftStickXAxis = this.gamepad1.left_stick_x;
             rightStickXAxis = -this.gamepad1.right_stick_x;
             clawDown = this.gamepad1.a;
             clawUp = this.gamepad1.y;
-
-
 
             // Movement code
             if (Math.abs(leftStickYAxis) >= DEAD_ZONE) {
@@ -160,7 +158,6 @@ public class OpMode extends LinearOpMode {
                 downCom = false;
             }
 
-
             //servo code
             if(clawUp){
                 rotatorPos = CLAWUP;
@@ -177,7 +174,7 @@ public class OpMode extends LinearOpMode {
             }else if(rightClose || closeBoth){
                 rightPos = RIGHTCLOSE;
             }
-
+;
             // Set motor & servo power
             leftFrontDrive.setPower(leftFrontMotorPower);
             leftBackDrive.setPower(leftBackMotorPower);
