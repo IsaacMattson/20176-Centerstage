@@ -29,7 +29,10 @@ public class TestTfod extends LinearOpMode {
 
     // Distance sensor
     private DistanceSensor distanceSensor;
+    private double teamPropMaxDistance = 75;
     private double distance;
+
+    private boolean objectFound = false;
 
     @Override
     public void runOpMode() {
@@ -69,12 +72,19 @@ public class TestTfod extends LinearOpMode {
         while (opModeIsActive()) {
             distance = distanceSensor.getDistance(DistanceUnit.CM);
 
-            if (distance > 0) {
-                forwardDrive(1000);
-                
-            } else {
-                rightShift(1000);
+            if (distance < teamPropMaxDistance) {
+                if (!objectFound) {
+                    //forwardDrive((int) distance);
+                    telemetry.addData("I found", "you");
+                    objectFound = true;
+                } else {
+                    telemetry.addData("I know where you live now", "team prop");
+                }
             }
+
+            telemetry.addData("Status", "Running");
+            telemetry.addData("Distance: ", distance);
+            telemetry.update();
         }
 
     }   // end runOpMode()
