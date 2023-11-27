@@ -170,7 +170,7 @@ public class OpMode extends LinearOpMode {
             telemetry.addData("Left Bumper", this.gamepad1.left_bumper);
             telemetry.addData("Rotator Servo", rotator.getPosition());
 
-            // Get arm position
+            // Get arm position.
             //telemetry.addData("Tick position", "%4.2f", target);
 
             telemetry.update();
