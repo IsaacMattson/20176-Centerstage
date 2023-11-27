@@ -13,8 +13,6 @@ public class OpMode extends LinearOpMode {
     private final double RIGHTCLOSE = 0.25;
     private final double LEFTOPEN = 0.95;
     private final double LEFTCLOSE = 0.65;
-    private final int EXTENDUP = 4000;
-    private final int EXTENDDOWN = 0;
     private final int ARMUP = 1200;
     private final int ARMDOWN = 0;
     private final double CLAWUP = 0.0;
@@ -38,12 +36,9 @@ public class OpMode extends LinearOpMode {
     private double rightBackMotorPower = 0;
     private double armMotorPower = 0;
     private int targetArmValue = ARMDOWN;
-    private double extendMotorPower = 0;
-    private int targetExtendValue = EXTENDDOWN;
     private double rightPos = RIGHTCLOSE;
     private double leftPos = LEFTCLOSE;
     private double rotatorPos = CLAWUP;
-    private boolean upCom = false, downCom = false;
 
     // Set motors
     private DcMotor motor;
@@ -52,7 +47,6 @@ public class OpMode extends LinearOpMode {
     private DcMotor leftBackDrive = null;
     private DcMotor rightBackDrive = null;
     private DcMotor arm = null;
-    private DcMotor extend = null;
     private Servo leftClaw = null;
     private Servo rightClaw = null;
     private Servo rotator = null;
@@ -66,23 +60,16 @@ public class OpMode extends LinearOpMode {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "driveMotorThree");
         rightBackDrive = hardwareMap.get(DcMotor.class, "driveMotorTwo");
         arm = hardwareMap.get(DcMotor.class, "armMotorOne");
-        extend = hardwareMap.get(DcMotor.class, "armMotorTwo");
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
         rotator = hardwareMap.get(Servo.class, "rotator");
 
         //Arm settings
         armMotorPower = 0.2;
-        extendMotorPower = 1;
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm.setDirection(DcMotorSimple.Direction.REVERSE);
         arm.setTargetPosition(0);
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        extend.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        extend.setDirection(DcMotorSimple.Direction.REVERSE);
-        extend.setTargetPosition(0);
-        extend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         //Drive motor settings
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -142,20 +129,10 @@ public class OpMode extends LinearOpMode {
             if (DPadUp) {
                 targetArmValue = ARMUP;
                 armMotorPower = 0.2;
-                upCom = true;
                 rotatorPos = CLAWUP;
             } else if (DPadDown) {
-                targetExtendValue = EXTENDDOWN +225;
-                downCom = true;
-            }
-            if(upCom && arm.getCurrentPosition() > 1100){
-                targetExtendValue = EXTENDUP;
-                upCom = false;
-            }
-            if(downCom && extend.getCurrentPosition() < 800){
-                armMotorPower = 0.1;
                 targetArmValue = ARMDOWN;
-                downCom = false;
+                armMotorPower = 0.1;
             }
 
             //servo code
@@ -182,8 +159,6 @@ public class OpMode extends LinearOpMode {
             rightBackDrive.setPower(rightBackMotorPower);
             arm.setTargetPosition(targetArmValue);
             arm.setPower(armMotorPower);
-            extend.setTargetPosition(targetExtendValue);
-            extend.setPower(extendMotorPower);
             leftClaw.setPosition(leftPos);
             rightClaw.setPosition(rightPos);
             rotator.setPosition(rotatorPos);
@@ -191,7 +166,6 @@ public class OpMode extends LinearOpMode {
             // Debug
             telemetry.addData("Status", "Running");
             telemetry.addData("Arm Position", arm.getCurrentPosition());
-            telemetry.addData("Extend Position", extend.getCurrentPosition());
             telemetry.addData("Left Trigger", this.gamepad1.left_trigger);
             telemetry.addData("Left Bumper", this.gamepad1.left_bumper);
             telemetry.addData("Rotator Servo", rotator.getPosition());
