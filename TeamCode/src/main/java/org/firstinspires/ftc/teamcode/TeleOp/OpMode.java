@@ -9,14 +9,14 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp
 public class OpMode extends LinearOpMode {
     private final double DEAD_ZONE = 0.3;
-    private final double RIGHTOPEN = 0.05;
-    private final double RIGHTCLOSE = 0.25;
-    private final double LEFTOPEN = 0.95;
-    private final double LEFTCLOSE = 0.65;
+    private final double RIGHTOPEN = 0.16;
+    private final double RIGHTCLOSE = 0.70;
+    private final double LEFTOPEN = 0.17;
+    private final double LEFTCLOSE = 0.75;
     private final int ARMUP = 1200;
     private final int ARMDOWN = 0;
-    private final double CLAWUP = 0.0;
-    private final double CLAWDOWN = 0.78;
+    private final double CLAWUP = 0.03;
+    private final double CLAWDOWN = CLAWUP + 0.80;
     private boolean DPadUp = false;
     private boolean DPadDown = false;
     private boolean leftClose = false;
@@ -64,10 +64,13 @@ public class OpMode extends LinearOpMode {
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
         rotator = hardwareMap.get(Servo.class, "rotator");
 
+        leftClaw.setDirection(Servo.Direction.REVERSE);
+
+
         //Arm settings
         armMotorPower = 0.2;
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        arm.setDirection(DcMotorSimple.Direction.REVERSE);
+        arm.setDirection(DcMotorSimple.Direction.FORWARD);
         arm.setTargetPosition(0);
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -95,8 +98,8 @@ public class OpMode extends LinearOpMode {
             leftOpen = this.gamepad1.left_bumper;
             rightClose = this.gamepad1.right_trigger > 0.25;
             rightOpen = this.gamepad1.right_bumper;
-            openBoth = this.gamepad1.x;
-            closeBoth = this.gamepad1.b;
+            openBoth = this.gamepad1.b;
+            closeBoth = this.gamepad1.x;
             leftStickYAxis = -this.gamepad1.left_stick_y * 0.8;
             leftStickXAxis = this.gamepad1.left_stick_x;
             rightStickXAxis = -this.gamepad1.right_stick_x;
@@ -128,11 +131,9 @@ public class OpMode extends LinearOpMode {
             //arm code
             if (DPadUp) {
                 targetArmValue = ARMUP;
-                armMotorPower = 0.2;
                 rotatorPos = CLAWUP;
             } else if (DPadDown) {
                 targetArmValue = ARMDOWN;
-                armMotorPower = 0.1;
             }
 
             //servo code
