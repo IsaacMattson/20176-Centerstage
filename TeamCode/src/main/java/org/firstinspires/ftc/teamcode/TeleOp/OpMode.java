@@ -17,7 +17,9 @@ public class OpMode extends LinearOpMode {
     private final int ARMDOWN = 0;
     private final double CLAWUP = 0.03;
     private final double CLAWDOWN = CLAWUP + 0.80;
-    private final int CLIMB = 1600;
+    private final int CLIMB = 3000;
+    private final int HANGINGUP = 7500;
+    private final int HANGINGDOWN = 500;
     private boolean armUp = false;
     private boolean armDown = false;
     private boolean leftClose = false;
@@ -46,6 +48,7 @@ public class OpMode extends LinearOpMode {
     private double rightPos = RIGHTCLOSE;
     private double leftPos = LEFTCLOSE;
     private double rotatorPos = CLAWUP;
+    private int hangingnPos = HANGINGDOWN;
     private DcMotor motor;
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
@@ -77,7 +80,7 @@ public class OpMode extends LinearOpMode {
 
 
         //Arm settings
-        armMotorPower = 0.2;
+        armMotorPower = 0.15;
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm.setDirection(DcMotorSimple.Direction.FORWARD);
         arm.setTargetPosition(0);
@@ -95,14 +98,17 @@ public class OpMode extends LinearOpMode {
         rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         LiftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        LiftRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        LiftRight.setDirection(DcMotorSimple.Direction.FORWARD);
         LiftRight.setTargetPosition(0);
         LiftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         LiftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        LiftLeft.setDirection(DcMotorSimple.Direction.FORWARD );
+        LiftLeft.setDirection(DcMotorSimple.Direction.REVERSE );
         LiftLeft.setTargetPosition(0);
         LiftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        LiftRight.setPower(0.8);
+        LiftLeft.setPower(0.8);
 
         //initialize terminal
 
@@ -154,10 +160,17 @@ public class OpMode extends LinearOpMode {
             }
             //arm code
             if (armUp) {
+                LiftRight.setPower(1.0);
+                LiftLeft.setPower(1.0);
                 targetArmValue = ARMUP;
                 rotatorPos = CLAWUP;
+                hangingnPos = HANGINGUP;
+
             } else if (armDown) {
+                LiftRight.setPower(0.9);
+                LiftLeft.setPower(0.9);
                 targetArmValue = ARMDOWN;
+                hangingnPos = HANGINGDOWN;
             }
             //servo code
             if(clawUp){
@@ -178,14 +191,12 @@ public class OpMode extends LinearOpMode {
             //Lift
             if(LiftInitiate){
                 targetArmValue = 950;
+                hangingnPos = HANGINGUP;
                 canLift = true;
             }
             if(LiftStart && canLift){
                 targetArmValue = 300;
-                 LiftRight.setPower(0.8);
-                 LiftLeft.setPower(0.8);
-                 LiftRight.setTargetPosition(CLIMB);
-                 LiftLeft.setTargetPosition(CLIMB);
+                 hangingnPos = CLIMB;
             }
 
 ;
@@ -199,6 +210,8 @@ public class OpMode extends LinearOpMode {
             leftClaw.setPosition(leftPos);
             rightClaw.setPosition(rightPos);
             rotator.setPosition(rotatorPos);
+            LiftLeft.setTargetPosition(hangingnPos);
+            LiftRight.setTargetPosition(hangingnPos);
 
             // Debug
             telemetry.addData("Status", "Running");
