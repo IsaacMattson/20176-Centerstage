@@ -65,8 +65,6 @@ public class Autonomous extends LinearOpMode {
     private double rightPos = RIGHT_CLOSE;
     private double leftPos = LEFT_CLOSE;
     private double rotatorPos = CLAW_UP;
-    private double distance;
-    private DcMotor motor;
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
@@ -150,7 +148,7 @@ public class Autonomous extends LinearOpMode {
                 }
             }
 
-            telemetry.addData("Distance: ", distance);
+            telemetry.addData("Distance: ", distanceSensor.getDistance(DistanceUnit.CM));
             telemetry.update();
         }
 
@@ -171,8 +169,6 @@ public class Autonomous extends LinearOpMode {
         }
 
         leftTurn(600);
-
-
     }
 
     private void forwardDrive(int ms) {
