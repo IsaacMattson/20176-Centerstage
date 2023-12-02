@@ -161,48 +161,28 @@ public class Autonomous extends LinearOpMode {
 
             if (!objectFound) {
                 if (distance < teamPropMaxDistance) {// FIRST CASE: If prop is middle
-
-                    forwardDrive(800);
-                    rotator.setPosition(CLAWDOWN);
-                    sleep(1000);
-                    forwardDrive(400);
-                    rightClaw.setPosition(RIGHTOPEN);
-                    sleep(1000);
-                    rotator.setPosition(CLAWUP);
-
                     objectFound = true;
-
                 } else {
                     leftShift(400);
 
                     if (distance < teamPropMaxDistance) { // SECOND CASE: If prop is left
-                        leftShift(100);
-                        forwardDrive(600);
-                        rotator.setPosition(CLAWDOWN);
-                        sleep(1000);
-                        rightClaw.setPosition(RIGHTOPEN);
-                        sleep(1000);
-
-                        rotator.setPosition(CLAWUP);
-
-                        objectFound = true;
                         leftShift(400);
+                        objectFound = true;
                     } else { // THIRD CASE: Prop is right
                         rightTurn(RIGHT_TURN);
-                        forwardDrive(600);
-                        rotator.setPosition(CLAWDOWN);
-                        sleep(1000);
-                        rightClaw.setPosition(RIGHTOPEN);
-                        sleep(1000);
-                        rotator.setPosition(CLAWUP);
-
                         objectFound = true;
-
                     }
                 }
 
                 telemetry.addData("Distance: ", distance);
                 telemetry.update();
+            } else {
+                forwardDrive(600);
+                rotator.setPosition(CLAWDOWN);
+                sleep(1000);
+                rightClaw.setPosition(RIGHTOPEN);
+                sleep(1000);
+                rotator.setPosition(CLAWUP);
             }
         }
     }
