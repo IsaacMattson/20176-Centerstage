@@ -154,54 +154,61 @@ public class NewRedRight extends LinearOpMode {
         /* Start */
         waitForStart();
 
+        sleep(1000);
         if(distance.getDistance(DistanceUnit.CM) < 140) {// FIRST CASE: If prop is middle
 
             forwardDrive(800);
             rotator.setPosition(CLAWDOWN);
+            sleep(2000);
             rightClaw.setPosition(RIGHTOPEN);
+            sleep(2000);
             rotator.setPosition(CLAWUP);
-            leftTurn(RIGHT_TURN); // 90 degree turn
-            backwardsDrive(1200);
-
-            arm.setTargetPosition(ARMUP);
-            LiftRight.setTargetPosition(HANGINGUP);
-            LiftRight.setTargetPosition(HANGINGDOWN);
-            leftClaw.setPosition(LEFTOPEN);
-
-            rightShift(400);
+            sleep(2000);
+//            leftTurn(RIGHT_TURN); // 90 degree turn
+//            backwardsDrive(1200);
+//
+//            arm.setTargetPosition(ARMUP);
+//            LiftRight.setTargetPosition(HANGINGUP);
+//            LiftRight.setTargetPosition(HANGINGDOWN);
+//            leftClaw.setPosition(LEFTOPEN);
+//
+//            rightShift(400);
 
         }else{
             rightShift(400);
-
+            sleep(1000);
             if(distance.getDistance(DistanceUnit.CM) < 140) { // SECOND CASE: If prop is left
-                rightShift(100);
                 forwardDrive(600);
                 rotator.setPosition(CLAWDOWN);
+                sleep(2000);
                 rightClaw.setPosition(RIGHTOPEN);
+                sleep(2000);
                 rotator.setPosition(CLAWUP);
-                leftTurn(200); // 90 degree turn
-                backwardsDrive(1200);
-                // Add left/right shift code
-                arm.setTargetPosition(ARMUP);
-                LiftRight.setTargetPosition(HANGINGUP);
-                LiftRight.setTargetPosition(HANGINGDOWN);
-                leftClaw.setPosition(LEFTOPEN);
-                rightShift(400);
+                sleep(2000);
+//                leftTurn(200); // 90 degree turn
+//                backwardsDrive(1200);
+//                // Add left/right shift code
+//                arm.setTargetPosition(ARMUP);
+//                LiftRight.setTargetPosition(HANGINGUP);
+//                LiftRight.setTargetPosition(HANGINGDOWN);
+//                leftClaw.setPosition(LEFTOPEN);
+//                rightShift(400);
             }else{ // THIRD CASE: Prop is right
 
+                forwardDrive(200);
                 leftTurn(RIGHT_TURN);
                 forwardDrive(600);
                 rotator.setPosition(CLAWDOWN);
                 rightClaw.setPosition(RIGHTOPEN);
                 rotator.setPosition(CLAWUP);
 
-                backwardsDrive(1600);
-                // Add left/right shift code
-                arm.setTargetPosition(ARMUP);
-                LiftRight.setTargetPosition(HANGINGUP);
-                LiftRight.setTargetPosition(HANGINGDOWN);
-                leftClaw.setPosition(LEFTOPEN);
-                rightShift(400);
+//                backwardsDrive(1600);
+//                // Add left/right shift code
+//                arm.setTargetPosition(ARMUP);
+//                LiftRight.setTargetPosition(HANGINGUP);
+//                LiftRight.setTargetPosition(HANGINGDOWN);
+//                leftClaw.setPosition(LEFTOPEN);
+//                rightShift(400);
 
             }
 
