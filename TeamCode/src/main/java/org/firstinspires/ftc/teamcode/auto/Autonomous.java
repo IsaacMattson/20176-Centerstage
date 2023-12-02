@@ -39,21 +39,21 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous
 public class Autonomous extends LinearOpMode {
-
     private final double DEAD_ZONE = 0.3;
     private final double RIGHTOPEN = 0.16;
     private final double RIGHTCLOSE = 0.70;
     private final double LEFTOPEN = 0.17;
     private final double LEFTCLOSE = 0.75;
-    private final int ARMUP = 1280;
-    private final int ARMDOWN = 0;
     private final double CLAWUP = 0.03;
     private final double CLAWDOWN = CLAWUP + 0.80;
+    private final double TEAM_PROP_MAX_DISTANCE = 60;
+    private final int ARMUP = 1280;
+    private final int ARMDOWN = 0;
     private final int CLIMB = 3000;
     private final int HANGINGUP = 7500;
     private final int HANGINGDOWN = 500;
-
     private final int RIGHT_TURN = 300; // THIS WILL HAVE TO CHANGE, Also note this means a 90 degree turn, not turning right
+
     private boolean armUp = false;
     private boolean armDown = false;
     private boolean leftClose = false;
@@ -67,13 +67,9 @@ public class Autonomous extends LinearOpMode {
     private boolean LiftInitiate = false;
     private boolean LiftStart = false;
     private boolean canLift = false;
-
     private boolean isOnLeft = true;
-
+    private boolean objectFound = false;
     private boolean isOnRight = false;
-    /*private boolean bothClaw = false;
-    private boolean rotatorButton = false;
-    private boolean armButton = false;*/
     private double leftStickYAxis = 0;
     private double leftStickXAxis = 0;
     private double rightStickXAxis = 0;
@@ -82,21 +78,19 @@ public class Autonomous extends LinearOpMode {
     private double rightFrontMotorPower = 0;
     private double rightBackMotorPower = 0;
     private double armMotorPower = 0;
-    private int targetArmValue = ARMDOWN;
     private double rightPos = RIGHTCLOSE;
     private double leftPos = LEFTCLOSE;
     private double rotatorPos = CLAWUP;
     private double distance;
-    private double teamPropMaxDistance = 70;
-    private boolean objectFound = false;
+    private int targetArmValue = ARMDOWN;
     private int hangingnPos = HANGINGDOWN;
     private DcMotor motor;
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
     private DcMotor rightBackDrive = null;
-    private DcMotor LiftLeft = null;
-    private DcMotor LiftRight = null;
+    private DcMotor liftLeft = null;
+    private DcMotor liftRight = null;
     private DcMotor arm = null;
     private Servo leftClaw = null;
     private Servo rightClaw = null;
@@ -114,8 +108,8 @@ public class Autonomous extends LinearOpMode {
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
         rotator = hardwareMap.get(Servo.class, "rotator");
-        LiftLeft = hardwareMap.get(DcMotor.class, "LiftLeft");
-        LiftRight = hardwareMap.get(DcMotor.class, "LiftRight");
+        liftLeft = hardwareMap.get(DcMotor.class, "LiftLeft");
+        liftRight = hardwareMap.get(DcMotor.class, "LiftRight");
         distanceSensor = hardwareMap.get(DistanceSensor.class, "distance");
 
         leftClaw.setDirection(Servo.Direction.REVERSE);
@@ -138,82 +132,42 @@ public class Autonomous extends LinearOpMode {
         rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        LiftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        LiftRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        LiftRight.setTargetPosition(0);
-        LiftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        liftRight.setTargetPosition(0);
+        liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        LiftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        LiftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        LiftLeft.setTargetPosition(0);
-        LiftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftLeft.setDirection(DcMotorSimple.Direction.FORWARD );
+        liftLeft.setTargetPosition(0);
+        liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        LiftRight.setPower(0.8);
-        LiftLeft.setPower(0.8);
+        liftRight.setPower(0.8);
+        liftLeft.setPower(0.8);
 
         //initialize terminal
-
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
         /* Start */
         waitForStart();
 
-        /*while (opModeIsActive()) {
-
-            forwardDrive(800);
-            if (distanceSensor.getDistance(DistanceUnit.CM) < teamPropMaxDistance) { // FIRST CASE: If prop is middle
-                rotator.setPosition(CLAWDOWN);
-                forwardDrive(600);
-                sleep(1000);
-                rightClaw.setPosition(RIGHTOPEN);
-                sleep(1000);
-                rotator.setPosition(CLAWUP);
-                break;
-
-            } else {
-                leftShift(700);
-                sleep(1000);
-                if (distanceSensor.getDistance(DistanceUnit.CM) < teamPropMaxDistance) { // SECOND CASE: If prop is left
-                    rotator.setPosition(CLAWDOWN);
-                    forwardDrive(600);
-                    sleep(1000);
-                    rightClaw.setPosition(RIGHTOPEN);
-                    sleep(1000);
-                    rotator.setPosition(CLAWUP);
-                    break;
-
-                } else { // THIRD CASE: Prop is right
-                    forwardDrive(800);
-                    rightTurn(900);
-                    rotator.setPosition(CLAWDOWN);
-                    forwardDrive(600);
-                    sleep(1000);
-                    rightClaw.setPosition(RIGHTOPEN);
-                    sleep(1000);
-                    rotator.setPosition(CLAWUP);
-                    break;
-
-                }
-            }
-        }*/
-
         forwardDrive(800);
         while (!objectFound) {
-            if (distanceSensor.getDistance(DistanceUnit.CM) < teamPropMaxDistance) {
+            if (distanceSensor.getDistance(DistanceUnit.CM) < TEAM_PROP_MAX_DISTANCE) {
                 objectFound = true;
             } else {
                 // assume it's on the left side first
-                if (isOnLeft) {
+                if (!isOnLeft) {
                     leftTurn(600);
-                    isOnLeft = false;
+                    isOnLeft = true;
                 } else {
                     rightTurn(200);
                 }
             }
 
-        telemetry.addData("Distance: ", distance);
-        telemetry.update();
+            telemetry.addData("Distance: ", distance);
+            telemetry.update();
         }
 
         rotator.setPosition(CLAWDOWN);
