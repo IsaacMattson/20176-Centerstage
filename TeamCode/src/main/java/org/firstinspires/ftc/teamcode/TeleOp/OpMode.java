@@ -17,7 +17,7 @@ public class OpMode extends LinearOpMode {
     private final int ARMDOWN = 0;
     private final double CLAWUP = 0.03;
     private final double CLAWDOWN = CLAWUP + 0.80;
-    private final int CLIMB = 3000;
+    private final int CLIMB = 4000;
     private final int HANGINGUP = 7500;
     private final int HANGINGDOWN = 500;
     private boolean armUp = false;
@@ -33,6 +33,7 @@ public class OpMode extends LinearOpMode {
     private boolean LiftInitiate = false;
     private boolean LiftStart = false;
     private boolean canLift = false;
+    private boolean launchPlane = false;
 //    private boolean bothClaw = false;
 //    private boolean rotatorButton = false;
 //    private boolean armButton = false;
@@ -48,7 +49,8 @@ public class OpMode extends LinearOpMode {
     private double rightPos = RIGHTCLOSE;
     private double leftPos = LEFTCLOSE;
     private double rotatorPos = CLAWUP;
-    private int hangingnPos = HANGINGDOWN;
+    private int hangingnPos = 0;
+    private double planePos = 0;
     private DcMotor motor;
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
@@ -60,7 +62,7 @@ public class OpMode extends LinearOpMode {
     private Servo leftClaw = null;
     private Servo rightClaw = null;
     private Servo rotator = null;
-
+    private Servo plane = null;
 
     @Override
     public void runOpMode() {
@@ -75,6 +77,7 @@ public class OpMode extends LinearOpMode {
         rotator = hardwareMap.get(Servo.class, "rotator");
         LiftLeft = hardwareMap.get(DcMotor.class, "LiftLeft");
         LiftRight = hardwareMap.get(DcMotor.class, "LiftRight");
+        plane = hardwareMap.get(Servo.class, "plane");
 
         leftClaw.setDirection(Servo.Direction.REVERSE);
 
@@ -98,17 +101,20 @@ public class OpMode extends LinearOpMode {
         rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         LiftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        LiftRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        LiftRight.setDirection(DcMotorSimple.Direction.REVERSE);
         LiftRight.setTargetPosition(0);
         LiftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         LiftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        LiftLeft.setDirection(DcMotorSimple.Direction.REVERSE );
+        LiftLeft.setDirection(DcMotorSimple.Direction.FORWARD );
         LiftLeft.setTargetPosition(0);
         LiftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         LiftRight.setPower(0.8);
         LiftLeft.setPower(0.8);
+
+        planePos = 0.0;
+        hangingnPos = 0;
 
         //initialize terminal
 
@@ -136,6 +142,7 @@ public class OpMode extends LinearOpMode {
             clawUp = this.gamepad1.y;
             LiftInitiate = this.gamepad1.back;
             LiftStart = this.gamepad1.start;
+            launchPlane = this.gamepad1.right_stick_button;
             // Movement code
             if (Math.abs(leftStickYAxis) >= DEAD_ZONE) {
                 leftFrontMotorPower = leftStickYAxis;
@@ -164,13 +171,11 @@ public class OpMode extends LinearOpMode {
                 LiftLeft.setPower(1.0);
                 targetArmValue = ARMUP;
                 rotatorPos = CLAWUP;
-                hangingnPos = HANGINGUP;
 
             } else if (armDown) {
                 LiftRight.setPower(0.9);
                 LiftLeft.setPower(0.9);
                 targetArmValue = ARMDOWN;
-                hangingnPos = HANGINGDOWN;
             }
             //servo code
             if(clawUp){
@@ -191,12 +196,16 @@ public class OpMode extends LinearOpMode {
             //Lift
             if(LiftInitiate){
                 targetArmValue = 950;
-                hangingnPos = HANGINGUP;
                 canLift = true;
             }
             if(LiftStart && canLift){
                 targetArmValue = 300;
                  hangingnPos = CLIMB;
+                 canLift = false;
+            }
+            //airplane
+            if(launchPlane){
+                planePos = 1.0;
             }
 
 ;
@@ -210,6 +219,7 @@ public class OpMode extends LinearOpMode {
             leftClaw.setPosition(leftPos);
             rightClaw.setPosition(rightPos);
             rotator.setPosition(rotatorPos);
+            plane.setPosition(planePos);
             LiftLeft.setTargetPosition(hangingnPos);
             LiftRight.setTargetPosition(hangingnPos);
 
