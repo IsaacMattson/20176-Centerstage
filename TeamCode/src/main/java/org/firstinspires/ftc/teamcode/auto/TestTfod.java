@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.util.List;
 
-@Disabled
+@Autonomous
 public class TestTfod extends LinearOpMode {
 
     // Wheels
@@ -37,32 +37,6 @@ public class TestTfod extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        // Declariations
-        leftFrontDrive = hardwareMap.get(DcMotor.class, "driveMotorFour");
-        leftBackDrive = hardwareMap.get(DcMotor.class, "driveMotorOne");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "driveMotorThree");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "driveMotorTwo");
-        arm = hardwareMap.get(DcMotor.class, "armMotorOne");
-        extend = hardwareMap.get(DcMotor.class, "armMotorTwo");
-        rightClaw = hardwareMap.get(Servo.class, "rightClaw");
-        leftClaw = hardwareMap.get(Servo.class, "leftClaw");
-        rotator = hardwareMap.get(Servo.class, "rotator");
-
-        // Wheel behaviour
-        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        // Arm behaviour
-        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        arm.setDirection(DcMotorSimple.Direction.REVERSE);
-        arm.setTargetPosition(0);
-        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Distance Sensor
         distanceSensor = hardwareMap.get(DistanceSensor.class, "distanceSensor");

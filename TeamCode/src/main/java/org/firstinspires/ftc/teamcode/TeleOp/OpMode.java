@@ -179,7 +179,7 @@ public class OpMode extends LinearOpMode {
             //servo code
             if (clawUp) {
                 rotatorPos = CLAWUP;
-            } else if(clawDown) {
+            } else if (clawDown) {
                 rotatorPos = CLAWDOWN;
             }
             if (leftOpen || openBoth) {

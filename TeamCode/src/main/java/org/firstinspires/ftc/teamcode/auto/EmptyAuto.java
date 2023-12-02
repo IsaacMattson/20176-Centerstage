@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode.auto;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -37,7 +38,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-
+@Autonomous
 public class EmptyAuto extends LinearOpMode {
 
     private final double DEAD_ZONE = 0.3;
@@ -112,7 +113,6 @@ public class EmptyAuto extends LinearOpMode {
 
         leftClaw.setDirection(Servo.Direction.REVERSE);
 
-
         //Arm settings
         armMotorPower = 0.15;
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -152,9 +152,11 @@ public class EmptyAuto extends LinearOpMode {
         /* Start */
         waitForStart();
 
+        while(opModeIsActive()){
 
-
-
+            telemetry.addData("Distance", distance.getDistance(DistanceUnit.CM));
+            telemetry.update();
+        }
 
     }
 

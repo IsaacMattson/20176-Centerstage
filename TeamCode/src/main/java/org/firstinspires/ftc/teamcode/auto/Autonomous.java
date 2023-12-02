@@ -87,7 +87,7 @@ public class Autonomous extends LinearOpMode {
     private double leftPos = LEFTCLOSE;
     private double rotatorPos = CLAWUP;
     private double distance;
-    private double teamPropMaxDistance = 75;
+    private double teamPropMaxDistance = 70;
     private boolean objectFound = false;
     private int hangingnPos = HANGINGDOWN;
     private DcMotor motor;
@@ -144,7 +144,7 @@ public class Autonomous extends LinearOpMode {
         LiftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         LiftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        LiftLeft.setDirection(DcMotorSimple.Direction.REVERSE );
+        LiftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         LiftLeft.setTargetPosition(0);
         LiftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -159,24 +159,61 @@ public class Autonomous extends LinearOpMode {
         /* Start */
         waitForStart();
 
-        forwardDrive(500);
-        while (objectFound) {
-            distance = distanceSensor.getDistance(DistanceUnit.CM);
+        /*while (opModeIsActive()) {
 
-            // FIRST CASE: If prop is middle
-            if (distance < teamPropMaxDistance) {
+            forwardDrive(800);
+            if (distanceSensor.getDistance(DistanceUnit.CM) < teamPropMaxDistance) { // FIRST CASE: If prop is middle
+                rotator.setPosition(CLAWDOWN);
+                forwardDrive(600);
+                sleep(1000);
+                rightClaw.setPosition(RIGHTOPEN);
+                sleep(1000);
+                rotator.setPosition(CLAWUP);
+                break;
+
+            } else {
+                leftShift(700);
+                sleep(1000);
+                if (distanceSensor.getDistance(DistanceUnit.CM) < teamPropMaxDistance) { // SECOND CASE: If prop is left
+                    rotator.setPosition(CLAWDOWN);
+                    forwardDrive(600);
+                    sleep(1000);
+                    rightClaw.setPosition(RIGHTOPEN);
+                    sleep(1000);
+                    rotator.setPosition(CLAWUP);
+                    break;
+
+                } else { // THIRD CASE: Prop is right
+                    forwardDrive(800);
+                    rightTurn(900);
+                    rotator.setPosition(CLAWDOWN);
+                    forwardDrive(600);
+                    sleep(1000);
+                    rightClaw.setPosition(RIGHTOPEN);
+                    sleep(1000);
+                    rotator.setPosition(CLAWUP);
+                    break;
+
+                }
+            }
+        }*/
+
+        forwardDrive(800);
+        while (!objectFound) {
+            if (distanceSensor.getDistance(DistanceUnit.CM) < teamPropMaxDistance) {
                 objectFound = true;
             } else {
                 // assume it's on the left side first
                 if (isOnLeft) {
-                    leftTurn(400);
+                    leftTurn(600);
                     isOnLeft = false;
                 } else {
-                    rightTurn(800);
+                    rightTurn(200);
                 }
             }
-            telemetry.addData("Distance: ", distance);
-            telemetry.update();
+
+        telemetry.addData("Distance: ", distance);
+        telemetry.update();
         }
 
         rotator.setPosition(CLAWDOWN);
