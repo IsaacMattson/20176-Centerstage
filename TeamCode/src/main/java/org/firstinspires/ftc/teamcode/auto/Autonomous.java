@@ -40,7 +40,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous
 public class Autonomous extends LinearOpMode {
     private final double RIGHT_OPEN = 0.16;
-    private final double RIGHTCLOSE = 0.70;
+    private final double RIGHT_CLOSE = 0.70;
     private final double LEFT_OPEN = 0.17;
     private final double LEFT_CLOSE = 0.75;
     private final double CLAW_UP = 0.03;
@@ -62,7 +62,7 @@ public class Autonomous extends LinearOpMode {
     private boolean objectFound = false;
     private boolean isOnRight = false;
     private double armMotorPower = 0;
-    private double rightPos = RIGHTCLOSE;
+    private double rightPos = RIGHT_CLOSE;
     private double leftPos = LEFT_CLOSE;
     private double rotatorPos = CLAW_UP;
     private double distance;
@@ -81,6 +81,7 @@ public class Autonomous extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        int rightTurnsMade = 0;
 
         leftFrontDrive = hardwareMap.get(DcMotor.class, "driveMotorFour");
         leftBackDrive = hardwareMap.get(DcMotor.class, "driveMotorOne");
@@ -145,6 +146,7 @@ public class Autonomous extends LinearOpMode {
                     isOnLeft = true;
                 } else {
                     rightTurn(200);
+                    rightTurnsMade++;
                 }
             }
 
@@ -157,6 +159,20 @@ public class Autonomous extends LinearOpMode {
         rightClaw.setPosition(RIGHT_OPEN);
         sleep(1000);
         rotator.setPosition(CLAW_UP);
+        sleep(1000);
+        rightClaw.setPosition(RIGHT_CLOSE);
+
+        // Set the bot back to the original position
+        if (isOnLeft) {
+            rightTurn(600);
+        } else {
+            leftTurn(200 * rightTurnsMade);
+            leftTurn(600);
+        }
+
+        leftTurn(600);
+
+
     }
 
     private void forwardDrive(int ms) {

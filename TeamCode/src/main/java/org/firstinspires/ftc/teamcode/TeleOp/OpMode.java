@@ -41,12 +41,12 @@ public class OpMode extends LinearOpMode {
     private double rightFrontMotorPower = 0;
     private double rightBackMotorPower = 0;
     private double armMotorPower = 0;
-    private double planePos = 0;
-    private double rightPos = RIGHT_CLOSE;
-    private double leftPos = LEFT_CLOSE;
-    private double rotatorPos = CLAW_UP;
+    private double planePosition = 0;
+    private double rightPosition = RIGHT_CLOSE;
+    private double leftPosition = LEFT_CLOSE;
+    private double rotatorPosition = CLAW_UP;
     private int targetArmValue = ARM_DOWN;
-    private int hangingnPos = 0;
+    private int hangingnPosition = 0;
     private DcMotor motor;
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
@@ -108,11 +108,10 @@ public class OpMode extends LinearOpMode {
         liftRight.setPower(0.8);
         liftLeft.setPower(0.8);
 
-        planePos = 0.0;
-        hangingnPos = 0;
+        planePosition = 0.0;
+        hangingnPosition = 0;
 
         //initialize terminal
-
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -164,7 +163,7 @@ public class OpMode extends LinearOpMode {
                 liftRight.setPower(1.0);
                 liftLeft.setPower(1.0);
                 targetArmValue = ARM_UP;
-                rotatorPos = CLAW_UP;
+                rotatorPosition = CLAW_UP;
 
             } else if (armDown) {
                 liftRight.setPower(0.9);
@@ -174,19 +173,19 @@ public class OpMode extends LinearOpMode {
 
             //servo code
             if (clawUp) {
-                rotatorPos = CLAW_UP;
+                rotatorPosition = CLAW_UP;
             } else if (clawDown) {
-                rotatorPos = CLAW_DOWN;
+                rotatorPosition = CLAW_DOWN;
             }
             if (leftOpen || openBoth) {
-                leftPos = LEFT_OPEN;
+                leftPosition = LEFT_OPEN;
             } else if (leftClose || closeBoth) {
-                leftPos = LEFT_CLOSE;
+                leftPosition = LEFT_CLOSE;
             }
             if (rightOpen || openBoth) {
-                rightPos = RIGHT_OPEN;
+                rightPosition = RIGHT_OPEN;
             } else if (rightClose || closeBoth) {
-                rightPos = RIGHT_CLOSE;
+                rightPosition = RIGHT_CLOSE;
             }
 
             //Lift
@@ -196,13 +195,13 @@ public class OpMode extends LinearOpMode {
             }
             if (liftStart && canLift) {
                 targetArmValue = 300;
-                 hangingnPos = CLIMB;
+                 hangingnPosition = CLIMB;
                  canLift = false;
             }
 
             //airplane
             if (launchPlane) {
-                planePos = 1.0;
+                planePosition = 1.0;
             }
 
             // Set motor & servo power
@@ -212,12 +211,12 @@ public class OpMode extends LinearOpMode {
             rightBackDrive.setPower(rightBackMotorPower);
             arm.setTargetPosition(targetArmValue);
             arm.setPower(armMotorPower);
-            leftClaw.setPosition(leftPos);
-            rightClaw.setPosition(rightPos);
-            rotator.setPosition(rotatorPos);
-            plane.setPosition(planePos);
-            liftLeft.setTargetPosition(hangingnPos);
-            liftRight.setTargetPosition(hangingnPos);
+            leftClaw.setPosition(leftPosition);
+            rightClaw.setPosition(rightPosition);
+            rotator.setPosition(rotatorPosition);
+            plane.setPosition(planePosition);
+            liftLeft.setTargetPosition(hangingnPosition);
+            liftRight.setTargetPosition(hangingnPosition);
 
             // Debug
             telemetry.addData("Status", "Running");
