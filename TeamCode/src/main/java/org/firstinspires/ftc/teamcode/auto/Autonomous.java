@@ -39,22 +39,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous
 public class Autonomous extends LinearOpMode {
-    private final double DEAD_ZONE = 0.3;
-    private final double RIGHTOPEN = 0.16;
+    private final double RIGHT_OPEN = 0.16;
     private final double RIGHTCLOSE = 0.70;
-    private final double LEFTOPEN = 0.17;
-    private final double LEFTCLOSE = 0.75;
-    private final double CLAWUP = 0.03;
-    private final double CLAWDOWN = CLAWUP + 0.80;
+    private final double LEFT_OPEN = 0.17;
+    private final double LEFT_CLOSE = 0.75;
+    private final double CLAW_UP = 0.03;
+    private final double CLAW_DOWN = CLAW_UP + 0.80;
     private final double TEAM_PROP_MAX_DISTANCE = 60;
     private final int ARMUP = 1280;
     private final int ARMDOWN = 0;
-    private final int CLIMB = 3000;
-    private final int HANGINGUP = 7500;
-    private final int HANGINGDOWN = 500;
-    private final int RIGHT_TURN = 300; // THIS WILL HAVE TO CHANGE, Also note this means a 90 degree turn, not turning right
 
-    private boolean armUp = false;
     private boolean armDown = false;
     private boolean leftClose = false;
     private boolean leftOpen = false;
@@ -64,26 +58,14 @@ public class Autonomous extends LinearOpMode {
     private boolean closeBoth = false;
     private boolean clawUp = false;
     private boolean clawDown = false;
-    private boolean LiftInitiate = false;
-    private boolean LiftStart = false;
-    private boolean canLift = false;
     private boolean isOnLeft = true;
     private boolean objectFound = false;
     private boolean isOnRight = false;
-    private double leftStickYAxis = 0;
-    private double leftStickXAxis = 0;
-    private double rightStickXAxis = 0;
-    private double leftFrontMotorPower = 0;
-    private double leftBackMotorPower = 0;
-    private double rightFrontMotorPower = 0;
-    private double rightBackMotorPower = 0;
     private double armMotorPower = 0;
     private double rightPos = RIGHTCLOSE;
-    private double leftPos = LEFTCLOSE;
-    private double rotatorPos = CLAWUP;
+    private double leftPos = LEFT_CLOSE;
+    private double rotatorPos = CLAW_UP;
     private double distance;
-    private int targetArmValue = ARMDOWN;
-    private int hangingnPos = HANGINGDOWN;
     private DcMotor motor;
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
@@ -170,11 +152,11 @@ public class Autonomous extends LinearOpMode {
             telemetry.update();
         }
 
-        rotator.setPosition(CLAWDOWN);
+        rotator.setPosition(CLAW_DOWN);
         sleep(1000);
-        rightClaw.setPosition(RIGHTOPEN);
+        rightClaw.setPosition(RIGHT_OPEN);
         sleep(1000);
-        rotator.setPosition(CLAWUP);
+        rotator.setPosition(CLAW_UP);
     }
 
     private void forwardDrive(int ms) {

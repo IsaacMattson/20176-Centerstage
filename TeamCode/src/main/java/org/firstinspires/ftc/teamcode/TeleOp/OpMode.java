@@ -9,17 +9,15 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp
 public class OpMode extends LinearOpMode {
     private final double DEAD_ZONE = 0.3;
-    private final double RIGHTOPEN = 0.16;
-    private final double RIGHTCLOSE = 0.70;
-    private final double LEFTOPEN = 0.17;
-    private final double LEFTCLOSE = 0.75;
-    private final double CLAWUP = 0.03;
-    private final double CLAWDOWN = CLAWUP + 0.80;
-    private final int ARMUP = 1280;
-    private final int ARMDOWN = 0;
+    private final double RIGHT_OPEN = 0.16;
+    private final double RIGHT_CLOSE = 0.70;
+    private final double LEFT_OPEN = 0.17;
+    private final double LEFT_CLOSE = 0.75;
+    private final double CLAW_UP = 0.03;
+    private final double CLAW_DOWN = CLAW_UP + 0.80;
+    private final int ARM_UP = 1280;
+    private final int ARM_DOWN = 0;
     private final int CLIMB = 6000;
-    private final int HANGINGUP = 7500;
-    private final int HANGINGDOWN = 500;
 
     private boolean armUp = false;
     private boolean armDown = false;
@@ -44,10 +42,10 @@ public class OpMode extends LinearOpMode {
     private double rightBackMotorPower = 0;
     private double armMotorPower = 0;
     private double planePos = 0;
-    private double rightPos = RIGHTCLOSE;
-    private double leftPos = LEFTCLOSE;
-    private double rotatorPos = CLAWUP;
-    private int targetArmValue = ARMDOWN;
+    private double rightPos = RIGHT_CLOSE;
+    private double leftPos = LEFT_CLOSE;
+    private double rotatorPos = CLAW_UP;
+    private int targetArmValue = ARM_DOWN;
     private int hangingnPos = 0;
     private DcMotor motor;
     private DcMotor leftFrontDrive = null;
@@ -165,30 +163,30 @@ public class OpMode extends LinearOpMode {
             if (armUp) {
                 liftRight.setPower(1.0);
                 liftLeft.setPower(1.0);
-                targetArmValue = ARMUP;
-                rotatorPos = CLAWUP;
+                targetArmValue = ARM_UP;
+                rotatorPos = CLAW_UP;
 
             } else if (armDown) {
                 liftRight.setPower(0.9);
                 liftLeft.setPower(0.9);
-                targetArmValue = ARMDOWN;
+                targetArmValue = ARM_DOWN;
             }
 
             //servo code
             if (clawUp) {
-                rotatorPos = CLAWUP;
+                rotatorPos = CLAW_UP;
             } else if (clawDown) {
-                rotatorPos = CLAWDOWN;
+                rotatorPos = CLAW_DOWN;
             }
             if (leftOpen || openBoth) {
-                leftPos = LEFTOPEN;
+                leftPos = LEFT_OPEN;
             } else if (leftClose || closeBoth) {
-                leftPos = LEFTCLOSE;
+                leftPos = LEFT_CLOSE;
             }
             if (rightOpen || openBoth) {
-                rightPos = RIGHTOPEN;
+                rightPos = RIGHT_OPEN;
             } else if (rightClose || closeBoth) {
-                rightPos = RIGHTCLOSE;
+                rightPos = RIGHT_CLOSE;
             }
 
             //Lift
