@@ -67,6 +67,10 @@ public class Autonomous extends LinearOpMode {
     private boolean LiftInitiate = false;
     private boolean LiftStart = false;
     private boolean canLift = false;
+
+    private boolean isOnLeft = true;
+
+    private boolean isOnRight = false;
     /*private boolean bothClaw = false;
     private boolean rotatorButton = false;
     private boolean armButton = false;*/
@@ -99,7 +103,6 @@ public class Autonomous extends LinearOpMode {
     private Servo rotator = null;
     private DistanceSensor distanceSensor;
 
-    private  int MAX_DISTANCE = 160;
     @Override
     public void runOpMode() {
 
@@ -156,35 +159,31 @@ public class Autonomous extends LinearOpMode {
         /* Start */
         waitForStart();
 
-        while (opModeIsActive()) {
+        forwardDrive(500);
+        while (objectFound) {
             distance = distanceSensor.getDistance(DistanceUnit.CM);
 
-            if (!objectFound) {
-                if (distance < teamPropMaxDistance) {// FIRST CASE: If prop is middle
-                    objectFound = true;
-                } else {
-                    leftShift(400);
-
-                    if (distance < teamPropMaxDistance) { // SECOND CASE: If prop is left
-                        leftShift(400);
-                        objectFound = true;
-                    } else { // THIRD CASE: Prop is right
-                        rightTurn(RIGHT_TURN);
-                        objectFound = true;
-                    }
-                }
-
-                telemetry.addData("Distance: ", distance);
-                telemetry.update();
+            // FIRST CASE: If prop is middle
+            if (distance < teamPropMaxDistance) {
+                objectFound = true;
             } else {
-                forwardDrive(600);
-                rotator.setPosition(CLAWDOWN);
-                sleep(1000);
-                rightClaw.setPosition(RIGHTOPEN);
-                sleep(1000);
-                rotator.setPosition(CLAWUP);
+                // assume it's on the left side first
+                if (isOnLeft) {
+                    leftTurn(400);
+                    isOnLeft = false;
+                } else {
+                    rightTurn(800);
+                }
             }
+            telemetry.addData("Distance: ", distance);
+            telemetry.update();
         }
+
+        rotator.setPosition(CLAWDOWN);
+        sleep(1000);
+        rightClaw.setPosition(RIGHTOPEN);
+        sleep(1000);
+        rotator.setPosition(CLAWUP);
     }
 
     private void forwardDrive(int ms) {

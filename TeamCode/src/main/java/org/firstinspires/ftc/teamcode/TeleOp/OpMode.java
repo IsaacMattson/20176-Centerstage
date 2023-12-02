@@ -177,37 +177,36 @@ public class OpMode extends LinearOpMode {
                 targetArmValue = ARMDOWN;
             }
             //servo code
-            if(clawUp){
+            if (clawUp) {
                 rotatorPos = CLAWUP;
-            }else if(clawDown){
+            } else if(clawDown) {
                 rotatorPos = CLAWDOWN;
             }
-            if(leftOpen || openBoth){
+            if (leftOpen || openBoth) {
                 leftPos = LEFTOPEN;
-            }else if(leftClose || closeBoth){
+            } else if (leftClose || closeBoth) {
                 leftPos = LEFTCLOSE;
             }
-            if(rightOpen || openBoth){
+            if (rightOpen || openBoth) {
                 rightPos = RIGHTOPEN;
-            }else if(rightClose || closeBoth){
+            } else if (rightClose || closeBoth) {
                 rightPos = RIGHTCLOSE;
             }
             //Lift
-            if(LiftInitiate){
+            if (LiftInitiate) {
                 targetArmValue = 950;
                 canLift = true;
             }
-            if(LiftStart && canLift){
+            if (LiftStart && canLift) {
                 targetArmValue = 300;
                  hangingnPos = CLIMB;
                  canLift = false;
             }
             //airplane
-            if(launchPlane){
+            if (launchPlane) {
                 planePos = 1.0;
             }
 
-;
             // Set motor & servo power
             leftFrontDrive.setPower(leftFrontMotorPower);
             leftBackDrive.setPower(leftBackMotorPower);

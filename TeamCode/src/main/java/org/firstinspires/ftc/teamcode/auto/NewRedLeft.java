@@ -155,64 +155,29 @@ public class NewRedLeft extends LinearOpMode {
         /* Start */
         waitForStart();
 
-        if(distance.getDistance(DistanceUnit.CM) < 140) {// FIRST CASE: If prop is middle
-
+        if(distance.getDistance(DistanceUnit.CM) < 140) { // FIRST CASE: If prop is middle
             forwardDrive(800);
             rotator.setPosition(CLAWDOWN);
             rightClaw.setPosition(RIGHTOPEN);
             rotator.setPosition(CLAWUP);
-//            rightTurn(RIGHT_TURN); // 90 degree turn
-//            backwardsDrive(1200);
-//
-//            arm.setTargetPosition(ARMUP);
-//            LiftRight.setTargetPosition(HANGINGUP);
-//            LiftRight.setTargetPosition(HANGINGDOWN);
-//            leftClaw.setPosition(LEFTOPEN);
-//
-//            leftShift(400);
 
-        }else{
+        } else {
             leftShift(400);
 
-            if(distance.getDistance(DistanceUnit.CM) < 140) { // SECOND CASE: If prop is left
-                leftShift(100);
+            if (distance.getDistance(DistanceUnit.CM) < 140) { // SECOND CASE: If prop is left
                 forwardDrive(600);
                 rotator.setPosition(CLAWDOWN);
                 rightClaw.setPosition(RIGHTOPEN);
                 rotator.setPosition(CLAWUP);
-//                rightTurn(200); // 90 degree turn
-//                backwardsDrive(1200);
-//                // Add left/right shift code
-//                arm.setTargetPosition(ARMUP);
-//                LiftRight.setTargetPosition(HANGINGUP);
-//                LiftRight.setTargetPosition(HANGINGDOWN);
-//                leftClaw.setPosition(LEFTOPEN);
-                leftShift(400);
-            }else{ // THIRD CASE: Prop is right
-
+            } else { // THIRD CASE: Prop is right
+                forwardDrive(400);
                 rightTurn(RIGHT_TURN);
                 forwardDrive(600);
                 rotator.setPosition(CLAWDOWN);
                 rightClaw.setPosition(RIGHTOPEN);
                 rotator.setPosition(CLAWUP);
-
-//                backwardsDrive(1600);
-//                // Add left/right shift code
-//                arm.setTargetPosition(ARMUP);
-//                LiftRight.setTargetPosition(HANGINGUP);
-//                LiftRight.setTargetPosition(HANGINGDOWN);
-//                leftClaw.setPosition(LEFTOPEN);
-//                leftShift(400);
-
             }
-
-
         }
-
-
-
-
-
     }
 
     private void forwardDrive(int ms){
