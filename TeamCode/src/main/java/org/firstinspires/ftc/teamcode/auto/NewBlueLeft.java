@@ -68,9 +68,9 @@ public class NewBlueLeft extends LinearOpMode {
     private boolean LiftInitiate = false;
     private boolean LiftStart = false;
     private boolean canLift = false;
-    //    private boolean bothClaw = false;
-//    private boolean rotatorButton = false;
-//    private boolean armButton = false;
+    /*private boolean bothClaw = false;
+    private boolean rotatorButton = false;
+    private boolean armButton = false;*/
     private double leftStickYAxis = 0;
     private double leftStickXAxis = 0;
     private double rightStickXAxis = 0;
@@ -83,6 +83,7 @@ public class NewBlueLeft extends LinearOpMode {
     private double rightPos = RIGHTCLOSE;
     private double leftPos = LEFTCLOSE;
     private double rotatorPos = CLAWUP;
+    private double distance;
     private int hangingnPos = HANGINGDOWN;
     private DcMotor motor;
     private DcMotor leftFrontDrive = null;
@@ -95,7 +96,7 @@ public class NewBlueLeft extends LinearOpMode {
     private Servo leftClaw = null;
     private Servo rightClaw = null;
     private Servo rotator = null;
-    private DistanceSensor distance;
+    private DistanceSensor distanceSensor;
 
     private  int MAX_DISTANCE = 160;
     @Override
@@ -111,10 +112,9 @@ public class NewBlueLeft extends LinearOpMode {
         rotator = hardwareMap.get(Servo.class, "rotator");
         LiftLeft = hardwareMap.get(DcMotor.class, "LiftLeft");
         LiftRight = hardwareMap.get(DcMotor.class, "LiftRight");
-        distance = hardwareMap.get(DistanceSensor.class, "distance");
+        distanceSensor = hardwareMap.get(DistanceSensor.class, "distance");
 
         leftClaw.setDirection(Servo.Direction.REVERSE);
-
 
         //Arm settings
         armMotorPower = 0.15;
@@ -155,67 +155,63 @@ public class NewBlueLeft extends LinearOpMode {
         /* Start */
         waitForStart();
 
-        if(distance.getDistance(DistanceUnit.CM) < 140) {// FIRST CASE: If prop is middle
+        while (opModeIsActive()) {
+            distance = distanceSensor.getDistance(DistanceUnit.CM);
 
-            forwardDrive(800);
-            rotator.setPosition(CLAWDOWN);
-            rightClaw.setPosition(RIGHTOPEN);
-            rotator.setPosition(CLAWUP);
-//            rightTurn(RIGHT_TURN); // 90 degree turn
-//            backwardsDrive(1200);
-//
-//            arm.setTargetPosition(ARMUP);
-//            LiftRight.setTargetPosition(HANGINGUP);
-//            LiftRight.setTargetPosition(HANGINGDOWN);
-//            leftClaw.setPosition(LEFTOPEN);
-//
-//            leftShift(400);
+            if (distance < 140) {// FIRST CASE: If prop is middle
 
-        }else{
-            leftShift(400);
-
-            if(distance.getDistance(DistanceUnit.CM) < 140) { // SECOND CASE: If prop is left
-                leftShift(100);
-                forwardDrive(600);
+                forwardDrive(800);
                 rotator.setPosition(CLAWDOWN);
                 rightClaw.setPosition(RIGHTOPEN);
                 rotator.setPosition(CLAWUP);
-//                rightTurn(200); // 90 degree turn
-//                backwardsDrive(1200);
-//                // Add left/right shift code
-//                arm.setTargetPosition(ARMUP);
-//                LiftRight.setTargetPosition(HANGINGUP);
-//                LiftRight.setTargetPosition(HANGINGDOWN);
-//                leftClaw.setPosition(LEFTOPEN);
+                /*rightTurn(RIGHT_TURN); // 90 degree turn
+                backwardsDrive(1200);
+
+                arm.setTargetPosition(ARMUP);
+                LiftRight.setTargetPosition(HANGINGUP);
+                LiftRight.setTargetPosition(HANGINGDOWN);
+                leftClaw.setPosition(LEFTOPEN);
+
+                leftShift(400);*/
+
+            } else {
                 leftShift(400);
-            }else{ // THIRD CASE: Prop is right
 
-                rightTurn(RIGHT_TURN);
-                forwardDrive(600);
-                rotator.setPosition(CLAWDOWN);
-                rightClaw.setPosition(RIGHTOPEN);
-                rotator.setPosition(CLAWUP);
+                if (distance < 140) { // SECOND CASE: If prop is left
+                    leftShift(100);
+                    forwardDrive(600);
+                    rotator.setPosition(CLAWDOWN);
+                    rightClaw.setPosition(RIGHTOPEN);
+                    rotator.setPosition(CLAWUP);
+                    /*rightTurn(200); // 90 degree turn
+                    backwardsDrive(1200);
+                    // Add left/right shift code
+                    arm.setTargetPosition(ARMUP);
+                    LiftRight.setTargetPosition(HANGINGUP);
+                    LiftRight.setTargetPosition(HANGINGDOWN);
+                    leftClaw.setPosition(LEFTOPEN);*/
+                    leftShift(400);
+                } else { // THIRD CASE: Prop is right
+                    rightTurn(RIGHT_TURN);
+                    forwardDrive(600);
+                    rotator.setPosition(CLAWDOWN);
+                    rightClaw.setPosition(RIGHTOPEN);
+                    rotator.setPosition(CLAWUP);
 
-//                backwardsDrive(1600);
-//                // Add left/right shift code
-//                arm.setTargetPosition(ARMUP);
-//                LiftRight.setTargetPosition(HANGINGUP);
-//                LiftRight.setTargetPosition(HANGINGDOWN);
-//                leftClaw.setPosition(LEFTOPEN);
-//                leftShift(400);
+                    /*backwardsDrive(1600);
+                    // Add left/right shift code
+                    arm.setTargetPosition(ARMUP);
+                    LiftRight.setTargetPosition(HANGINGUP);
+                    LiftRight.setTargetPosition(HANGINGDOWN);
+                    leftClaw.setPosition(LEFTOPEN);
+                    leftShift(400);*/
 
+                }
             }
-
-
         }
-
-
-
-
-
     }
 
-    private void forwardDrive(int ms){
+    private void forwardDrive(int ms) {
         leftBackDrive.setPower(0.4);
         rightBackDrive.setPower(0.4);
         leftFrontDrive.setPower(0.4);
@@ -239,7 +235,7 @@ public class NewBlueLeft extends LinearOpMode {
         rightFrontDrive.setPower(0);
     }
 
-    private void rightShift(int ms){
+    private void rightShift(int ms) {
         leftBackDrive.setPower(0.4);
         rightBackDrive.setPower(-0.4);
         leftFrontDrive.setPower(-0.4);
@@ -251,7 +247,7 @@ public class NewBlueLeft extends LinearOpMode {
         rightFrontDrive.setPower(0);
     }
 
-    private void leftShift(int ms){
+    private void leftShift(int ms) {
         leftBackDrive.setPower(-0.4);
         rightBackDrive.setPower(0.4);
         leftFrontDrive.setPower(0.4);
@@ -263,7 +259,7 @@ public class NewBlueLeft extends LinearOpMode {
         rightFrontDrive.setPower(0);
     }
 
-    private void rightTurn(int ms){ // Not sure what values to make negative, will test
+    private void rightTurn(int ms) { // Not sure what values to make negative, will test
         leftBackDrive.setPower(0.4);
         rightBackDrive.setPower(-0.4);
         leftFrontDrive.setPower(0.4);
@@ -275,7 +271,7 @@ public class NewBlueLeft extends LinearOpMode {
         rightFrontDrive.setPower(0);
     }
 
-    private void leftTurn(int ms){
+    private void leftTurn(int ms) {
         leftBackDrive.setPower(-0.4);
         rightBackDrive.setPower(0.4);
         leftFrontDrive.setPower(-0.4);
