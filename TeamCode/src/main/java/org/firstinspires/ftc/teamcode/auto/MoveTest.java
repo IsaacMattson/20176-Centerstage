@@ -4,11 +4,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous
-public class AutoBlueLeft extends LinearOpMode {
+public class MoveTest extends LinearOpMode {
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
@@ -18,10 +17,6 @@ public class AutoBlueLeft extends LinearOpMode {
     private Servo leftClaw = null;
     private Servo rightClaw = null;
     private Servo rotator = null;
-
-    private DistanceSensor distanceSensor;
-    private double teamPropMaxDistance = 75;
-    private double distance;
 
     @Override
     public void runOpMode() {
@@ -61,22 +56,14 @@ public class AutoBlueLeft extends LinearOpMode {
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         waitForStart();
-        rotator.setPosition(0.0);
-        rightClaw.setPosition(0.25);
-        leftClaw.setPosition(0.65);
-        leftShift(300);
-        backwardsDrive(1600);
-        leftShift(1200);
-        arm.setPower(0.2);
-        arm.setTargetPosition(1400);
-        sleep(3000);
-        //TODO: ARM STUFF!!!
-        rightClaw.setPosition(0.05);
-        leftClaw.setPosition(0.95);
-        sleep(1000);
-        arm.setTargetPosition(0);
-        sleep(3000);
-        rightShift(1000);
+        forwardDrive(500);
+        sleep(2000);
+
+        forwardDrive(750);
+        sleep(2000);
+
+        forwardDrive(1000);
+        sleep(2000);
     }
 
     private void forwardDrive(int ms){
