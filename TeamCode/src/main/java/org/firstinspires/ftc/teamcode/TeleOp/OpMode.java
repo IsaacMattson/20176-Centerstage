@@ -17,7 +17,7 @@ public class OpMode extends LinearOpMode {
     private final int ARMDOWN = 0;
     private final double CLAWUP = 0.03;
     private final double CLAWDOWN = CLAWUP + 0.80;
-    private final int CLIMB = 4000;
+    private final int CLIMB = 6000;
     private final int HANGINGUP = 7500;
     private final int HANGINGDOWN = 500;
     private boolean armUp = false;
@@ -81,9 +81,8 @@ public class OpMode extends LinearOpMode {
 
         leftClaw.setDirection(Servo.Direction.REVERSE);
 
-
         //Arm settings
-        armMotorPower = 0.15;
+        armMotorPower = 0.25;
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm.setDirection(DcMotorSimple.Direction.FORWARD);
         arm.setTargetPosition(0);

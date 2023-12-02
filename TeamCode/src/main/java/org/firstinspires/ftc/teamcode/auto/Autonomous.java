@@ -29,7 +29,6 @@
 
 package org.firstinspires.ftc.teamcode.auto;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -38,8 +37,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@Autonomous
-public class NewBlueLeft extends LinearOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous
+public class Autonomous extends LinearOpMode {
 
     private final double DEAD_ZONE = 0.3;
     private final double RIGHTOPEN = 0.16;
@@ -84,6 +83,8 @@ public class NewBlueLeft extends LinearOpMode {
     private double leftPos = LEFTCLOSE;
     private double rotatorPos = CLAWUP;
     private double distance;
+    private double teamPropMaxDistance = 75;
+    private boolean objectFound = false;
     private int hangingnPos = HANGINGDOWN;
     private DcMotor motor;
     private DcMotor leftFrontDrive = null;
@@ -158,55 +159,50 @@ public class NewBlueLeft extends LinearOpMode {
         while (opModeIsActive()) {
             distance = distanceSensor.getDistance(DistanceUnit.CM);
 
-            if (distance < 140) {// FIRST CASE: If prop is middle
+            if (!objectFound) {
+                if (distance < teamPropMaxDistance) {// FIRST CASE: If prop is middle
 
-                forwardDrive(800);
-                rotator.setPosition(CLAWDOWN);
-                rightClaw.setPosition(RIGHTOPEN);
-                rotator.setPosition(CLAWUP);
-                /*rightTurn(RIGHT_TURN); // 90 degree turn
-                backwardsDrive(1200);
-
-                arm.setTargetPosition(ARMUP);
-                LiftRight.setTargetPosition(HANGINGUP);
-                LiftRight.setTargetPosition(HANGINGDOWN);
-                leftClaw.setPosition(LEFTOPEN);
-
-                leftShift(400);*/
-
-            } else {
-                leftShift(400);
-
-                if (distance < 140) { // SECOND CASE: If prop is left
-                    leftShift(100);
-                    forwardDrive(600);
+                    forwardDrive(800);
                     rotator.setPosition(CLAWDOWN);
+                    sleep(1000);
+                    forwardDrive(400);
                     rightClaw.setPosition(RIGHTOPEN);
+                    sleep(1000);
                     rotator.setPosition(CLAWUP);
-                    /*rightTurn(200); // 90 degree turn
-                    backwardsDrive(1200);
-                    // Add left/right shift code
-                    arm.setTargetPosition(ARMUP);
-                    LiftRight.setTargetPosition(HANGINGUP);
-                    LiftRight.setTargetPosition(HANGINGDOWN);
-                    leftClaw.setPosition(LEFTOPEN);*/
+
+                    objectFound = true;
+
+                } else {
                     leftShift(400);
-                } else { // THIRD CASE: Prop is right
-                    rightTurn(RIGHT_TURN);
-                    forwardDrive(600);
-                    rotator.setPosition(CLAWDOWN);
-                    rightClaw.setPosition(RIGHTOPEN);
-                    rotator.setPosition(CLAWUP);
 
-                    /*backwardsDrive(1600);
-                    // Add left/right shift code
-                    arm.setTargetPosition(ARMUP);
-                    LiftRight.setTargetPosition(HANGINGUP);
-                    LiftRight.setTargetPosition(HANGINGDOWN);
-                    leftClaw.setPosition(LEFTOPEN);
-                    leftShift(400);*/
+                    if (distance < teamPropMaxDistance) { // SECOND CASE: If prop is left
+                        leftShift(100);
+                        forwardDrive(600);
+                        rotator.setPosition(CLAWDOWN);
+                        sleep(1000);
+                        rightClaw.setPosition(RIGHTOPEN);
+                        sleep(1000);
 
+                        rotator.setPosition(CLAWUP);
+
+                        objectFound = true;
+                        leftShift(400);
+                    } else { // THIRD CASE: Prop is right
+                        rightTurn(RIGHT_TURN);
+                        forwardDrive(600);
+                        rotator.setPosition(CLAWDOWN);
+                        sleep(1000);
+                        rightClaw.setPosition(RIGHTOPEN);
+                        sleep(1000);
+                        rotator.setPosition(CLAWUP);
+
+                        objectFound = true;
+
+                    }
                 }
+
+                telemetry.addData("Distance: ", distance);
+                telemetry.update();
             }
         }
     }
