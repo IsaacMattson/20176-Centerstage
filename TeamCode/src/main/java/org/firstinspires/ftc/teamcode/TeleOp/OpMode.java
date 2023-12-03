@@ -46,7 +46,7 @@ public class OpMode extends LinearOpMode {
     private double leftPosition = LEFT_CLOSE;
     private double rotatorPosition = CLAW_UP;
     private int targetArmValue = ARM_DOWN;
-    private int hangingnPosition = 0;
+    private int hangingPosition = 0;
     private DcMotor motor;
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
@@ -109,7 +109,7 @@ public class OpMode extends LinearOpMode {
         liftLeft.setPower(0.8);
 
         planePosition = 0.0;
-        hangingnPosition = 0;
+        hangingPosition = 0;
 
         //initialize terminal
         telemetry.addData("Status", "Initialized");
@@ -195,7 +195,7 @@ public class OpMode extends LinearOpMode {
             }
             if (liftStart && canLift) {
                 targetArmValue = 300;
-                 hangingnPosition = CLIMB;
+                 hangingPosition = CLIMB;
                  canLift = false;
             }
 
@@ -215,8 +215,8 @@ public class OpMode extends LinearOpMode {
             rightClaw.setPosition(rightPosition);
             rotator.setPosition(rotatorPosition);
             plane.setPosition(planePosition);
-            liftLeft.setTargetPosition(hangingnPosition);
-            liftRight.setTargetPosition(hangingnPosition);
+            liftLeft.setTargetPosition(hangingPosition);
+            liftRight.setTargetPosition(hangingPosition);
 
             // Debug
             telemetry.addData("Status", "Running");

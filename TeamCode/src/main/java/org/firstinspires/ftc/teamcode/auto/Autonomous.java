@@ -46,6 +46,7 @@ public class Autonomous extends LinearOpMode {
     private final double CLAW_UP = 0.03;
     private final double CLAW_DOWN = CLAW_UP + 0.80;
     private final double TEAM_PROP_MAX_DISTANCE = 60;
+    private final double MOTOR_POWER = 0.4;
     private final int ARMUP = 1280;
     private final int ARMDOWN = 0;
 
@@ -62,9 +63,10 @@ public class Autonomous extends LinearOpMode {
     private boolean objectFound = false;
     private boolean isOnRight = false;
     private double armMotorPower = 0;
-    private double rightPos = RIGHT_CLOSE;
-    private double leftPos = LEFT_CLOSE;
-    private double rotatorPos = CLAW_UP;
+    private double rightPosition = RIGHT_CLOSE;
+    private double leftPosition = LEFT_CLOSE;
+    private double rotatorPosition = CLAW_UP;
+    private DistanceSensor distanceSensor;
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
@@ -75,7 +77,6 @@ public class Autonomous extends LinearOpMode {
     private Servo leftClaw = null;
     private Servo rightClaw = null;
     private Servo rotator = null;
-    private DistanceSensor distanceSensor;
 
     @Override
     public void runOpMode() {
@@ -172,10 +173,10 @@ public class Autonomous extends LinearOpMode {
     }
 
     private void forwardDrive(int ms) {
-        leftBackDrive.setPower(0.4);
-        rightBackDrive.setPower(0.4);
-        leftFrontDrive.setPower(0.4);
-        rightFrontDrive.setPower(0.4);
+        leftBackDrive.setPower(MOTOR_POWER);
+        rightBackDrive.setPower(MOTOR_POWER);
+        leftFrontDrive.setPower(MOTOR_POWER);
+        rightFrontDrive.setPower(MOTOR_POWER);
         sleep(ms);
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
@@ -184,10 +185,10 @@ public class Autonomous extends LinearOpMode {
     }
 
     private void backwardsDrive(int ms){
-        leftBackDrive.setPower(-0.4);
-        rightBackDrive.setPower(-0.4);
-        leftFrontDrive.setPower(-0.4);
-        rightFrontDrive.setPower(-0.4);
+        leftBackDrive.setPower(-MOTOR_POWER);
+        rightBackDrive.setPower(-MOTOR_POWER);
+        leftFrontDrive.setPower(-MOTOR_POWER);
+        rightFrontDrive.setPower(-MOTOR_POWER);
         sleep(ms);
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
@@ -196,10 +197,10 @@ public class Autonomous extends LinearOpMode {
     }
 
     private void rightShift(int ms) {
-        leftBackDrive.setPower(0.4);
-        rightBackDrive.setPower(-0.4);
-        leftFrontDrive.setPower(-0.4);
-        rightFrontDrive.setPower(0.4);
+        leftBackDrive.setPower(MOTOR_POWER);
+        rightBackDrive.setPower(-MOTOR_POWER);
+        leftFrontDrive.setPower(-MOTOR_POWER);
+        rightFrontDrive.setPower(MOTOR_POWER);
         sleep(ms);
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
@@ -208,10 +209,10 @@ public class Autonomous extends LinearOpMode {
     }
 
     private void leftShift(int ms) {
-        leftBackDrive.setPower(-0.4);
-        rightBackDrive.setPower(0.4);
-        leftFrontDrive.setPower(0.4);
-        rightFrontDrive.setPower(-0.4);
+        leftBackDrive.setPower(-MOTOR_POWER);
+        rightBackDrive.setPower(MOTOR_POWER);
+        leftFrontDrive.setPower(MOTOR_POWER);
+        rightFrontDrive.setPower(-MOTOR_POWER);
         sleep(ms);
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
@@ -220,10 +221,10 @@ public class Autonomous extends LinearOpMode {
     }
 
     private void rightTurn(int ms) { // Not sure what values to make negative, will test
-        leftBackDrive.setPower(0.4);
-        rightBackDrive.setPower(-0.4);
-        leftFrontDrive.setPower(0.4);
-        rightFrontDrive.setPower(-0.4);
+        leftBackDrive.setPower(MOTOR_POWER);
+        rightBackDrive.setPower(-MOTOR_POWER);
+        leftFrontDrive.setPower(MOTOR_POWER);
+        rightFrontDrive.setPower(-MOTOR_POWER);
         sleep(ms);
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
@@ -232,10 +233,10 @@ public class Autonomous extends LinearOpMode {
     }
 
     private void leftTurn(int ms) {
-        leftBackDrive.setPower(-0.4);
-        rightBackDrive.setPower(0.4);
-        leftFrontDrive.setPower(-0.4);
-        rightFrontDrive.setPower(0.4);
+        leftBackDrive.setPower(-MOTOR_POWER);
+        rightBackDrive.setPower(MOTOR_POWER);
+        leftFrontDrive.setPower(-MOTOR_POWER);
+        rightFrontDrive.setPower(MOTOR_POWER);
         sleep(ms);
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
