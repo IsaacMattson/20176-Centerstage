@@ -47,7 +47,6 @@ public class OpMode extends LinearOpMode {
     private double rotatorPosition = CLAW_UP;
     private int targetArmValue = ARM_DOWN;
     private int hangingPosition = 0;
-    private DcMotor motor;
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;

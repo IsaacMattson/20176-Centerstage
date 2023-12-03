@@ -47,8 +47,8 @@ public class Autonomous extends LinearOpMode {
     private final double CLAW_DOWN = CLAW_UP + 0.80;
     private final double TEAM_PROP_MAX_DISTANCE = 60;
     private final double MOTOR_POWER = 0.4;
-    private final int ARMUP = 1280;
-    private final int ARMDOWN = 0;
+    private final int ARM_UP = 1280;
+    private final int ARM_DOWN = 0;
 
     private boolean armDown = false;
     private boolean leftClose = false;
