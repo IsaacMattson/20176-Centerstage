@@ -45,7 +45,6 @@ public class Autonomous extends LinearOpMode {
     private final double LEFT_CLOSE = 0.75;
     private final double CLAW_UP = 0.03;
     private final double CLAW_DOWN = CLAW_UP + 0.80;
-    private final double TEAM_PROP_MAX_DISTANCE = 60;
     private final double MOTOR_POWER = 0.4;
     private final int ARM_UP = 1280;
     private final int ARM_DOWN = 0;
@@ -59,13 +58,14 @@ public class Autonomous extends LinearOpMode {
     private boolean closeBoth = false;
     private boolean clawUp = false;
     private boolean clawDown = false;
-    private boolean isOnLeft = true;
+    private boolean checkFront = true;
     private boolean objectFound = false;
-    private boolean isOnRight = false;
     private double armMotorPower = 0;
+    private double teamPropMaxDistance = 60;
     private double rightPosition = RIGHT_CLOSE;
     private double leftPosition = LEFT_CLOSE;
     private double rotatorPosition = CLAW_UP;
+    private double distance = 0;
     private DistanceSensor distanceSensor;
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
@@ -81,6 +81,7 @@ public class Autonomous extends LinearOpMode {
     @Override
     public void runOpMode() {
         int rightTurnsMade = 0;
+        int leftTurnsMade = 0;
 
         leftFrontDrive = hardwareMap.get(DcMotor.class, "driveMotorFour");
         leftBackDrive = hardwareMap.get(DcMotor.class, "driveMotorOne");
@@ -136,40 +137,63 @@ public class Autonomous extends LinearOpMode {
 
         forwardDrive(800);
         while (!objectFound) {
-            if (distanceSensor.getDistance(DistanceUnit.CM) < TEAM_PROP_MAX_DISTANCE) {
+            distance = distanceSensor.getDistance(DistanceUnit.CM);
+            if (distance < teamPropMaxDistance) {
                 objectFound = true;
             } else {
-                // assume it's on the left side first
-                if (!isOnLeft) {
-                    leftTurn(600);
-                    isOnLeft = true;
+                if (checkFront) {
+                    teamPropMaxDistance = 40;
+                    checkFront = false;
                 } else {
-                    rightTurn(200);
-                    rightTurnsMade++;
+                    // assume it's on the left side first
+                    if (rightTurnsMade <= 4) {
+                        rightTurn(200);
+                        rightTurnsMade++;
+                    } else if (leftTurnsMade <= 8) {
+                        leftTurn(200);
+                        leftTurnsMade++;
+                    } else {
+                        rightTurn(200 * 4);
+                        break;
+                    }
                 }
             }
 
-            telemetry.addData("Distance: ", distanceSensor.getDistance(DistanceUnit.CM));
+            telemetry.addData("Turns Made:", rightTurnsMade);
+            telemetry.addData("Distance: ", distance);
+            telemetry.addData("Distance: ", distance);
+            telemetry.addData("Distance: ", distance);
+            telemetry.addData("Distance: ", distance);
+            telemetry.addData("Distance: ", distance);
             telemetry.update();
         }
 
-        rotator.setPosition(CLAW_DOWN);
-        sleep(1000);
-        rightClaw.setPosition(RIGHT_OPEN);
-        sleep(1000);
-        rotator.setPosition(CLAW_UP);
-        sleep(1000);
-        rightClaw.setPosition(RIGHT_CLOSE);
-
-        // Set the bot back to the original position
-        if (isOnLeft) {
-            rightTurn(600);
-        } else {
-            leftTurn(200 * rightTurnsMade);
-            leftTurn(600);
+        if (objectFound) {
+            backwardsDrive(300);
+            rotator.setPosition(CLAW_DOWN);
+            sleep(1000);
+            forwardDrive(550);
+            rightClaw.setPosition(RIGHT_OPEN);
+            sleep(1000);
+            rotator.setPosition(CLAW_UP);
+            sleep(1000);
+            rightClaw.setPosition(RIGHT_CLOSE);
+            sleep(1000);
         }
 
-        leftTurn(600);
+        leftTurn(800);
+        forwardDrive(1200);
+
+        if (!objectFound) {
+            rotator.setPosition(CLAW_DOWN);
+            sleep(1000);
+            rightClaw.setPosition(RIGHT_OPEN);
+            sleep(1000);
+            rotator.setPosition(CLAW_UP);
+            sleep(1000);
+            rightClaw.setPosition(RIGHT_CLOSE);
+            sleep(1000);
+        }
     }
 
     private void forwardDrive(int ms) {
