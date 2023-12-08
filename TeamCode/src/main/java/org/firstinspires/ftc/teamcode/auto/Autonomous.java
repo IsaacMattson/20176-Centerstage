@@ -36,6 +36,12 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.openftc.easyopencv.OpenCvPipeline;
+import org.opencv.core.Scalar;
+import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.imgproc.Imgproc;
+import org.opencv.core.Core;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous
 public class Autonomous extends LinearOpMode {
@@ -135,64 +141,62 @@ public class Autonomous extends LinearOpMode {
         /* Start */
         waitForStart();
 
-        forwardDrive(800);
-        while (!objectFound) {
-            distance = distanceSensor.getDistance(DistanceUnit.CM);
-            if (distance < teamPropMaxDistance) {
-                objectFound = true;
-            } else {
-                if (checkFront) {
-                    teamPropMaxDistance = 40;
-                    checkFront = false;
-                } else {
-                    // assume it's on the left side first
-                    if (rightTurnsMade <= 4) {
-                        rightTurn(200);
-                        rightTurnsMade++;
-                    } else if (leftTurnsMade <= 8) {
-                        leftTurn(200);
-                        leftTurnsMade++;
-                    } else {
-                        rightTurn(200 * 4);
-                        break;
+        while (opModeIsActive()) {
+            rectangle_thresholder_pipeline location = new rectangle_thresholder_pipeline();
+
+            telemetry.addData("Location", location.getLocation());
+        }
+    }
+
+    public class rectangle_thresholder_pipeline extends OpenCvPipeline {
+        private String location = "nothing";
+        public Scalar lower = new Scalar(0, 0, 0);
+        public Scalar upper = new Scalar(255, 255, 255);
+
+        private Mat hsvMat = new Mat();
+        private Mat binaryMat = new Mat();
+        private Mat maskedInputMat = new Mat();
+
+        private Point topLeft1 = new Point(10, 0), topLeft2 = new Point(10, 0);
+        private Point bottomRight1 = new Point(40, 20), bottomRight2 = new Point(40, 20);
+
+        public rectangle_thresholder_pipeline() {
+
+        }
+
+        @Override
+        public Mat processFrame(Mat input) {
+            Imgproc.cvtColor(input, hsvMat, Imgproc.COLOR_RGB2HSV);
+            Core.inRange(hsvMat, lower, upper, binaryMat);
+
+            double w1 = 0, w2 = 0;
+            for (int i = (int) topLeft1.x; i <= bottomRight1.x; i++) {
+                for (int j = (int) topLeft1.y; j <= bottomRight1.y; j++) {
+                    if (binaryMat.get(i, j)[0] == 225) {
+                        w1++;
                     }
                 }
             }
 
-            telemetry.addData("Turns Made:", rightTurnsMade);
-            telemetry.addData("Distance: ", distance);
-            telemetry.addData("Distance: ", distance);
-            telemetry.addData("Distance: ", distance);
-            telemetry.addData("Distance: ", distance);
-            telemetry.addData("Distance: ", distance);
-            telemetry.update();
+            for (int i = (int) topLeft2.x; i <= bottomRight2.x; i++) {
+                for (int j = (int) topLeft2.y; j <= bottomRight2.y; j++) {
+                    if (binaryMat.get(i, j)[0] == 225) {
+                        w2++;
+                    }
+                }
+            }
+
+            if (w1 > w2) {
+                location = "1";
+            } else if (w1 < w2) {
+                location = "2";
+            }
+
+            return binaryMat;
         }
 
-        if (objectFound) {
-            backwardsDrive(300);
-            rotator.setPosition(CLAW_DOWN);
-            sleep(1000);
-            forwardDrive(550);
-            rightClaw.setPosition(RIGHT_OPEN);
-            sleep(1000);
-            rotator.setPosition(CLAW_UP);
-            sleep(1000);
-            rightClaw.setPosition(RIGHT_CLOSE);
-            sleep(1000);
-        }
-
-        leftTurn(800);
-        forwardDrive(1200);
-
-        if (!objectFound) {
-            rotator.setPosition(CLAW_DOWN);
-            sleep(1000);
-            rightClaw.setPosition(RIGHT_OPEN);
-            sleep(1000);
-            rotator.setPosition(CLAW_UP);
-            sleep(1000);
-            rightClaw.setPosition(RIGHT_CLOSE);
-            sleep(1000);
+        public String getLocation() {
+            return location;
         }
     }
 
