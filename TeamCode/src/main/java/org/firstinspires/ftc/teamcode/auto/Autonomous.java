@@ -140,7 +140,7 @@ public class Autonomous extends LinearOpMode {
                 }
             }
             //check results
-            if(red > 20 || blue > 20){
+            if(red >= 20 || blue > 20){
                 rightClaw.setPosition(RIGHT_OPEN);
                 sleep(1000);
                 telemetry.addData("Here", 0);
