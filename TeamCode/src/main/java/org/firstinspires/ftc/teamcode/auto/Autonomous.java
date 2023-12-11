@@ -50,7 +50,7 @@ public class Autonomous extends LinearOpMode {
     private Servo leftClaw = null;
     private Servo rightClaw = null;
     private Servo rotator = null;
-    private ColorSensor ColorR = null, ColorL = null;
+    private ColorSensor colorSensorRight = null, colorSensorLeft = null;
 
     @Override
     public void runOpMode() {
@@ -62,8 +62,8 @@ public class Autonomous extends LinearOpMode {
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
         rotator = hardwareMap.get(Servo.class, "rotator");
-        ColorR = hardwareMap.get(ColorSensor.class, "Color2");
-        ColorL = hardwareMap.get(ColorSensor.class, "Color1");
+        colorSensorRight = hardwareMap.get(ColorSensor.class, "Color2");
+        colorSensorLeft = hardwareMap.get(ColorSensor.class, "Color1");
 
         leftClaw.setDirection(Servo.Direction.REVERSE);
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -98,7 +98,6 @@ public class Autonomous extends LinearOpMode {
         rightShift(600);
         sleep(500);
 
-        //start detection;
         //check results
         if (checkObject()) {
             //team prop is on the right;
@@ -123,8 +122,8 @@ public class Autonomous extends LinearOpMode {
             sleep(500);
             leftShift(600);
             sleep(500);
+
             //start detection
-            //check results
             if (checkObject()) {
                 rightShift(600);
                 sleep(300);
@@ -153,22 +152,19 @@ public class Autonomous extends LinearOpMode {
             }
 
         }
-
-
     }
 
     public boolean checkObject(){
-
         int blue = 0, red = 0;
-
         for(int counter = 0; counter < 50; counter++){
-            if(ColorR.red() > 1200 || ColorL.red() > 1200){
+            if (colorSensorRight.red() > 1200 || colorSensorLeft.red() > 1200) {
                 red ++;
-            }else if((ColorR.blue() > 400 && ColorR.red() < ColorR.blue() / 2 + 100) ||
-                    (ColorL.blue() > 400 && ColorL.red() < ColorL.blue() / 2 + 100)){
+            } else if ((colorSensorRight.blue() > 400 && colorSensorRight.red() < colorSensorRight.blue() / 2 + 100) ||
+                     (colorSensorLeft.blue() > 400 && colorSensorLeft.red() < colorSensorLeft.blue() / 2 + 100)) {
                 blue ++;
             }
         }
+
         return (red >= 20 || blue >= 20);
     }
 
