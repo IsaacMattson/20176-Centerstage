@@ -32,9 +32,6 @@ package org.firstinspires.ftc.teamcode.auto;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.*;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous
 public class Autonomous extends LinearOpMode {
     private final double RIGHT_OPEN = 0.16;
@@ -53,7 +50,7 @@ public class Autonomous extends LinearOpMode {
     private Servo leftClaw = null;
     private Servo rightClaw = null;
     private Servo rotator = null;
-    private ColorSensor Color = null;
+    private ColorSensor ColorR = null, ColorL = null;
 
     @Override
     public void runOpMode() {
@@ -65,7 +62,8 @@ public class Autonomous extends LinearOpMode {
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
         rotator = hardwareMap.get(Servo.class, "rotator");
-        Color = hardwareMap.get(ColorSensor.class, "Color2");
+        ColorR = hardwareMap.get(ColorSensor.class, "Color2");
+        ColorL = hardwareMap.get(ColorSensor.class, "Color1");
 
         leftClaw.setDirection(Servo.Direction.REVERSE);
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -93,7 +91,7 @@ public class Autonomous extends LinearOpMode {
         waitForStart();
 
         //drive forward to middle
-        forwardDrive(1300);
+        forwardDrive(1500);
         sleep(500);
 
         //check for right side
@@ -101,62 +99,48 @@ public class Autonomous extends LinearOpMode {
         sleep(500);
 
         //start detection;
-        int counter = 50;
-        int blue = 0, red = 0;
-
-        while(counter > 0) {
-            counter --;
-            if(Color.red()> 1200){
-                red ++;
-            }else if(Color.blue() > 400 && Color.red() < Color.blue() / 2 + 100){
-                blue ++;
-            }
-        }
-
         //check results
-        if(red > 20 || blue > 20){
+        if(checkObject()){
             //team prop is on the right;
             rightClaw.setPosition(RIGHT_OPEN);
             sleep(1000);
             telemetry.addData("Here", 0);
             telemetry.update();
         }else{
-            //check front
+            //check left
             leftShift(600);
             sleep(500);
-            leftTurn(1000);
-            sleep(500);
-            rightShift(600);
+            leftShift(600);
             sleep(500);
             //start detection
-            counter = 50;
-            blue = 0; red = 0;
-            while(counter > 0){
-                counter --;
-                if(Color.red()> 1200){
-                    red ++;
-                }else if(Color.blue() > 400 && Color.red() < Color.blue() / 2 + 100){
-                    blue ++;
-                }
-            }
             //check results
-            if(red >= 20 || blue > 20){
+            if(checkObject()){
                 rightClaw.setPosition(RIGHT_OPEN);
                 sleep(1000);
                 telemetry.addData("Here", 0);
                 telemetry.update();
             }else{
-                //it is at left
-                leftShift(600);
-                sleep(500);
-                forwardDrive(600);
-                sleep(500);
-                stop();
+                //it is at center
+                rightTurn(600);
             }
 
         }
 
 
+    }
+
+    public boolean checkObject(){
+
+        int blue = 0, red = 0;
+
+        for(int counter = 0; counter < 50; counter++){
+            if(ColorR.red()> 1200){
+                red ++;
+            }else if(ColorR.blue() > 400 && ColorR.red() < ColorR.blue() / 2 + 100){
+                blue ++;
+            }
+        }
+        return (red >= 20 || blue >= 20);
     }
 
     private void forwardDrive(int ms) {
