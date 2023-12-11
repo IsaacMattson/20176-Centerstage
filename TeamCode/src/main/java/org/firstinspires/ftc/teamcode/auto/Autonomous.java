@@ -100,13 +100,24 @@ public class Autonomous extends LinearOpMode {
 
         //start detection;
         //check results
-        if(checkObject()){
+        if (checkObject()) {
             //team prop is on the right;
+            leftShift(600);
+            sleep(300);
+            rightTurn(1000);
+            sleep(300);
+            backwardsDrive(600);
+            sleep(300);
+            rotator.setPosition(CLAW_DOWN);
+            sleep(1000);
+            forwardDrive(400);
+            sleep(300);
             rightClaw.setPosition(RIGHT_OPEN);
             sleep(1000);
             telemetry.addData("Here", 0);
             telemetry.update();
-        }else{
+            //backboard code here
+        } else {
             //check left
             leftShift(600);
             sleep(500);
@@ -114,14 +125,31 @@ public class Autonomous extends LinearOpMode {
             sleep(500);
             //start detection
             //check results
-            if(checkObject()){
+            if (checkObject()) {
+                rightShift(600);
+                sleep(300);
+                leftTurn(1100);
+                sleep(300);
+                backwardsDrive(600);
+                sleep(300);
+                rotator.setPosition(CLAW_DOWN);
+                sleep(1000);
+                forwardDrive(500);
+                sleep(300);
                 rightClaw.setPosition(RIGHT_OPEN);
                 sleep(1000);
                 telemetry.addData("Here", 0);
                 telemetry.update();
-            }else{
+            } else {
                 //it is at center
-                rightTurn(600);
+                rightShift(600);
+                backwardsDrive(600);
+                rotator.setPosition(CLAW_DOWN);
+                sleep(1000);
+                forwardDrive(400);
+                sleep(300);
+                rightClaw.setPosition(RIGHT_OPEN);
+                sleep(1000);
             }
 
         }
@@ -134,9 +162,10 @@ public class Autonomous extends LinearOpMode {
         int blue = 0, red = 0;
 
         for(int counter = 0; counter < 50; counter++){
-            if(ColorR.red()> 1200){
+            if(ColorR.red() > 1200 || ColorL.red() > 1200){
                 red ++;
-            }else if(ColorR.blue() > 400 && ColorR.red() < ColorR.blue() / 2 + 100){
+            }else if((ColorR.blue() > 400 && ColorR.red() < ColorR.blue() / 2 + 100) ||
+                    (ColorL.blue() > 400 && ColorL.red() < ColorL.blue() / 2 + 100)){
                 blue ++;
             }
         }
