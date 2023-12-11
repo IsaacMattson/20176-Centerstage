@@ -2,9 +2,14 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorRangeSensor;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp
 public class OpMode extends LinearOpMode {
@@ -36,6 +41,9 @@ public class OpMode extends LinearOpMode {
     private Servo rightClaw = null;
     private Servo rotator = null;
     private Servo plane = null;
+    private TouchSensor Touch = null;
+    private ColorSensor Color = null;
+    private ColorRangeSensor ColorRange = null;
 
     @Override
     public void runOpMode() {
@@ -51,6 +59,10 @@ public class OpMode extends LinearOpMode {
         liftLeft = hardwareMap.get(DcMotor.class, "LiftLeft");
         liftRight = hardwareMap.get(DcMotor.class, "LiftRight");
         plane = hardwareMap.get(Servo.class, "plane");
+        Color = hardwareMap.get(ColorSensor.class, "Color2");
+//        ColorRange = hardwareMap.get(ColorRangeSensor.class, "Color2");
+
+
 
         leftClaw.setDirection(Servo.Direction.REVERSE);
 
@@ -177,6 +189,12 @@ public class OpMode extends LinearOpMode {
             rotator.setPosition(rotatorPosition);
             plane.setPosition(planePosition);
             // Debug
+            telemetry.addData("Blue:", Color.blue());
+            telemetry.addData("Red:", Color.red());
+
+            telemetry.addData("Found Red:", Color.red()> 1200);
+            telemetry.addData("Found Blue:", Color.blue() > 400 && Color.red() < Color.blue() / 2 + 100);
+//            telemetry.addData("within 5cm:", ColorRange.getDistance(DistanceUnit.CM) < 5);
             telemetry.update();
         }
     }

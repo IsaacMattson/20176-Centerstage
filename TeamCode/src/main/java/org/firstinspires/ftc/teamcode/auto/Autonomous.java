@@ -30,11 +30,9 @@
 package org.firstinspires.ftc.teamcode.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.*;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous
@@ -45,44 +43,20 @@ public class Autonomous extends LinearOpMode {
     private final double LEFT_CLOSE = 0.75;
     private final double CLAW_UP = 0.03;
     private final double CLAW_DOWN = CLAW_UP + 0.80;
-    private final double MOTOR_POWER = 0.4;
-    private final int ARM_UP = 1280;
-    private final int ARM_DOWN = 0;
 
-    private boolean armDown = false;
-    private boolean leftClose = false;
-    private boolean leftOpen = false;
-    private boolean rightClose = false;
-    private boolean rightOpen = false;
-    private boolean openBoth = false;
-    private boolean closeBoth = false;
-    private boolean clawUp = false;
-    private boolean clawDown = false;
-    private boolean checkFront = true;
-    private boolean objectFound = false;
-    private double armMotorPower = 0;
-    private double teamPropMaxDistance = 60;
-    private double rightPosition = RIGHT_CLOSE;
-    private double leftPosition = LEFT_CLOSE;
-    private double rotatorPosition = CLAW_UP;
-    private double distance = 0;
-    private DistanceSensor distanceSensor;
+    private final double MOTOR_POWER = 0.4;
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
     private DcMotor rightBackDrive = null;
-    private DcMotor liftLeft = null;
-    private DcMotor liftRight = null;
     private DcMotor arm = null;
     private Servo leftClaw = null;
     private Servo rightClaw = null;
     private Servo rotator = null;
+    private ColorSensor Color = null;
 
     @Override
     public void runOpMode() {
-        int rightTurnsMade = 0;
-        int leftTurnsMade = 0;
-
         leftFrontDrive = hardwareMap.get(DcMotor.class, "driveMotorFour");
         leftBackDrive = hardwareMap.get(DcMotor.class, "driveMotorOne");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "driveMotorThree");
@@ -91,109 +65,98 @@ public class Autonomous extends LinearOpMode {
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
         rotator = hardwareMap.get(Servo.class, "rotator");
-        liftLeft = hardwareMap.get(DcMotor.class, "LiftLeft");
-        liftRight = hardwareMap.get(DcMotor.class, "LiftRight");
-        distanceSensor = hardwareMap.get(DistanceSensor.class, "distance");
+        Color = hardwareMap.get(ColorSensor.class, "Color2");
 
         leftClaw.setDirection(Servo.Direction.REVERSE);
-
-        //Arm settings
-        armMotorPower = 0.15;
-        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        arm.setDirection(DcMotorSimple.Direction.FORWARD);
-        arm.setTargetPosition(0);
-        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        //Drive motor settings
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm.setDirection(DcMotorSimple.Direction.FORWARD);
+        arm.setTargetPosition(0);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        liftRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        liftRight.setTargetPosition(0);
-        liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rotator.setPosition(CLAW_UP);
+        rightClaw.setPosition(RIGHT_CLOSE);
+        leftClaw.setPosition(LEFT_CLOSE);
 
-        liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        liftLeft.setDirection(DcMotorSimple.Direction.FORWARD );
-        liftLeft.setTargetPosition(0);
-        liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        liftRight.setPower(0.8);
-        liftLeft.setPower(0.8);
-
-        //initialize terminal
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        /* Start */
         waitForStart();
 
-        forwardDrive(800);
-        while (!objectFound) {
-            distance = distanceSensor.getDistance(DistanceUnit.CM);
-            if (distance < teamPropMaxDistance) {
-                objectFound = true;
-            } else {
-                if (checkFront) {
-                    teamPropMaxDistance = 40;
-                    checkFront = false;
-                } else {
-                    // assume it's on the left side first
-                    if (rightTurnsMade <= 4) {
-                        rightTurn(200);
-                        rightTurnsMade++;
-                    } else if (leftTurnsMade <= 8) {
-                        leftTurn(200);
-                        leftTurnsMade++;
-                    } else {
-                        rightTurn(200 * 4);
-                        break;
-                    }
+        //drive forward to middle
+        forwardDrive(1300);
+        sleep(500);
+
+        //check for right side
+        rightShift(600);
+        sleep(500);
+
+        //start detection;
+        int counter = 50;
+        int blue = 0, red = 0;
+
+        while(counter > 0) {
+            counter --;
+            if(Color.red()> 1200){
+                red ++;
+            }else if(Color.blue() > 400 && Color.red() < Color.blue() / 2 + 100){
+                blue ++;
+            }
+        }
+
+        //check results
+        if(red > 20 || blue > 20){
+            //team prop is on the right;
+            rightClaw.setPosition(RIGHT_OPEN);
+            sleep(1000);
+            telemetry.addData("Here", 0);
+            telemetry.update();
+        }else{
+            //check front
+            leftShift(600);
+            sleep(500);
+            leftTurn(1000);
+            sleep(500);
+            rightShift(600);
+            sleep(500);
+            //start detection
+            counter = 50;
+            blue = 0; red = 0;
+            while(counter > 0){
+                counter --;
+                if(Color.red()> 1200){
+                    red ++;
+                }else if(Color.blue() > 400 && Color.red() < Color.blue() / 2 + 100){
+                    blue ++;
                 }
             }
+            //check results
+            if(red > 20 || blue > 20){
+                rightClaw.setPosition(RIGHT_OPEN);
+                sleep(1000);
+                telemetry.addData("Here", 0);
+                telemetry.update();
+            }else{
+                //it is at left
+                leftShift(600);
+                sleep(500);
+                forwardDrive(600);
+                sleep(500);
+                stop();
+            }
 
-            telemetry.addData("Turns Made:", rightTurnsMade);
-            telemetry.addData("Distance: ", distance);
-            telemetry.addData("Distance: ", distance);
-            telemetry.addData("Distance: ", distance);
-            telemetry.addData("Distance: ", distance);
-            telemetry.addData("Distance: ", distance);
-            telemetry.update();
         }
 
-        if (objectFound) {
-            backwardsDrive(300);
-            rotator.setPosition(CLAW_DOWN);
-            sleep(1000);
-            forwardDrive(550);
-            rightClaw.setPosition(RIGHT_OPEN);
-            sleep(1000);
-            rotator.setPosition(CLAW_UP);
-            sleep(1000);
-            rightClaw.setPosition(RIGHT_CLOSE);
-            sleep(1000);
-        }
 
-        leftTurn(800);
-        forwardDrive(1200);
-
-        if (!objectFound) {
-            rotator.setPosition(CLAW_DOWN);
-            sleep(1000);
-            rightClaw.setPosition(RIGHT_OPEN);
-            sleep(1000);
-            rotator.setPosition(CLAW_UP);
-            sleep(1000);
-            rightClaw.setPosition(RIGHT_CLOSE);
-            sleep(1000);
-        }
     }
 
     private void forwardDrive(int ms) {
@@ -220,7 +183,7 @@ public class Autonomous extends LinearOpMode {
         rightFrontDrive.setPower(0);
     }
 
-    private void rightShift(int ms) {
+    private void leftShift(int ms) {
         leftBackDrive.setPower(MOTOR_POWER);
         rightBackDrive.setPower(-MOTOR_POWER);
         leftFrontDrive.setPower(-MOTOR_POWER);
@@ -232,7 +195,7 @@ public class Autonomous extends LinearOpMode {
         rightFrontDrive.setPower(0);
     }
 
-    private void leftShift(int ms) {
+    private void rightShift(int ms) {
         leftBackDrive.setPower(-MOTOR_POWER);
         rightBackDrive.setPower(MOTOR_POWER);
         leftFrontDrive.setPower(MOTOR_POWER);
@@ -267,5 +230,6 @@ public class Autonomous extends LinearOpMode {
         leftFrontDrive.setPower(0);
         rightFrontDrive.setPower(0);
     }
+
 }
 
