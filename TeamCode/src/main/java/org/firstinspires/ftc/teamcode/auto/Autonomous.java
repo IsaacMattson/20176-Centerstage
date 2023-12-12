@@ -40,8 +40,10 @@ public class Autonomous extends LinearOpMode {
     private final double LEFT_CLOSE = 0.75;
     private final double CLAW_UP = 0.03;
     private final double CLAW_DOWN = CLAW_UP + 0.80;
-
     private final double MOTOR_POWER = 0.4;
+    private final int ARM_UP = 1280;
+    private final int ARM_DOWN = 0;
+
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
@@ -90,40 +92,35 @@ public class Autonomous extends LinearOpMode {
 
         waitForStart();
 
-        //drive forward to middle
+        // Drive to middle
         forwardDrive(1500);
         sleep(500);
 
-        //check for right side
+        // Check right side
         rightShift(600);
         sleep(500);
 
-        //check results
         if (checkObject()) {
-            //team prop is on the right;
+            // Team prop is on the right
             leftShift(600);
             sleep(300);
             rightTurn(1000);
             sleep(300);
             backwardsDrive(600);
             sleep(300);
-            rotator.setPosition(CLAW_DOWN);
-            sleep(1000);
-            forwardDrive(400);
+
+            // Move claw back
+            moveClaw();
+
+            // Rest robot back to starting position
+            leftTurn(1000);
             sleep(300);
-            rightClaw.setPosition(RIGHT_OPEN);
-            sleep(1000);
-            telemetry.addData("Here", 0);
-            telemetry.update();
-            //backboard code here
         } else {
-            //check left
-            leftShift(600);
-            sleep(500);
-            leftShift(600);
+            // Check left
+            leftShift(1200);
             sleep(500);
 
-            //start detection
+            // Start detection
             if (checkObject()) {
                 rightShift(600);
                 sleep(300);
@@ -131,16 +128,14 @@ public class Autonomous extends LinearOpMode {
                 sleep(300);
                 backwardsDrive(600);
                 sleep(300);
-                rotator.setPosition(CLAW_DOWN);
-                sleep(1000);
-                forwardDrive(500);
+
+                moveClaw();
+
+                // Rest robot back to starting position
+                rightTurn(1000);
                 sleep(300);
-                rightClaw.setPosition(RIGHT_OPEN);
-                sleep(1000);
-                telemetry.addData("Here", 0);
-                telemetry.update();
             } else {
-                //it is at center
+                // Is at center
                 rightShift(600);
                 backwardsDrive(600);
                 rotator.setPosition(CLAW_DOWN);
@@ -150,11 +145,17 @@ public class Autonomous extends LinearOpMode {
                 rightClaw.setPosition(RIGHT_OPEN);
                 sleep(1000);
             }
-
         }
+
+        // Set position to move forward towards to park
+        leftTurn(500);
+        backwardsDrive(800);
+
+        rotator.setPosition(ARM_UP);
+
     }
 
-    public boolean checkObject(){
+    private boolean checkObject(){
         int blue = 0, red = 0;
         for(int counter = 0; counter < 50; counter++){
             if (colorSensorRight.red() > 1200 || colorSensorLeft.red() > 1200) {
@@ -166,6 +167,22 @@ public class Autonomous extends LinearOpMode {
         }
 
         return (red >= 20 || blue >= 20);
+    }
+
+    private void moveClaw() {
+        rotator.setPosition(CLAW_DOWN);
+        sleep(1000);
+        forwardDrive(500); // Make this 400 if 500 doesn't work
+        sleep(300);
+        rightClaw.setPosition(RIGHT_OPEN);
+        sleep(1000);
+
+        telemetry.addData("Here", 0);
+        telemetry.update();
+
+        rightClaw.setPosition(RIGHT_CLOSE);
+        sleep(1000);
+        rightClaw.setPosition(CLAW_UP);
     }
 
     private void forwardDrive(int ms) {

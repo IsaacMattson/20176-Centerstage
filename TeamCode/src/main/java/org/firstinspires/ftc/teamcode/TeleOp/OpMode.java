@@ -41,9 +41,6 @@ public class OpMode extends LinearOpMode {
     private Servo rightClaw = null;
     private Servo rotator = null;
     private Servo plane = null;
-    private TouchSensor Touch = null;
-    private ColorSensor Color = null;
-    private ColorRangeSensor ColorRange = null;
 
     @Override
     public void runOpMode() {
@@ -59,10 +56,6 @@ public class OpMode extends LinearOpMode {
         liftLeft = hardwareMap.get(DcMotor.class, "LiftLeft");
         liftRight = hardwareMap.get(DcMotor.class, "LiftRight");
         plane = hardwareMap.get(Servo.class, "plane");
-        Color = hardwareMap.get(ColorSensor.class, "Color2");
-//        ColorRange = hardwareMap.get(ColorRangeSensor.class, "Color2");
-
-
 
         leftClaw.setDirection(Servo.Direction.REVERSE);
 
@@ -107,8 +100,8 @@ public class OpMode extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            boolean armUp = this.gamepad1.dpad_up;
-            boolean armDown = this.gamepad1.dpad_down;
+            boolean dPadUp = this.gamepad1.dpad_up;
+            boolean dPadDown = this.gamepad1.dpad_down;
             boolean leftClose = this.gamepad1.left_trigger > 0.25;
             boolean leftOpen = this.gamepad1.left_bumper;
             boolean rightClose = this.gamepad1.right_trigger > 0.25;
@@ -133,47 +126,53 @@ public class OpMode extends LinearOpMode {
             double rightBackMotorPower = (y + x - rx) / denominator;
 
             //arm code
-            if (armUp) {
+            if (dPadUp) {
                 liftRight.setPower(1.0);
                 liftLeft.setPower(1.0);
                 targetArmValue = ARM_UP;
                 rotatorPosition = CLAW_UP;
-
-            } else if (armDown) {
+            } else if (dPadDown) {
                 liftRight.setPower(0.9);
                 liftLeft.setPower(0.9);
                 targetArmValue = ARM_DOWN;
             }
-            //servo code
+
+            // Servo code
             if (clawUp) {
                 rotatorPosition = CLAW_UP;
             } else if (clawDown) {
                 rotatorPosition = CLAW_DOWN;
             }
+
             if (leftOpen || openBoth) {
                 leftPosition = LEFT_OPEN;
             } else if (leftClose || closeBoth) {
                 leftPosition = LEFT_CLOSE;
             }
+
             if (rightOpen || openBoth) {
                 rightPosition = RIGHT_OPEN;
             } else if (rightClose || closeBoth) {
                 rightPosition = RIGHT_CLOSE;
             }
-            //Lift
+
+            // Lift Code
             if (liftInitiate) {
                 targetArmValue = 950;
                 canLift = true;
             }
+
             if (liftStart && canLift) {
                 targetArmValue = 300;
                 hangingPosition = CLIMB;
                 canLift = false;
             }
-            //airplane
+
+            // Airplane Code
             if (launchPlane) {
                 planePosition = 1.0;
             }
+
             // Set motor & servo power
             leftFrontDrive.setPower(leftFrontMotorPower);
             leftBackDrive.setPower(leftBackMotorPower);
@@ -187,13 +186,7 @@ public class OpMode extends LinearOpMode {
             rightClaw.setPosition(rightPosition);
             rotator.setPosition(rotatorPosition);
             plane.setPosition(planePosition);
-            // Debug
-            telemetry.addData("Blue:", Color.blue());
-            telemetry.addData("Red:", Color.red());
 
-            telemetry.addData("Found Red:", Color.red()> 1200);
-            telemetry.addData("Found Blue:", Color.blue() > 400 && Color.red() < Color.blue() / 2 + 100);
-//            telemetry.addData("within 5cm:", ColorRange.getDistance(DistanceUnit.CM) < 5);
             telemetry.update();
         }
     }
