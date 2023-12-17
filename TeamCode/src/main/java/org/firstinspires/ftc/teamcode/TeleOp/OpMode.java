@@ -197,12 +197,7 @@ public class OpMode extends LinearOpMode {
             rotator.setPosition(rotatorPosition);
             plane.setPosition(planePosition);
             // Debug
-//            telemetry.addData("voltage?", voltage.getVoltage());
-            telemetry.addData("Robot Heading Yaw", gyro.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-            telemetry.addData("Robot Heading Pitch", gyro.getRobotYawPitchRollAngles().getPitch(AngleUnit.DEGREES));
-            telemetry.addData("Robot Heading Roll", gyro.getRobotYawPitchRollAngles().getRoll(AngleUnit.DEGREES));
-
-            telemetry.update();
+//            telemetry.update();
         }
     }
 

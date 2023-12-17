@@ -43,7 +43,7 @@ public class RedFar extends LinearOpMode {
     private final double LEFT_CLOSE = 0.75;
     private final double CLAW_UP = 0.03;
     private final double CLAW_DOWN = CLAW_UP + 0.80;
-    private final double MOTOR_POWER = 0.4;
+    private final double MOTOR_POWER = 0.40;
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
@@ -129,7 +129,7 @@ public class RedFar extends LinearOpMode {
             forwardDrive(500);
             sleep(300);
             rightClaw.setPosition(RIGHT_OPEN);
-            rightClaw.setPosition(RIGHT_CLOSE);
+            rotator.setPosition(CLAW_UP);
             sleep(1000);
         } else {
             //check right
@@ -163,12 +163,11 @@ public class RedFar extends LinearOpMode {
                 sleep(1000);
             } else {
                 //it is at center
-                forwardDrive(150);
                 leftShift(600);
-                backwardsDrive(650);
+                backwardsDrive(500);
                 rotator.setPosition(CLAW_DOWN);
                 sleep(1000);
-                forwardDrive(250);
+                forwardDrive(350);
                 sleep(300);
                 rightClaw.setPosition(RIGHT_OPEN);
                 sleep(1000);

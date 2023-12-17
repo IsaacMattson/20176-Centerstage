@@ -43,7 +43,7 @@ public class A125Red extends LinearOpMode {
     private final double LEFT_CLOSE = 0.75;
     private final double CLAW_UP = 0.03;
     private final double CLAW_DOWN = CLAW_UP + 0.80;
-    private final double MOTOR_POWER = 0.4;
+    private final double MOTOR_POWER = 0.40;
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
@@ -112,6 +112,7 @@ public class A125Red extends LinearOpMode {
         //check for right side
         leftShift(600);
         sleep(300);
+        rightTurn(0);
         backwardsDrive(150);
 
         //start detection;
@@ -126,7 +127,7 @@ public class A125Red extends LinearOpMode {
             sleep(300);
             rotator.setPosition(CLAW_DOWN);
             sleep(1000);
-            forwardDrive(500);
+            forwardDrive(750);
             sleep(300);
             rightClaw.setPosition(RIGHT_OPEN);
             sleep(1000);
@@ -153,6 +154,7 @@ public class A125Red extends LinearOpMode {
             sleep(300);
             rightShift(600);
             sleep(300);
+            rightTurn(0);
             backwardsDrive(150);
             rightTurn(0);
             //start detection
@@ -166,6 +168,7 @@ public class A125Red extends LinearOpMode {
                 sleep(300);
                 backwardsDrive(200);
                 sleep(300);
+                forwardDrive(200);
                 rotator.setPosition(CLAW_DOWN);
                 sleep(1000);
                 sleep(300);
@@ -195,7 +198,7 @@ public class A125Red extends LinearOpMode {
                 backwardsDrive(650);
                 rotator.setPosition(CLAW_DOWN);
                 sleep(1000);
-                forwardDrive(250);
+                forwardDrive(450);
                 sleep(300);
                 rightClaw.setPosition(RIGHT_OPEN);
                 sleep(1000);

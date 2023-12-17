@@ -165,10 +165,10 @@ public class A125Blue extends LinearOpMode {
                 sleep(300);
                 leftTurn(90);
                 sleep(300);
-                backwardsDrive(200);
-                sleep(300);
+                backwardsDrive(600);
                 rotator.setPosition(CLAW_DOWN);
                 sleep(1000);
+                forwardDrive(600);
                 sleep(300);
                 rightClaw.setPosition(RIGHT_OPEN);
                 sleep(1000);
@@ -196,8 +196,8 @@ public class A125Blue extends LinearOpMode {
                 backwardsDrive(650);
                 rotator.setPosition(CLAW_DOWN);
                 sleep(1000);
-                forwardDrive(350);
-                sleep(300);
+                forwardDrive(150);
+                sleep(250);
                 rightClaw.setPosition(RIGHT_OPEN);
                 sleep(1000);
                 rightClaw.setPosition(RIGHT_CLOSE);
@@ -214,14 +214,13 @@ public class A125Blue extends LinearOpMode {
                 arm.setTargetPosition(0);
                 leftClaw.setPosition(LEFT_CLOSE);
                 sleep(2500);
+                sleep(2000);
 
 
 
             }
 
         }
-
-
     }
 
     public boolean checkObject(){
