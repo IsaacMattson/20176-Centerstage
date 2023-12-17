@@ -29,12 +29,16 @@
 
 package org.firstinspires.ftc.teamcode.auto;
 
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.*;
 import com.*;
+import com.qualcomm.robotcore.hardware.*;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous
-public class Autonomous extends LinearOpMode {
+public class DegreeTest extends LinearOpMode {
     private final double RIGHT_OPEN = 0.16;
     private final double RIGHT_CLOSE = 0.70;
     private final double LEFT_OPEN = 0.17;
@@ -51,6 +55,8 @@ public class Autonomous extends LinearOpMode {
     private Servo rightClaw = null;
     private Servo rotator = null;
     private ColorSensor ColorR = null, ColorL = null;
+    private IMU gyro = null;
+
 
     @Override
     public void runOpMode() {
@@ -64,6 +70,12 @@ public class Autonomous extends LinearOpMode {
         rotator = hardwareMap.get(Servo.class, "rotator");
         ColorR = hardwareMap.get(ColorSensor.class, "Color2");
         ColorL = hardwareMap.get(ColorSensor.class, "Color1");
+        gyro = hardwareMap.get(IMU.class, "imu");
+        IMU.Parameters parmeters= new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                RevHubOrientationOnRobot.UsbFacingDirection.UP
+        ));
+        gyro.initialize(parmeters);
 
 
 
@@ -90,72 +102,11 @@ public class Autonomous extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        gyro.resetYaw();
         waitForStart();
+        rightTurn(90);
 
 
-        //drive forward to middle
-        forwardDrive(1500);
-        sleep(500);
-
-        //check for right side
-        rightShift(600);
-        sleep(500);
-
-        //start detection;
-        //check results
-        if (checkObject()) {
-            //team prop is on the right;
-            leftShift(600);
-            sleep(300);
-            rightTurn(1000);
-            sleep(300);
-            backwardsDrive(600);
-            sleep(300);
-            rotator.setPosition(CLAW_DOWN);
-            sleep(1000);
-            forwardDrive(600);
-            sleep(300);
-            rightClaw.setPosition(RIGHT_OPEN);
-            sleep(1000);
-            telemetry.addData("Here", 0);
-            telemetry.update();
-            //backboard code here
-        } else {
-            //check left
-            leftShift(600);
-            sleep(500);
-            leftShift(600);
-            sleep(500);
-            //start detection
-            //check results
-            if (checkObject()) {
-                rightShift(600);
-                sleep(300);
-                leftTurn(1100);
-                sleep(300);
-                backwardsDrive(600);
-                sleep(300);
-                rotator.setPosition(CLAW_DOWN);
-                sleep(1000);
-                forwardDrive(600);
-                sleep(300);
-                rightClaw.setPosition(RIGHT_OPEN);
-                sleep(1000);
-                telemetry.addData("Here", 0);
-                telemetry.update();
-            } else {
-                //it is at center
-                rightShift(600);
-                backwardsDrive(600);
-                rotator.setPosition(CLAW_DOWN);
-                sleep(1000);
-                forwardDrive(600);
-                sleep(300);
-                rightClaw.setPosition(RIGHT_OPEN);
-                sleep(1000);
-            }
-
-        }
 
 
     }
@@ -223,24 +174,28 @@ public class Autonomous extends LinearOpMode {
         rightFrontDrive.setPower(0);
     }
 
-    private void rightTurn(int ms) { // Not sure what values to make negative, will test
-        leftBackDrive.setPower(MOTOR_POWER);
-        rightBackDrive.setPower(-MOTOR_POWER);
-        leftFrontDrive.setPower(MOTOR_POWER);
-        rightFrontDrive.setPower(-MOTOR_POWER);
-        sleep(ms);
+    private void rightTurn(int degree) { // Not sure what values to make negative, will test
+        gyro.resetYaw();
+        while(gyro.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) >= -degree + 8){
+            leftBackDrive.setPower(MOTOR_POWER);
+            rightBackDrive.setPower(-MOTOR_POWER);
+            leftFrontDrive.setPower(MOTOR_POWER);
+            rightFrontDrive.setPower(-MOTOR_POWER);
+        }
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
         leftFrontDrive.setPower(0);
         rightFrontDrive.setPower(0);
     }
 
-    private void leftTurn(int ms) {
-        leftBackDrive.setPower(-MOTOR_POWER);
-        rightBackDrive.setPower(MOTOR_POWER);
-        leftFrontDrive.setPower(-MOTOR_POWER);
-        rightFrontDrive.setPower(MOTOR_POWER);
-        sleep(ms);
+    private void leftTurn(int degree) {
+        gyro.resetYaw();
+        while(gyro.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) <= degree - 8){
+            leftBackDrive.setPower(-MOTOR_POWER);
+            rightBackDrive.setPower(MOTOR_POWER);
+            leftFrontDrive.setPower(-MOTOR_POWER);
+            rightFrontDrive.setPower(MOTOR_POWER);
+        }
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
         leftFrontDrive.setPower(0);

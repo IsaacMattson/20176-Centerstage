@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
+import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorRangeSensor;
@@ -7,8 +9,10 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.*;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp
@@ -19,7 +23,7 @@ public class OpMode extends LinearOpMode {
     private final double LEFT_CLOSE = 0.75;
     private final double CLAW_UP = 0.03;
     private final double CLAW_DOWN = CLAW_UP + 0.80;
-    private final int ARM_UP = 1280;
+    private final int ARM_UP = 1230;
     private final int ARM_DOWN = 0;
     private final int CLIMB = 6000;
     private boolean canLift = false;
@@ -41,12 +45,14 @@ public class OpMode extends LinearOpMode {
     private Servo rightClaw = null;
     private Servo rotator = null;
     private Servo plane = null;
-    private TouchSensor Touch = null;
     private ColorSensor Color = null;
     private ColorRangeSensor ColorRange = null;
 
+    private IMU gyro = null;
+
     @Override
     public void runOpMode() {
+
         //declare hardware
         leftFrontDrive = hardwareMap.get(DcMotor.class, "driveMotorFour");
         leftBackDrive = hardwareMap.get(DcMotor.class, "driveMotorOne");
@@ -59,12 +65,15 @@ public class OpMode extends LinearOpMode {
         liftLeft = hardwareMap.get(DcMotor.class, "LiftLeft");
         liftRight = hardwareMap.get(DcMotor.class, "LiftRight");
         plane = hardwareMap.get(Servo.class, "plane");
-        Color = hardwareMap.get(ColorSensor.class, "Color2");
-//        ColorRange = hardwareMap.get(ColorRangeSensor.class, "Color2");
-
-
-
+        gyro = hardwareMap.get(IMU.class, "imu");
+        IMU.Parameters parmeters= new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                RevHubOrientationOnRobot.UsbFacingDirection.UP
+        ));
+        gyro.initialize(parmeters);
         leftClaw.setDirection(Servo.Direction.REVERSE);
+
+        //IMU
 
         //Arm settings
         armMotorPower = 0.25;
@@ -104,6 +113,8 @@ public class OpMode extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        gyro.resetYaw();
+
         waitForStart();
 
         while (opModeIsActive()) {
@@ -132,16 +143,14 @@ public class OpMode extends LinearOpMode {
             double rightFrontMotorPower = (y - x - rx) / denominator;
             double rightBackMotorPower = (y + x - rx) / denominator;
 
+            if(this.gamepad1.left_stick_button){
+                gyro.resetYaw();
+            }
             //arm code
             if (armUp) {
-                liftRight.setPower(1.0);
-                liftLeft.setPower(1.0);
                 targetArmValue = ARM_UP;
                 rotatorPosition = CLAW_UP;
-
             } else if (armDown) {
-                liftRight.setPower(0.9);
-                liftLeft.setPower(0.9);
                 targetArmValue = ARM_DOWN;
             }
             //servo code
@@ -175,10 +184,10 @@ public class OpMode extends LinearOpMode {
                 planePosition = 1.0;
             }
             // Set motor & servo power
-            leftFrontDrive.setPower(leftFrontMotorPower);
-            leftBackDrive.setPower(leftBackMotorPower);
-            rightFrontDrive.setPower(rightFrontMotorPower);
-            rightBackDrive.setPower(rightBackMotorPower);
+            leftFrontDrive.setPower(leftFrontMotorPower * 0.8);
+            leftBackDrive.setPower(leftBackMotorPower * 0.8);
+            rightFrontDrive.setPower(rightFrontMotorPower * 0.8);
+            rightBackDrive.setPower(rightBackMotorPower * 0.8);
             liftLeft.setTargetPosition(hangingPosition);
             liftRight.setTargetPosition(hangingPosition);
             arm.setTargetPosition(targetArmValue);
@@ -188,12 +197,11 @@ public class OpMode extends LinearOpMode {
             rotator.setPosition(rotatorPosition);
             plane.setPosition(planePosition);
             // Debug
-            telemetry.addData("Blue:", Color.blue());
-            telemetry.addData("Red:", Color.red());
+//            telemetry.addData("voltage?", voltage.getVoltage());
+            telemetry.addData("Robot Heading Yaw", gyro.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+            telemetry.addData("Robot Heading Pitch", gyro.getRobotYawPitchRollAngles().getPitch(AngleUnit.DEGREES));
+            telemetry.addData("Robot Heading Roll", gyro.getRobotYawPitchRollAngles().getRoll(AngleUnit.DEGREES));
 
-            telemetry.addData("Found Red:", Color.red()> 1200);
-            telemetry.addData("Found Blue:", Color.blue() > 400 && Color.red() < Color.blue() / 2 + 100);
-//            telemetry.addData("within 5cm:", ColorRange.getDistance(DistanceUnit.CM) < 5);
             telemetry.update();
         }
     }

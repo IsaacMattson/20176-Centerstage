@@ -29,12 +29,14 @@
 
 package org.firstinspires.ftc.teamcode.auto;
 
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.*;
-import com.*;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous
-public class Autonomous extends LinearOpMode {
+public class A125Blue extends LinearOpMode {
     private final double RIGHT_OPEN = 0.16;
     private final double RIGHT_CLOSE = 0.70;
     private final double LEFT_OPEN = 0.17;
@@ -51,6 +53,7 @@ public class Autonomous extends LinearOpMode {
     private Servo rightClaw = null;
     private Servo rotator = null;
     private ColorSensor ColorR = null, ColorL = null;
+    private IMU gyro = null;
 
     @Override
     public void runOpMode() {
@@ -64,6 +67,12 @@ public class Autonomous extends LinearOpMode {
         rotator = hardwareMap.get(Servo.class, "rotator");
         ColorR = hardwareMap.get(ColorSensor.class, "Color2");
         ColorL = hardwareMap.get(ColorSensor.class, "Color1");
+        gyro = hardwareMap.get(IMU.class, "imu");
+        IMU.Parameters parmeters= new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                RevHubOrientationOnRobot.UsbFacingDirection.UP
+        ));
+        gyro.initialize(parmeters);
 
 
 
@@ -77,6 +86,7 @@ public class Autonomous extends LinearOpMode {
         arm.setDirection(DcMotorSimple.Direction.FORWARD);
         arm.setTargetPosition(0);
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        arm.setPower(0.2);
 
         leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -90,16 +100,19 @@ public class Autonomous extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        gyro.resetYaw();
+
         waitForStart();
 
 
         //drive forward to middle
-        forwardDrive(1500);
+        forwardDrive(1450);
         sleep(500);
 
         //check for right side
         rightShift(600);
-        sleep(500);
+        sleep(300);
+        backwardsDrive(150);
 
         //start detection;
         //check results
@@ -107,52 +120,103 @@ public class Autonomous extends LinearOpMode {
             //team prop is on the right;
             leftShift(600);
             sleep(300);
-            rightTurn(1000);
+            rightTurn(90);
             sleep(300);
             backwardsDrive(600);
             sleep(300);
             rotator.setPosition(CLAW_DOWN);
             sleep(1000);
-            forwardDrive(600);
+            forwardDrive(500);
             sleep(300);
             rightClaw.setPosition(RIGHT_OPEN);
             sleep(1000);
-            telemetry.addData("Here", 0);
-            telemetry.update();
+            rightClaw.setPosition(RIGHT_CLOSE);
+            rotator.setPosition(CLAW_UP);
+            sleep(1000);
+            backwardsDrive(1800);
+            sleep(300);
+            leftShift(300);
+            sleep(300);
+            arm.setTargetPosition(1200);
+            sleep(2500);
+            leftClaw.setPosition(LEFT_OPEN);
+            sleep(1000);
+            arm.setTargetPosition(0);
+            leftClaw.setPosition(LEFT_CLOSE);
+            sleep(2500);
             //backboard code here
         } else {
             //check left
+            leftTurn(0);
+            sleep(300);
+            forwardDrive(150);
             leftShift(600);
-            sleep(500);
+            sleep(300);
             leftShift(600);
-            sleep(500);
+            sleep(300);
+            backwardsDrive(150);
+            leftTurn(0);
             //start detection
             //check results
             if (checkObject()) {
+                //left
+                rightTurn(0);
                 rightShift(600);
                 sleep(300);
-                leftTurn(1100);
+                leftTurn(90);
                 sleep(300);
-                backwardsDrive(600);
+                backwardsDrive(200);
                 sleep(300);
                 rotator.setPosition(CLAW_DOWN);
                 sleep(1000);
-                forwardDrive(600);
                 sleep(300);
                 rightClaw.setPosition(RIGHT_OPEN);
                 sleep(1000);
-                telemetry.addData("Here", 0);
-                telemetry.update();
+                rightClaw.setPosition(RIGHT_CLOSE);
+                rotator.setPosition(CLAW_UP);
+                sleep(1000);
+                rightTurn(90);
+                sleep(300);
+                rightShift(700);
+                sleep(300);
+                rightTurn(90);
+                backwardsDrive(2100);
+                sleep(300);
+                arm.setTargetPosition(1200);
+                sleep(2500);
+                leftClaw.setPosition(LEFT_OPEN);
+                sleep(1000);
+                arm.setTargetPosition(0);
+                leftClaw.setPosition(LEFT_CLOSE);
+                sleep(2500);
             } else {
                 //it is at center
+                forwardDrive(150);
                 rightShift(600);
-                backwardsDrive(600);
+                backwardsDrive(650);
                 rotator.setPosition(CLAW_DOWN);
                 sleep(1000);
-                forwardDrive(600);
+                forwardDrive(350);
                 sleep(300);
                 rightClaw.setPosition(RIGHT_OPEN);
                 sleep(1000);
+                rightClaw.setPosition(RIGHT_CLOSE);
+                rotator.setPosition(CLAW_UP);
+                sleep(1000);
+                rightTurn(90);
+                sleep(300);
+                backwardsDrive(1950);
+                sleep(300);
+                arm.setTargetPosition(1200);
+                sleep(2500);
+                leftClaw.setPosition(LEFT_OPEN);
+                sleep(1000);
+                arm.setTargetPosition(0);
+                leftClaw.setPosition(LEFT_CLOSE);
+                sleep(2500);
+
+
+
             }
 
         }
@@ -222,25 +286,26 @@ public class Autonomous extends LinearOpMode {
         leftFrontDrive.setPower(0);
         rightFrontDrive.setPower(0);
     }
-
-    private void rightTurn(int ms) { // Not sure what values to make negative, will test
-        leftBackDrive.setPower(MOTOR_POWER);
-        rightBackDrive.setPower(-MOTOR_POWER);
-        leftFrontDrive.setPower(MOTOR_POWER);
-        rightFrontDrive.setPower(-MOTOR_POWER);
-        sleep(ms);
+    private void rightTurn(int degree) { // Not sure what values to make negative, will test
+        while(gyro.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) >= -degree + 8){
+            leftBackDrive.setPower(MOTOR_POWER);
+            rightBackDrive.setPower(-MOTOR_POWER);
+            leftFrontDrive.setPower(MOTOR_POWER);
+            rightFrontDrive.setPower(-MOTOR_POWER);
+        }
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
         leftFrontDrive.setPower(0);
         rightFrontDrive.setPower(0);
     }
 
-    private void leftTurn(int ms) {
-        leftBackDrive.setPower(-MOTOR_POWER);
-        rightBackDrive.setPower(MOTOR_POWER);
-        leftFrontDrive.setPower(-MOTOR_POWER);
-        rightFrontDrive.setPower(MOTOR_POWER);
-        sleep(ms);
+    private void leftTurn(int degree) {
+        while(gyro.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) <= degree - 8){
+            leftBackDrive.setPower(-MOTOR_POWER);
+            rightBackDrive.setPower(MOTOR_POWER);
+            leftFrontDrive.setPower(-MOTOR_POWER);
+            rightFrontDrive.setPower(MOTOR_POWER);
+        }
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
         leftFrontDrive.setPower(0);
