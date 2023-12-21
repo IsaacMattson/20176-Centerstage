@@ -36,14 +36,14 @@ import com.qualcomm.robotcore.hardware.*;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous
-public class BlueFar extends LinearOpMode {
+public class Far extends LinearOpMode {
     private final double RIGHT_OPEN = 0.16;
     private final double RIGHT_CLOSE = 0.70;
     private final double LEFT_OPEN = 0.17;
     private final double LEFT_CLOSE = 0.75;
     private final double CLAW_UP = 0.03;
     private final double CLAW_DOWN = CLAW_UP + 0.80;
-    private final double MOTOR_POWER = 0.4;
+    private final double MOTOR_POWER = 0.40;
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
@@ -74,8 +74,6 @@ public class BlueFar extends LinearOpMode {
         ));
         gyro.initialize(parmeters);
 
-
-
         leftClaw.setDirection(Servo.Direction.REVERSE);
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -104,23 +102,21 @@ public class BlueFar extends LinearOpMode {
 
         waitForStart();
 
-
         //drive forward to middle
         forwardDrive(1450);
         sleep(500);
 
         //check for right side
-        rightShift(600);
+        leftShift(600);
         sleep(300);
         backwardsDrive(150);
 
-        //start detection;
         //check results
         if (checkObject()) {
-            //team prop is on the right;
-            leftShift(600);
+            //team prop is on the left;
+            rightShift(600);
             sleep(300);
-            rightTurn(90);
+            leftTurn(90);
             sleep(300);
             backwardsDrive(600);
             sleep(300);
@@ -129,30 +125,27 @@ public class BlueFar extends LinearOpMode {
             forwardDrive(500);
             sleep(300);
             rightClaw.setPosition(RIGHT_OPEN);
-            sleep(1000);
-            rightClaw.setPosition(RIGHT_CLOSE);
             rotator.setPosition(CLAW_UP);
             sleep(1000);
-
         } else {
-            //check left
-            leftTurn(0);
+            //check right
+            rightTurn(0);
             sleep(300);
-            forwardDrive(150);
-            leftShift(600);
+            forwardDrive(50);
+            rightShift(600);
             sleep(300);
-            leftShift(600);
+            rightShift(600);
             sleep(300);
             backwardsDrive(150);
-            leftTurn(0);
+            rightTurn(0);
             //start detection
             //check results
             if (checkObject()) {
-                //left
-                rightTurn(0);
-                rightShift(600);
+                //right
+                leftTurn(0);
+                leftShift(600);
                 sleep(300);
-                leftTurn(90);
+                rightTurn(90);
                 sleep(300);
                 backwardsDrive(200);
                 sleep(300);
@@ -166,9 +159,8 @@ public class BlueFar extends LinearOpMode {
                 sleep(1000);
             } else {
                 //it is at center
-                forwardDrive(150);
-                rightShift(600);
-                backwardsDrive(650);
+                leftShift(600);
+                backwardsDrive(500);
                 rotator.setPosition(CLAW_DOWN);
                 sleep(1000);
                 forwardDrive(350);
@@ -178,26 +170,22 @@ public class BlueFar extends LinearOpMode {
                 rightClaw.setPosition(RIGHT_CLOSE);
                 rotator.setPosition(CLAW_UP);
                 sleep(1000);
-
             }
-
         }
-
-
     }
 
-    public boolean checkObject(){
-
+    public boolean checkObject() {
         int blue = 0, red = 0;
 
-        for(int counter = 0; counter < 50; counter++){
-            if(ColorR.red() > 1200 || ColorL.red() > 1200){
+        for (int counter = 0; counter < 50; counter++) {
+            if (ColorR.red() > 1200 || ColorL.red() > 1200) {
                 red ++;
-            }else if((ColorR.blue() > 400 && ColorR.red() < ColorR.blue() / 2 + 100) ||
-                    (ColorL.blue() > 400 && ColorL.red() < ColorL.blue() / 2 + 100)){
+            } else if ((ColorR.blue() > 400 && ColorR.red() < ColorR.blue() / 2 + 100) ||
+                    (ColorL.blue() > 400 && ColorL.red() < ColorL.blue() / 2 + 100)) {
                 blue ++;
             }
         }
+
         return (red >= 20 || blue >= 20);
     }
 

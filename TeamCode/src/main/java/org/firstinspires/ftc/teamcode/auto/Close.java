@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.hardware.*;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous
-public class A125Red extends LinearOpMode {
+public class Close extends LinearOpMode {
     private final double RIGHT_OPEN = 0.16;
     private final double RIGHT_CLOSE = 0.70;
     private final double LEFT_OPEN = 0.17;
@@ -54,6 +54,7 @@ public class A125Red extends LinearOpMode {
     private Servo rotator = null;
     private ColorSensor ColorR = null, ColorL = null;
     private IMU gyro = null;
+    private boolean isOnRed = false;
 
     @Override
     public void runOpMode() {
@@ -73,8 +74,6 @@ public class A125Red extends LinearOpMode {
                 RevHubOrientationOnRobot.UsbFacingDirection.UP
         ));
         gyro.initialize(parmeters);
-
-
 
         leftClaw.setDirection(Servo.Direction.REVERSE);
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -104,7 +103,6 @@ public class A125Red extends LinearOpMode {
 
         waitForStart();
 
-
         //drive forward to middle
         forwardDrive(1450);
         sleep(500);
@@ -115,8 +113,7 @@ public class A125Red extends LinearOpMode {
         rightTurn(0);
         backwardsDrive(150);
 
-        //start detection;
-        //check results
+        //Detect
         if (checkObject()) {
             //team prop is on the left;
             rightShift(600);
@@ -134,17 +131,19 @@ public class A125Red extends LinearOpMode {
             rightClaw.setPosition(RIGHT_CLOSE);
             rotator.setPosition(CLAW_UP);
             sleep(1000);
-            backwardsDrive(1800);
-            sleep(300);
-            rightShift(200);
-            sleep(300);
-            arm.setTargetPosition(1200);
-            sleep(2500);
-            leftClaw.setPosition(LEFT_OPEN);
+
+            if (isOnRed) {
+                backwardsDrive(1800);
+                sleep(300);
+                rightShift(200);
+            } else {
+                backwardsDrive(1800);
+                sleep(300);
+                leftShift(300);
+            }
+
             sleep(1000);
-            arm.setTargetPosition(0);
-            leftClaw.setPosition(LEFT_CLOSE);
-            sleep(2500);
+            backwardsDrive(1800);
         } else {
             //check right
             rightTurn(0);
@@ -157,8 +156,8 @@ public class A125Red extends LinearOpMode {
             rightTurn(0);
             backwardsDrive(150);
             rightTurn(0);
-            //start detection
-            //check results
+
+            //Detect
             if (checkObject()) {
                 //right
                 leftTurn(0);
@@ -171,28 +170,26 @@ public class A125Red extends LinearOpMode {
                 forwardDrive(200);
                 rotator.setPosition(CLAW_DOWN);
                 sleep(1000);
-                sleep(300);
                 rightClaw.setPosition(RIGHT_OPEN);
                 sleep(1000);
                 rightClaw.setPosition(RIGHT_CLOSE);
                 rotator.setPosition(CLAW_UP);
                 sleep(1000);
-                leftTurn(90);
-                sleep(300);
-                leftShift(700);
+
+                if (isOnRed) {
+                    leftTurn(90);
+                    sleep(300);
+                    leftShift(700);
+                } else {
+                    rightTurn(90);
+                    sleep(300);
+                    rightShift(700);
+                }
+
                 sleep(300);
                 backwardsDrive(2000);
-                sleep(300);
-                sleep(300);
-                arm.setTargetPosition(1200);
-                sleep(2500);
-                leftClaw.setPosition(LEFT_OPEN);
-                sleep(1000);
-                arm.setTargetPosition(0);
-                leftClaw.setPosition(LEFT_CLOSE);
-                sleep(2500);
             } else {
-                //it is at center
+                //Is at center
                 forwardDrive(150);
                 leftShift(600);
                 backwardsDrive(650);
@@ -205,40 +202,48 @@ public class A125Red extends LinearOpMode {
                 rightClaw.setPosition(RIGHT_CLOSE);
                 rotator.setPosition(CLAW_UP);
                 sleep(1000);
-                leftTurn(90);
+
+                if (isOnRed) {
+                    leftTurn(90);
+                } else {
+                    rightTurn(90);
+                }
+
                 sleep(300);
                 backwardsDrive(1950);
-                sleep(300);
-                arm.setTargetPosition(1200);
-                sleep(2500);
-                leftClaw.setPosition(LEFT_OPEN);
-                sleep(1000);
-                arm.setTargetPosition(0);
-                leftClaw.setPosition(LEFT_CLOSE);
-                sleep(2500);
-
-
-
             }
-
         }
 
-
+        sleep(300);
+        arm.setTargetPosition(1200);
+        sleep(2500);
+        leftClaw.setPosition(LEFT_OPEN);
+        sleep(1000);
+        arm.setTargetPosition(0);
+        leftClaw.setPosition(LEFT_CLOSE);
+        sleep(2500);
     }
 
     public boolean checkObject(){
-
         int blue = 0, red = 0;
 
-        for(int counter = 0; counter < 50; counter++){
+        for (int counter = 0; counter < 50; counter++) {
             if(ColorR.red() > 1200 || ColorL.red() > 1200){
                 red ++;
-            }else if((ColorR.blue() > 400 && ColorR.red() < ColorR.blue() / 2 + 100) ||
-                    (ColorL.blue() > 400 && ColorL.red() < ColorL.blue() / 2 + 100)){
+            } else if ((ColorR.blue() > 400 && ColorR.red() < ColorR.blue() / 2 + 100) ||
+                    (ColorL.blue() > 400 && ColorL.red() < ColorL.blue() / 2 + 100)) {
                 blue ++;
             }
         }
-        return (red >= 20 || blue >= 20);
+
+        if (red >= 20) {
+            isOnRed = true;
+            return true;
+        } else if (blue >= 20) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private void forwardDrive(int ms) {
