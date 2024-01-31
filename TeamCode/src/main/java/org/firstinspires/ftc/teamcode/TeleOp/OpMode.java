@@ -25,8 +25,9 @@ public class OpMode extends LinearOpMode {
     private final double CLAW_DOWN = CLAW_UP + 0.80;
     private final int ARM_UP = 1230;
     private final int ARM_DOWN = 0;
-    private final int CLIMB = 6000;
+    private final int CLIMB = 6500;
     private boolean canLift = false;
+    private boolean canOpen = false;
     private double armMotorPower = 0;
     private double planePosition = 0;
     private double rightPosition = RIGHT_CLOSE;
@@ -106,7 +107,7 @@ public class OpMode extends LinearOpMode {
         liftRight.setPower(0.8);
         liftLeft.setPower(0.8);
 
-        planePosition = 0.0;
+        planePosition = 0.12;
         hangingPosition = 0;
 
         //initialize terminal
@@ -150,22 +151,27 @@ public class OpMode extends LinearOpMode {
             if (armUp) {
                 targetArmValue = ARM_UP;
                 rotatorPosition = CLAW_UP;
+                canOpen = true;
             } else if (armDown) {
                 targetArmValue = ARM_DOWN;
                 closeBoth = true;
+                canOpen = false;
             }
             //servo code
             if (clawUp) {
                 rotatorPosition = CLAW_UP;
+                canOpen = false;
+                closeBoth = true;
             } else if (clawDown) {
                 rotatorPosition = CLAW_DOWN;
+                canOpen = true;
             }
-            if (leftOpen || openBoth) {
+            if ((leftOpen || openBoth) && canOpen) {
                 leftPosition = LEFT_OPEN;
             } else if (leftClose || closeBoth) {
                 leftPosition = LEFT_CLOSE;
             }
-            if (rightOpen || openBoth) {
+            if ((rightOpen || openBoth) && canOpen) {
                 rightPosition = RIGHT_OPEN;
             } else if (rightClose || closeBoth) {
                 rightPosition = RIGHT_CLOSE;
@@ -180,9 +186,10 @@ public class OpMode extends LinearOpMode {
                 hangingPosition = CLIMB;
                 canLift = false;
             }
+
             //airplane
             if (launchPlane) {
-                planePosition = 1.0;
+                planePosition = 0.0;
             }
             // Set motor & servo power
             leftFrontDrive.setPower(leftFrontMotorPower * 0.8);
@@ -199,6 +206,8 @@ public class OpMode extends LinearOpMode {
             plane.setPosition(planePosition);
             // Debug
 //            telemetry.update();
+            //stops and timings
+
         }
     }
 
