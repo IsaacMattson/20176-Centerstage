@@ -84,10 +84,13 @@ public class EncoderAuto extends LinearOpMode {
         
         waitForStart();
 
-        Forward(getTicks(2));
-        ShuffleRight(getTicks(1));
-        PivotRight(900);
+//        Forward(getTicks(2));
+//        ShuffleRight(getTicks(3));
+//        PivotRight(900);
 
+        PivotRight(getTicksFromDegree(90));
+        PivotRight(getTicksFromDegree(180));
+        PivotLeft(getTicksFromDegree(270));
 
 
 
@@ -106,9 +109,13 @@ public class EncoderAuto extends LinearOpMode {
 
     }
 
-    public int getTicks(double inches){
+    public int getTicksFromDistance(double inches){
         //480 ticks per rotation; 1 foot per rotation; 2 feet per square
         return (int) (inches * 480.0);
+    }
+
+    public int getTicksFromDegree(double degree){
+        return (int) (degree/90*800);
     }
 
     public String checkObject(){
@@ -144,7 +151,7 @@ public class EncoderAuto extends LinearOpMode {
         (rightFrontDrive.isBusy())){
             sleep(10);
         }
-
+        sleep(150);
     }
 
     public void Backward(int distance){
@@ -159,7 +166,7 @@ public class EncoderAuto extends LinearOpMode {
                 (rightFrontDrive.isBusy())){
             sleep(10);
         }
-
+        sleep(150);
     }
 
     public void PivotRight(int distance){
@@ -174,7 +181,7 @@ public class EncoderAuto extends LinearOpMode {
                 (rightFrontDrive.isBusy())){
             sleep(10);
         }
-
+        sleep(150);
     }
 
     public void PivotLeft(int distance){
@@ -189,10 +196,10 @@ public class EncoderAuto extends LinearOpMode {
                 (rightFrontDrive.isBusy())){
             sleep(10);
         }
-
+        sleep(150);
     }
 
-    public void ShuffleRight(int distance){
+    public void ShuffleLeft(int distance){
         leftFrontDrive.setTargetPosition(leftFrontDrive.getCurrentPosition()-distance);
         leftBackDrive.setTargetPosition(leftBackDrive.getCurrentPosition()+distance);
         rightFrontDrive.setTargetPosition(rightFrontDrive.getCurrentPosition() + distance);
@@ -204,10 +211,11 @@ public class EncoderAuto extends LinearOpMode {
                 (rightFrontDrive.isBusy())){
             sleep(10);
         }
+        sleep(150);
 
     }
 
-    public void ShuffleLeft(int distance){
+    public void ShuffleRight(int distance){
         leftFrontDrive.setTargetPosition(leftFrontDrive.getCurrentPosition()+distance);
         leftBackDrive.setTargetPosition(leftBackDrive.getCurrentPosition()-distance);
         rightFrontDrive.setTargetPosition(rightFrontDrive.getCurrentPosition()-distance);
@@ -219,7 +227,7 @@ public class EncoderAuto extends LinearOpMode {
                 (rightFrontDrive.isBusy())){
             sleep(10);
         }
-
+        sleep(150);
     }
 
 
