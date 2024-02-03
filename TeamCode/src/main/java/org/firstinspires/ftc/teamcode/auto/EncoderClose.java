@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.auto;
 
-import com.qualcomm.*;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous
-public class EncoderAuto extends LinearOpMode {
+public class EncoderClose extends LinearOpMode {
     private final double RIGHT_OPEN = 0.16;
     private final double RIGHT_CLOSE = 0.70;
     private final double LEFT_OPEN = 0.17;
@@ -26,8 +25,6 @@ public class EncoderAuto extends LinearOpMode {
     private Servo rotator = null;
     private ColorSensor colorRight = null, colorLeft = null;
 
-    private String detectedColor = "";
-
     public void runOpMode(){
         leftFrontDrive = hardwareMap.get(DcMotor.class, "driveMotorFour");
         leftBackDrive = hardwareMap.get(DcMotor.class, "driveMotorOne");
@@ -39,12 +36,14 @@ public class EncoderAuto extends LinearOpMode {
         rotator = hardwareMap.get(Servo.class, "rotator");
         colorRight = hardwareMap.get(ColorSensor.class, "Color2");
         colorLeft = hardwareMap.get(ColorSensor.class, "Color1");
+
         //declare rotation direction
         leftClaw.setDirection(Servo.Direction.REVERSE);
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
         rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+
         //set arm motor behavior
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         arm.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -84,29 +83,45 @@ public class EncoderAuto extends LinearOpMode {
         
         waitForStart();
 
-//        Forward(getTicks(2));
-//        ShuffleRight(getTicks(3));
-//        PivotRight(900);
+        Forward(getTicksFromDistance(2.7));
+        ShuffleLeft(getTicksFromDistance(0.7));
+        if (checkObject()) {
+            ShuffleRight(getTicksFromDistance(0.7));
+            PivotLeft(getTicksFromDegree(90));
+            Backward(getTicksFromDistance(0.6));
+            rotator.setPosition(CLAW_DOWN);
+            sleep(1000);
+            Forward(getTicksFromDistance(0.5));
+            resetClaw();
 
-        PivotRight(getTicksFromDegree(90));
-        PivotRight(getTicksFromDegree(180));
-        PivotLeft(getTicksFromDegree(270));
+        } else {
+            ShuffleLeft(getTicksFromDistance(1.4));
+            if (checkObject()) {
+                ShuffleRight(getTicksFromDistance(0.7));
+                PivotLeft(getTicksFromDegree(90));
+                Backward(getTicksFromDistance(0.6));
+                rotator.setPosition(CLAW_DOWN);
+                sleep(1000);
+                Forward(getTicksFromDistance(0.5));
+                resetClaw();
+            } else {
+                //middle
+                ShuffleRight(getTicksFromDistance(0.7));
+                Backward(getTicksFromDistance(0.5));
+                rotator.setPosition(CLAW_DOWN);
+                sleep(1000);
+                Forward(getTicksFromDistance(0.35));
+                resetClaw();
+            }
+        }
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    private void resetClaw() {
+        rightClaw.setPosition(RIGHT_OPEN);
+        sleep(1000);
+        rightClaw.setPosition(RIGHT_CLOSE);
+        rotator.setPosition(CLAW_UP);
+        sleep(1000);
     }
 
     public int getTicksFromDistance(double inches){
@@ -118,7 +133,7 @@ public class EncoderAuto extends LinearOpMode {
         return (int) (degree/90*800);
     }
 
-    public String checkObject(){
+    public boolean checkObject(){
         int blue = 0, red = 0;
 
         for (int counter = 0; counter < 50; counter++) {
@@ -131,11 +146,11 @@ public class EncoderAuto extends LinearOpMode {
         }
 
         if (red >= 20) {
-            return "red";
+            return true;
         } else if (blue >= 20) {
-            return "blue";
+            return true;
         } else {
-            return "none";
+            return false;
         }
     }
 

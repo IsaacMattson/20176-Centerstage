@@ -144,9 +144,10 @@ public class OpMode extends LinearOpMode {
             double rightFrontMotorPower = (y - x - rx) / denominator;
             double rightBackMotorPower = (y + x - rx) / denominator;
 
-            if(this.gamepad1.left_stick_button){
+            if (this.gamepad1.left_stick_button) {
                 gyro.resetYaw();
             }
+
             //arm code
             if (armUp) {
                 targetArmValue = ARM_UP;
@@ -157,30 +158,34 @@ public class OpMode extends LinearOpMode {
                 closeBoth = true;
                 canOpen = false;
             }
+
             //servo code
             if (clawUp) {
                 rotatorPosition = CLAW_UP;
-                canOpen = false;
-                closeBoth = true;
+//                canOpen = false;
             } else if (clawDown) {
                 rotatorPosition = CLAW_DOWN;
                 canOpen = true;
             }
+
             if ((leftOpen || openBoth) && canOpen) {
                 leftPosition = LEFT_OPEN;
             } else if (leftClose || closeBoth) {
                 leftPosition = LEFT_CLOSE;
             }
+
             if ((rightOpen || openBoth) && canOpen) {
                 rightPosition = RIGHT_OPEN;
             } else if (rightClose || closeBoth) {
                 rightPosition = RIGHT_CLOSE;
             }
+
             //Lift
             if (liftInitiate) {
                 targetArmValue = 950;
                 canLift = true;
             }
+
             if (liftStart && canLift) {
                 targetArmValue = 300;
                 hangingPosition = CLIMB;
@@ -192,10 +197,10 @@ public class OpMode extends LinearOpMode {
                 planePosition = 0.0;
             }
             // Set motor & servo power
-            leftFrontDrive.setPower(leftFrontMotorPower * 0.8);
-            leftBackDrive.setPower(leftBackMotorPower * 0.8);
-            rightFrontDrive.setPower(rightFrontMotorPower * 0.8);
-            rightBackDrive.setPower(rightBackMotorPower * 0.8);
+            leftFrontDrive.setPower(leftFrontMotorPower);
+            leftBackDrive.setPower(leftBackMotorPower);
+            rightFrontDrive.setPower(rightFrontMotorPower);
+            rightBackDrive.setPower(rightBackMotorPower);
             liftLeft.setTargetPosition(hangingPosition);
             liftRight.setTargetPosition(hangingPosition);
             arm.setTargetPosition(targetArmValue);
