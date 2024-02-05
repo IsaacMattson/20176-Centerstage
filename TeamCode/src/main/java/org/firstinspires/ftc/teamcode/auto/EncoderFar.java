@@ -85,6 +85,8 @@ public class EncoderFar extends LinearOpMode {
 
         Forward(getTicksFromDistance(2.65));
         ShuffleRight(getTicksFromDistance(0.9));
+        ShuffleRight(getTicksFromDistance(0.1));
+
         if (checkObject()) {
             ShuffleLeft(getTicksFromDistance(0.7));
             ShuffleLeft(getTicksFromDistance(0.1));
@@ -150,10 +152,8 @@ public class EncoderFar extends LinearOpMode {
         }
 
         if (red >= 20) {
-            telemetry.addData("Red", "moment");
             return true;
         } else if (blue >= 20) {
-            telemetry.addData("Blue", "moment");
             return true;
         } else {
             return false;

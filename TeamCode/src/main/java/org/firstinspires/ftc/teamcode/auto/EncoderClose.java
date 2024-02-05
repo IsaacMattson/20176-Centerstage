@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class EncoderClose extends LinearOpMode {
     private final double RIGHT_OPEN = 0.16;
     private final double RIGHT_CLOSE = 0.70;
-    private final double LEFT_OPEN = 0.17;
     private final double LEFT_CLOSE = 0.75;
     private final double DRIVE_MOTOR_POWER = 0.5;
     private final double CLAW_UP = 0.03;
@@ -25,7 +24,7 @@ public class EncoderClose extends LinearOpMode {
     private Servo rotator = null;
     private ColorSensor colorRight = null, colorLeft = null;
 
-    public void runOpMode(){
+    public void runOpMode() {
         leftFrontDrive = hardwareMap.get(DcMotor.class, "driveMotorFour");
         leftBackDrive = hardwareMap.get(DcMotor.class, "driveMotorOne");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "driveMotorThree");
@@ -83,37 +82,59 @@ public class EncoderClose extends LinearOpMode {
         
         waitForStart();
 
-        Forward(getTicksFromDistance(2.7));
-        ShuffleLeft(getTicksFromDistance(0.7));
+        Forward(getTicksFromDistance(2.65));
+        ShuffleRight(getTicksFromDistance(0.9));
+        ShuffleRight(getTicksFromDistance(0.1));
+
         if (checkObject()) {
-            ShuffleRight(getTicksFromDistance(0.7));
-            PivotLeft(getTicksFromDegree(90));
+            ShuffleLeft(getTicksFromDistance(0.7));
+            ShuffleLeft(getTicksFromDistance(0.1));
+            PivotRight(getTicksFromDegree(90));
             Backward(getTicksFromDistance(0.6));
             rotator.setPosition(CLAW_DOWN);
             sleep(1000);
-            Forward(getTicksFromDistance(0.5));
+            Forward(getTicksFromDistance(0.2));
             resetClaw();
 
+            // Reset robot
+            Forward(getTicksFromDistance(0.4));
+            PivotLeft(getTicksFromDegree(90));
+
         } else {
-            ShuffleLeft(getTicksFromDistance(1.4));
+            ShuffleLeft(getTicksFromDistance(1.6));
+            ShuffleLeft(getTicksFromDistance(0.1));
+
             if (checkObject()) {
                 ShuffleRight(getTicksFromDistance(0.7));
                 PivotLeft(getTicksFromDegree(90));
                 Backward(getTicksFromDistance(0.6));
                 rotator.setPosition(CLAW_DOWN);
                 sleep(1000);
-                Forward(getTicksFromDistance(0.5));
+                Forward(getTicksFromDistance(0.2));
                 resetClaw();
+
+                // Reset robot
+                Forward(getTicksFromDistance(0.4));
+                PivotRight(getTicksFromDegree(90));
+
             } else {
                 //middle
-                ShuffleRight(getTicksFromDistance(0.7));
-                Backward(getTicksFromDistance(0.5));
+                ShuffleRight(getTicksFromDistance(0.8));
+                Backward(getTicksFromDistance(0.9));
+                Forward(getTicksFromDistance(0.4));
                 rotator.setPosition(CLAW_DOWN);
                 sleep(1000);
-                Forward(getTicksFromDistance(0.35));
                 resetClaw();
+
+                // Reset robot
+                Backward(getTicksFromDistance(0.5));
             }
         }
+
+        PivotRight(getTicksFromDegree(90));
+        Forward(getTicksFromDistance(0.5));
+
+        telemetry.update();
     }
 
     private void resetClaw() {
@@ -125,7 +146,6 @@ public class EncoderClose extends LinearOpMode {
     }
 
     public int getTicksFromDistance(double inches){
-        //480 ticks per rotation; 1 foot per rotation; 2 feet per square
         return (int) (inches * 480.0);
     }
 
@@ -244,6 +264,4 @@ public class EncoderClose extends LinearOpMode {
         }
         sleep(150);
     }
-
-
 }
