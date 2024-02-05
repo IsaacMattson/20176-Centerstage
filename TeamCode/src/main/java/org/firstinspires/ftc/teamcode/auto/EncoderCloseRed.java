@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous
-public class EncoderClose extends LinearOpMode {
+public class EncoderCloseRed extends LinearOpMode {
     private final double RIGHT_OPEN = 0.16;
     private final double RIGHT_CLOSE = 0.70;
     private final double LEFT_CLOSE = 0.75;
@@ -165,9 +165,7 @@ public class EncoderClose extends LinearOpMode {
             }
         }
 
-        if (red >= 20) {
-            return true;
-        } else if (blue >= 20) {
+        if ((red >= 20) || (blue >= 20)) {
             return true;
         } else {
             return false;

@@ -7,12 +7,11 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous
-public class EncoderFar extends LinearOpMode {
+public class EncoderCloseBlue extends LinearOpMode {
     private final double RIGHT_OPEN = 0.16;
     private final double RIGHT_CLOSE = 0.70;
-    private final double LEFT_OPEN = 0.17;
     private final double LEFT_CLOSE = 0.75;
-    private final double DRIVE_MOTOR_POWER = 0.3;
+    private final double DRIVE_MOTOR_POWER = 0.5;
     private final double CLAW_UP = 0.03;
     private final double CLAW_DOWN = 0.83;
     private DcMotor leftFrontDrive = null;
@@ -25,7 +24,7 @@ public class EncoderFar extends LinearOpMode {
     private Servo rotator = null;
     private ColorSensor colorRight = null, colorLeft = null;
 
-    public void runOpMode(){
+    public void runOpMode() {
         leftFrontDrive = hardwareMap.get(DcMotor.class, "driveMotorFour");
         leftBackDrive = hardwareMap.get(DcMotor.class, "driveMotorOne");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "driveMotorThree");
@@ -97,9 +96,14 @@ public class EncoderFar extends LinearOpMode {
             Forward(getTicksFromDistance(0.2));
             resetClaw();
 
+            // Reset robot
+            Forward(getTicksFromDistance(0.4));
+            PivotLeft(getTicksFromDegree(90));
+
         } else {
             ShuffleLeft(getTicksFromDistance(1.6));
             ShuffleLeft(getTicksFromDistance(0.1));
+
             if (checkObject()) {
                 ShuffleRight(getTicksFromDistance(0.7));
                 PivotLeft(getTicksFromDegree(90));
@@ -109,8 +113,11 @@ public class EncoderFar extends LinearOpMode {
                 Forward(getTicksFromDistance(0.2));
                 resetClaw();
 
-            } else {
+                // Reset robot
+                Forward(getTicksFromDistance(0.4));
+                PivotRight(getTicksFromDegree(90));
 
+            } else {
                 //middle
                 ShuffleRight(getTicksFromDistance(0.8));
                 Backward(getTicksFromDistance(0.9));
@@ -118,8 +125,14 @@ public class EncoderFar extends LinearOpMode {
                 rotator.setPosition(CLAW_DOWN);
                 sleep(1000);
                 resetClaw();
+
+                // Reset robot
+                Backward(getTicksFromDistance(0.5));
             }
         }
+
+        PivotLeft(getTicksFromDegree(90));
+        Forward(getTicksFromDistance(0.5));
 
         telemetry.update();
     }
@@ -133,7 +146,6 @@ public class EncoderFar extends LinearOpMode {
     }
 
     public int getTicksFromDistance(double inches){
-        //480 ticks per rotation; 1 foot per rotation; 2 feet per square
         return (int) (inches * 480.0);
     }
 
@@ -153,9 +165,7 @@ public class EncoderFar extends LinearOpMode {
             }
         }
 
-        if (red >= 20) {
-            return true;
-        } else if (blue >= 20) {
+        if ((red >= 20) || (blue >= 20)) {
             return true;
         } else {
             return false;
@@ -252,6 +262,4 @@ public class EncoderFar extends LinearOpMode {
         }
         sleep(150);
     }
-
-
 }
