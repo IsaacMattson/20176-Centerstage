@@ -108,7 +108,9 @@ public class EncoderFar extends LinearOpMode {
                 sleep(1000);
                 Forward(getTicksFromDistance(0.2));
                 resetClaw();
+
             } else {
+
                 //middle
                 ShuffleRight(getTicksFromDistance(0.8));
                 Backward(getTicksFromDistance(0.9));

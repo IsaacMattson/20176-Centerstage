@@ -165,9 +165,7 @@ public class EncoderCloseRed extends LinearOpMode {
             }
         }
 
-        if (red >= 20) {
-            return true;
-        } else if (blue >= 20) {
+        if ((red >= 20) || (blue >= 20)) {
             return true;
         } else {
             return false;
