@@ -7,11 +7,11 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous
-public class EncoderClose extends LinearOpMode {
+public class EncoderCloseRed extends LinearOpMode {
     private final double RIGHT_OPEN = 0.16;
     private final double RIGHT_CLOSE = 0.70;
     private final double LEFT_CLOSE = 0.75;
-    private final double DRIVE_MOTOR_POWER = 0.5;
+    private final double DRIVE_MOTOR_POWER = 0.3;
     private final double CLAW_UP = 0.03;
     private final double CLAW_DOWN = 0.83;
     private DcMotor leftFrontDrive = null;
