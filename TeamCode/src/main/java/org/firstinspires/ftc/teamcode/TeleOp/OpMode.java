@@ -35,6 +35,7 @@ public class OpMode extends LinearOpMode {
     private double rotatorPosition = CLAW_UP;
     private int targetArmValue = ARM_DOWN;
     private int hangingPosition = 0;
+    private boolean armDisabled = false;
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
@@ -49,7 +50,6 @@ public class OpMode extends LinearOpMode {
     private ColorSensor Color = null;
     private ColorRangeSensor ColorRange = null;
 
-    private IMU gyro = null;
 
     @Override
     public void runOpMode() {
@@ -66,12 +66,7 @@ public class OpMode extends LinearOpMode {
         liftLeft = hardwareMap.get(DcMotor.class, "LiftLeft");
         liftRight = hardwareMap.get(DcMotor.class, "LiftRight");
         plane = hardwareMap.get(Servo.class, "plane");
-        gyro = hardwareMap.get(IMU.class, "imu");
-        IMU.Parameters parmeters= new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-                RevHubOrientationOnRobot.UsbFacingDirection.UP
-        ));
-        gyro.initialize(parmeters);
+
         leftClaw.setDirection(Servo.Direction.REVERSE);
 
         //IMU
@@ -114,7 +109,6 @@ public class OpMode extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        gyro.resetYaw();
 
         waitForStart();
 
@@ -144,9 +138,6 @@ public class OpMode extends LinearOpMode {
             double rightFrontMotorPower = (y - x - rx) / denominator;
             double rightBackMotorPower = (y + x - rx) / denominator;
 
-            if (this.gamepad1.left_stick_button) {
-                gyro.resetYaw();
-            }
 
             //arm code
             if (armUp) {
@@ -187,7 +178,10 @@ public class OpMode extends LinearOpMode {
             }
 
             if (liftStart && canLift) {
-                targetArmValue = 300;
+                arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                arm.setPower(0);
+                armDisabled = true;
+//                targetArmValue = 300;
                 hangingPosition = CLIMB;
                 canLift = false;
             }
@@ -203,8 +197,10 @@ public class OpMode extends LinearOpMode {
             rightBackDrive.setPower(rightBackMotorPower);
             liftLeft.setTargetPosition(hangingPosition);
             liftRight.setTargetPosition(hangingPosition);
-            arm.setTargetPosition(targetArmValue);
-            arm.setPower(armMotorPower);
+            if(!armDisabled){
+                arm.setTargetPosition(targetArmValue);
+                arm.setPower(armMotorPower);
+            }
             leftClaw.setPosition(leftPosition);
             rightClaw.setPosition(rightPosition);
             rotator.setPosition(rotatorPosition);
