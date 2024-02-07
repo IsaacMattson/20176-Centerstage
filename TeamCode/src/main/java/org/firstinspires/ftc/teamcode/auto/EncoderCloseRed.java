@@ -89,16 +89,16 @@ public class EncoderCloseRed extends LinearOpMode {
         if (checkObject()) {
             ShuffleLeft(getTicksFromDistance(0.7));
             ShuffleLeft(getTicksFromDistance(0.1));
-            PivotRight(getTicksFromDegree(90));
+            PivotLeft(getTicksFromDegree(90));
             Backward(getTicksFromDistance(0.6));
             rotator.setPosition(CLAW_DOWN);
             sleep(1000);
             Forward(getTicksFromDistance(0.2));
-            resetClaw();
+            useRightClaw();
 
             // Reset robot
             Forward(getTicksFromDistance(0.4));
-            PivotLeft(getTicksFromDegree(90));
+            PivotLeft(180);
 
         } else {
             ShuffleLeft(getTicksFromDistance(1.6));
@@ -106,16 +106,15 @@ public class EncoderCloseRed extends LinearOpMode {
 
             if (checkObject()) {
                 ShuffleRight(getTicksFromDistance(0.7));
-                PivotLeft(getTicksFromDegree(90));
+                PivotRight(getTicksFromDegree(90));
                 Backward(getTicksFromDistance(0.6));
                 rotator.setPosition(CLAW_DOWN);
                 sleep(1000);
                 Forward(getTicksFromDistance(0.2));
-                resetClaw();
+                useRightClaw();
 
                 // Reset robot
                 Forward(getTicksFromDistance(0.4));
-                PivotRight(getTicksFromDegree(90));
 
             } else {
                 //middle
@@ -124,20 +123,21 @@ public class EncoderCloseRed extends LinearOpMode {
                 Forward(getTicksFromDistance(0.4));
                 rotator.setPosition(CLAW_DOWN);
                 sleep(1000);
-                resetClaw();
+                useRightClaw();
 
                 // Reset robot
                 Backward(getTicksFromDistance(0.5));
+                PivotRight(getTicksFromDegree(90));
             }
         }
 
-        PivotRight(getTicksFromDegree(90));
-        Forward(getTicksFromDistance(0.5));
+        Forward(getTicksFromDistance(2.2));
+        
 
         telemetry.update();
     }
 
-    private void resetClaw() {
+    private void useRightClaw() {
         rightClaw.setPosition(RIGHT_OPEN);
         sleep(1000);
         rightClaw.setPosition(RIGHT_CLOSE);
@@ -150,7 +150,7 @@ public class EncoderCloseRed extends LinearOpMode {
     }
 
     public int getTicksFromDegree(double degree){
-        return (int) (degree/90*800);
+        return (int) (degree/90*820);
     }
 
     public boolean checkObject(){

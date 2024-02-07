@@ -14,6 +14,8 @@ public class EncoderCloseBlue extends LinearOpMode {
     private final double DRIVE_MOTOR_POWER = 0.3;
     private final double CLAW_UP = 0.03;
     private final double CLAW_DOWN = 0.83;
+    private final double CLAW_HALF = 0.415;
+    private final int ARM_BOARD_POSITION = 410;
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
@@ -132,6 +134,16 @@ public class EncoderCloseBlue extends LinearOpMode {
         }
 
         Forward(getTicksFromDistance(2.2));
+        arm.setTargetPosition(ARM_BOARD_POSITION);
+        sleep(1000);
+        rotator.setPosition(CLAW_HALF);
+        sleep(1000);
+        leftClaw.setPosition(RIGHT_OPEN);
+        sleep(1000);
+        leftClaw.setPosition(RIGHT_CLOSE);
+        rotator.setPosition(CLAW_UP);
+        arm.setTargetPosition(0);
+        Backward(getTicksFromDistance(0.3));
 
         telemetry.update();
     }
