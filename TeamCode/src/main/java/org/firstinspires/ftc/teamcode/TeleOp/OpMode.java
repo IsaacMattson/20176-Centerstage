@@ -28,6 +28,7 @@ public class OpMode extends LinearOpMode {
     private final int CLIMB = 6500;
     private boolean canLift = false;
     private boolean canOpen = false;
+    private double driveSpeed = 1.0;
     private double armMotorPower = 0;
     private double planePosition = 0;
     private double rightPosition = RIGHT_CLOSE;
@@ -35,7 +36,9 @@ public class OpMode extends LinearOpMode {
     private double rotatorPosition = CLAW_UP;
     private int targetArmValue = ARM_DOWN;
     private int hangingPosition = 0;
+    private int slow = 1;
     private boolean armDisabled = false;
+    private boolean armUp = false;
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
@@ -126,7 +129,7 @@ public class OpMode extends LinearOpMode {
             boolean liftInitiate = this.gamepad1.back;
             boolean liftStart = this.gamepad1.start;
             boolean launchPlane = this.gamepad1.right_stick_button;
-
+            boolean changeSpeed = this.gamepad1.left_stick_button;
             // Movement code
             double y = -gamepad1.left_stick_y; 
             double x = gamepad1.left_stick_x * 1.1;
@@ -141,13 +144,17 @@ public class OpMode extends LinearOpMode {
 
             //arm code
             if (armUp) {
+                this.armUp = true;
                 targetArmValue = ARM_UP;
                 rotatorPosition = CLAW_UP;
                 canOpen = true;
+                this.driveSpeed = 0.50;
             } else if (armDown) {
+                this.armUp = false;
                 targetArmValue = ARM_DOWN;
                 closeBoth = true;
                 canOpen = false;
+                this.driveSpeed = 1.0;
             }
 
             //servo code
@@ -158,17 +165,30 @@ public class OpMode extends LinearOpMode {
                 rotatorPosition = CLAW_DOWN;
                 canOpen = true;
             }
+            if(this.armUp){
+                if ((rightOpen || openBoth) && canOpen) {
+                    leftPosition = LEFT_OPEN;
+                } else if (rightClose || closeBoth) {
+                    leftPosition = LEFT_CLOSE;
+                }
 
-            if ((leftOpen || openBoth) && canOpen) {
-                leftPosition = LEFT_OPEN;
-            } else if (leftClose || closeBoth) {
-                leftPosition = LEFT_CLOSE;
-            }
+                if ((leftOpen || openBoth) && canOpen) {
+                    rightPosition = RIGHT_OPEN;
+                } else if (leftClose || closeBoth) {
+                    rightPosition = RIGHT_CLOSE;
+                }
+            }else {
+                if ((leftOpen || openBoth) && canOpen) {
+                    leftPosition = LEFT_OPEN;
+                } else if (leftClose || closeBoth) {
+                    leftPosition = LEFT_CLOSE;
+                }
 
-            if ((rightOpen || openBoth) && canOpen) {
-                rightPosition = RIGHT_OPEN;
-            } else if (rightClose || closeBoth) {
-                rightPosition = RIGHT_CLOSE;
+                if ((rightOpen || openBoth) && canOpen) {
+                    rightPosition = RIGHT_OPEN;
+                } else if (rightClose || closeBoth) {
+                    rightPosition = RIGHT_CLOSE;
+                }
             }
 
             //Lift
@@ -190,11 +210,19 @@ public class OpMode extends LinearOpMode {
             if (launchPlane) {
                 planePosition = 0.0;
             }
+            //driveSpeed
+
+            if(this.gamepad1.dpad_left){
+                this.driveSpeed = 1.0;
+            }else if(this.gamepad1.dpad_right){
+                this.driveSpeed = 0.50;
+            }
+
             // Set motor & servo power
-            leftFrontDrive.setPower(leftFrontMotorPower);
-            leftBackDrive.setPower(leftBackMotorPower);
-            rightFrontDrive.setPower(rightFrontMotorPower);
-            rightBackDrive.setPower(rightBackMotorPower);
+            leftFrontDrive.setPower(leftFrontMotorPower * this.driveSpeed);
+            leftBackDrive.setPower(leftBackMotorPower * this.driveSpeed);
+            rightFrontDrive.setPower(rightFrontMotorPower * this.driveSpeed);
+            rightBackDrive.setPower(rightBackMotorPower * this.driveSpeed);
             liftLeft.setTargetPosition(hangingPosition);
             liftRight.setTargetPosition(hangingPosition);
             if(!armDisabled){
