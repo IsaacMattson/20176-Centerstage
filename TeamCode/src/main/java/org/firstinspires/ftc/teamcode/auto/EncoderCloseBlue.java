@@ -85,30 +85,29 @@ public class EncoderCloseBlue extends LinearOpMode {
         waitForStart();
 
         Forward(getTicksFromDistance(2.65));
-        ShuffleRight(getTicksFromDistance(0.9));
+        ShuffleRight(getTicksFromDistance(0.75));
         ShuffleRight(getTicksFromDistance(0.1));
 
         if (checkObject()) {
-            ShuffleLeft(getTicksFromDistance(0.7));
+            ShuffleLeft(getTicksFromDistance(0.8));
             PivotRight(getTicksFromDegree(90));
-            Backward(getTicksFromDistance(0.45));
+            Backward(getTicksFromDistance(0.4));
             rotator.setPosition(CLAW_DOWN);
             sleep(500);
 //            Forward(getTicksFromDistance(0.1));
-            Forward(getTicksFromDistance(0.2));
+//            Forward(getTicksFromDistance(0.2));
             useClaw();
 
             // Reset robot
 
             PivotRight(getTicksFromDegree(180));
-            Forward(getTicksFromDistance(2.9));
-            ShuffleRight(getTicksFromDistance(0.6));
             arm.setTargetPosition(ARM_BOARD_POSITION);
-            sleep(1000);
+            Forward(getTicksFromDistance(3.2));
+            ShuffleRight(getTicksFromDistance(0.6));
             rotator.setPosition(CLAW_HALF);
-            sleep(1000);
+            sleep(600);
             leftClaw.setPosition(RIGHT_OPEN);
-            sleep(1000);
+            sleep(600);
             leftClaw.setPosition(RIGHT_CLOSE);
             rotator.setPosition(CLAW_UP);
             arm.setTargetPosition(0);
@@ -124,18 +123,18 @@ public class EncoderCloseBlue extends LinearOpMode {
                 Backward(getTicksFromDistance(0.6));
                 rotator.setPosition(CLAW_DOWN);
                 sleep(1000);
-                Forward(getTicksFromDistance(0.2));
+//                Forward(getTicksFromDistance(0.1));
                 useClaw();
 
                 // Reset robot
 //                Forward(getTicksFromDistance(0.4));
-                Forward(getTicksFromDistance(2.9));
+                Forward(getTicksFromDistance(3 ));
                 arm.setTargetPosition(ARM_BOARD_POSITION);
                 sleep(1000);
                 rotator.setPosition(CLAW_HALF);
-                sleep(1000);
+                sleep(500);
                 leftClaw.setPosition(RIGHT_OPEN);
-                sleep(1000);
+                sleep(500);
                 leftClaw.setPosition(RIGHT_CLOSE);
                 rotator.setPosition(CLAW_UP);
                 arm.setTargetPosition(0);
