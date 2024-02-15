@@ -153,14 +153,13 @@ public class OpMode extends LinearOpMode {
                 this.armUp = false;
                 targetArmValue = ARM_DOWN;
                 closeBoth = true;
-                canOpen = false;
                 this.driveSpeed = 1.0;
             }
 
             //servo code
             if (clawUp) {
                 rotatorPosition = CLAW_UP;
-//                canOpen = false;
+                canOpen = false;
             } else if (clawDown) {
                 rotatorPosition = CLAW_DOWN;
                 canOpen = true;
@@ -216,6 +215,13 @@ public class OpMode extends LinearOpMode {
                 this.driveSpeed = 1.0;
             }else if(this.gamepad1.dpad_right){
                 this.driveSpeed = 0.50;
+            }
+            //reset arm encoder
+            if(this.gamepad1.left_stick_button){
+                arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                sleep(500);
+                arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                targetArmValue = ARM_DOWN;
             }
 
             // Set motor & servo power
