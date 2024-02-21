@@ -167,8 +167,6 @@ public class EncoderCloseBlue extends LinearOpMode {
             }
         }
 
-
-
         telemetry.update();
     }
 
@@ -199,9 +197,7 @@ public class EncoderCloseBlue extends LinearOpMode {
             }
         }
 
-        if (red >= 3) {
-            return true;
-        } else if (blue >= 3) {
+        if (red >= 3 && blue >= 3) {
             return true;
         } else {
             return false;
