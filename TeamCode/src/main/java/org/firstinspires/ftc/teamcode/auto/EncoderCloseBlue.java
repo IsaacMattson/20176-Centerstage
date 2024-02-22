@@ -114,23 +114,23 @@ public class EncoderCloseBlue extends LinearOpMode {
             Backward(getTicksFromDistance(0.3));
 
         } else {
-            ShuffleLeft(getTicksFromDistance(1.6));
+            ShuffleLeft(getTicksFromDistance(1.2));
             ShuffleLeft(getTicksFromDistance(0.1));
 
             if (checkObject()) {
-                ShuffleRight(getTicksFromDistance(0.7));
+                ShuffleRight(getTicksFromDistance(0.2));
                 PivotLeft(getTicksFromDegree(90));
                 Backward(getTicksFromDistance(0.6));
                 rotator.setPosition(CLAW_DOWN);
-                sleep(1000);
+                sleep(600);
 //                Forward(getTicksFromDistance(0.1));
                 useClaw();
-
+                ShuffleRight(getTicksFromDistance(1.0));
                 // Reset robot
 //                Forward(getTicksFromDistance(0.4));
-                Forward(getTicksFromDistance(3 ));
                 arm.setTargetPosition(ARM_BOARD_POSITION);
-                sleep(1000);
+                Forward(getTicksFromDistance(3.2));
+                ShuffleLeft(getTicksFromDistance(1.0));
                 rotator.setPosition(CLAW_HALF);
                 sleep(500);
                 leftClaw.setPosition(RIGHT_OPEN);
@@ -142,24 +142,25 @@ public class EncoderCloseBlue extends LinearOpMode {
 
             } else {
                 //middle
-                ShuffleRight(getTicksFromDistance(0.8));
-                Backward(getTicksFromDistance(0.9));
-                Forward(getTicksFromDistance(0.4));
+                ShuffleRight(getTicksFromDistance(0.4));
+                Backward(getTicksFromDistance(0.5));
                 rotator.setPosition(CLAW_DOWN);
-                sleep(1000);
+                sleep(600);
                 useClaw();
 
                 // Reset robot
                 Backward(getTicksFromDistance(0.5));
                 PivotLeft(getTicksFromDegree(90));
-
-                Forward(getTicksFromDistance(2.9));
                 arm.setTargetPosition(ARM_BOARD_POSITION);
-                sleep(1000);
+                Forward(getTicksFromDistance(3.0));
+
+                PivotRight(getTicksFromDegree(10));
+                ShuffleRight(getTicksFromDistance(1.0));
+                Forward(getTicksFromDistance(0.2));
                 rotator.setPosition(CLAW_HALF);
-                sleep(1000);
+                sleep(600);
                 leftClaw.setPosition(RIGHT_OPEN);
-                sleep(1000);
+                sleep(600);
                 leftClaw.setPosition(RIGHT_CLOSE);
                 rotator.setPosition(CLAW_UP);
                 arm.setTargetPosition(0);
@@ -190,7 +191,7 @@ public class EncoderCloseBlue extends LinearOpMode {
     public boolean checkObject(){
         int blue = 0, red = 0;
 
-        for (int counter = 0; counter < 10; counter++) {
+        for (int counter = 0; counter < 20; counter++) {
             if(colorRight.red() > 1200 || colorLeft.red() > 1200){
                 red ++;
             } else if ((colorRight.blue() > 400 && colorRight.red() < colorRight.blue() / 2 + 100) ||
@@ -199,9 +200,9 @@ public class EncoderCloseBlue extends LinearOpMode {
             }
         }
 
-        if (red >= 3) {
+        if (red >= 12) {
             return true;
-        } else if (blue >= 3) {
+        } else if (blue >= 12) {
             return true;
         } else {
             return false;

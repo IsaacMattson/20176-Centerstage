@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp
-public class OpMode extends LinearOpMode {
+public class SoloOpMode extends LinearOpMode {
     private final double RIGHT_OPEN = 0.16;
     private final double RIGHT_CLOSE = 0.70;
     private final double LEFT_OPEN = 0.17;
@@ -129,9 +129,8 @@ public class OpMode extends LinearOpMode {
             boolean liftInitiate = this.gamepad1.back;
             boolean liftStart = this.gamepad1.start;
             boolean launchPlane = this.gamepad1.right_stick_button;
-            boolean changeSpeed = this.gamepad1.left_stick_button;
             // Movement code
-            double y = -gamepad1.left_stick_y; 
+            double y = -gamepad1.left_stick_y;
             double x = gamepad1.left_stick_x * 1.1;
             double rx = gamepad1.right_stick_x;
 
@@ -219,7 +218,7 @@ public class OpMode extends LinearOpMode {
             //reset arm encoder
             if(this.gamepad1.left_stick_button){
                 arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                sleep(500);
+                sleep(200);
                 arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 targetArmValue = ARM_DOWN;
             }
