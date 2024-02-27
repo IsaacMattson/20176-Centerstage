@@ -13,7 +13,7 @@ public class EncoderCloseRed extends LinearOpMode {
     private final double LEFT_CLOSE = 0.75;
     private final double DRIVE_MOTOR_POWER = 0.3;
     private final double CLAW_UP = 0.03;
-    private final double CLAW_DOWN = 0.83;
+    private final double CLAW_DOWN = 0.79;
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;

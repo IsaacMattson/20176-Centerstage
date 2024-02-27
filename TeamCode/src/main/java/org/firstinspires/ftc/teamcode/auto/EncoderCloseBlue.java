@@ -13,7 +13,7 @@ public class EncoderCloseBlue extends LinearOpMode {
     private final double LEFT_CLOSE = 0.75;
     private final double DRIVE_MOTOR_POWER = 0.35;
     private final double CLAW_UP = 0.03;
-    private final double CLAW_DOWN = 0.83;
+    private final double CLAW_DOWN = 0.79;
     private final double CLAW_HALF = 0.6;
     private final int ARM_BOARD_POSITION = 300;
     private DcMotor leftFrontDrive = null;
@@ -85,25 +85,22 @@ public class EncoderCloseBlue extends LinearOpMode {
         waitForStart();
 
         Forward(getTicksFromDistance(2.65));
+        sleep(400);
         ShuffleRight(getTicksFromDistance(0.75));
         ShuffleRight(getTicksFromDistance(0.1));
 
         if (checkObject()) {
+            //-------------------------------------------------right
             ShuffleLeft(getTicksFromDistance(0.8));
             PivotRight(getTicksFromDegree(90));
             Backward(getTicksFromDistance(0.4));
             rotator.setPosition(CLAW_DOWN);
             sleep(500);
-//            Forward(getTicksFromDistance(0.1));
-//            Forward(getTicksFromDistance(0.2));
             useClaw();
-
-            // Reset robot
-
             PivotRight(getTicksFromDegree(180));
             arm.setTargetPosition(ARM_BOARD_POSITION);
             Forward(getTicksFromDistance(3.2));
-            ShuffleRight(getTicksFromDistance(0.6));
+            ShuffleRight(getTicksFromDistance(1.0));
             rotator.setPosition(CLAW_HALF);
             sleep(600);
             leftClaw.setPosition(RIGHT_OPEN);
@@ -114,10 +111,10 @@ public class EncoderCloseBlue extends LinearOpMode {
             Backward(getTicksFromDistance(0.3));
 
         } else {
-            ShuffleLeft(getTicksFromDistance(1.2));
-            ShuffleLeft(getTicksFromDistance(0.1));
-
+            ShuffleLeft(getTicksFromDistance(1.4));
+            ShuffleLeft(getTicksFromDistance(0.15));
             if (checkObject()) {
+                //---------------------------------------------------------------left
                 ShuffleRight(getTicksFromDistance(0.2));
                 PivotLeft(getTicksFromDegree(90));
                 Backward(getTicksFromDistance(0.6));
@@ -125,12 +122,12 @@ public class EncoderCloseBlue extends LinearOpMode {
                 sleep(600);
 //                Forward(getTicksFromDistance(0.1));
                 useClaw();
-                ShuffleRight(getTicksFromDistance(1.0));
+                ShuffleLeft(getTicksFromDistance(1.5));
                 // Reset robot
 //                Forward(getTicksFromDistance(0.4));
                 arm.setTargetPosition(ARM_BOARD_POSITION);
-                Forward(getTicksFromDistance(3.2));
-                ShuffleLeft(getTicksFromDistance(1.0));
+                Forward(getTicksFromDistance(3.5));
+                ShuffleRight(getTicksFromDistance(1.0));
                 rotator.setPosition(CLAW_HALF);
                 sleep(500);
                 leftClaw.setPosition(RIGHT_OPEN);
@@ -141,22 +138,19 @@ public class EncoderCloseBlue extends LinearOpMode {
                 Backward(getTicksFromDistance(0.3));
 
             } else {
-                //middle
+                //--------------------------------------------------------middle
                 ShuffleRight(getTicksFromDistance(0.4));
-                Backward(getTicksFromDistance(0.5));
+                Backward(getTicksFromDistance(0.7));
                 rotator.setPosition(CLAW_DOWN);
                 sleep(600);
+                Forward(getTicksFromDistance(0.2));
                 useClaw();
-
-                // Reset robot
                 Backward(getTicksFromDistance(0.5));
                 PivotLeft(getTicksFromDegree(90));
                 arm.setTargetPosition(ARM_BOARD_POSITION);
                 Forward(getTicksFromDistance(3.0));
-
-                PivotRight(getTicksFromDegree(10));
-                ShuffleRight(getTicksFromDistance(1.0));
-                Forward(getTicksFromDistance(0.2));
+                ShuffleRight(getTicksFromDistance(0.8));
+                Forward(getTicksFromDistance(0.1));
                 rotator.setPosition(CLAW_HALF);
                 sleep(600);
                 leftClaw.setPosition(RIGHT_OPEN);
@@ -167,9 +161,6 @@ public class EncoderCloseBlue extends LinearOpMode {
                 Backward(getTicksFromDistance(0.3));
             }
         }
-
-
-
         telemetry.update();
     }
 
@@ -200,9 +191,7 @@ public class EncoderCloseBlue extends LinearOpMode {
             }
         }
 
-        if (red >= 12) {
-            return true;
-        } else if (blue >= 12) {
+        if (red >= 12 || blue >= 12) {
             return true;
         } else {
             return false;

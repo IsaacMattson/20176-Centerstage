@@ -15,10 +15,12 @@ public class DuoOpMode extends LinearOpMode {
     private final double LEFT_OPEN = 0.17;
     private final double LEFT_CLOSE = 0.75;
     private final double CLAW_UP = 0.03;
-    private final double CLAW_DOWN = CLAW_UP + 0.80;
+    private final double CLAW_DOWN = 0.79;
     private final int ARM_UP = 1230;
     private final int ARM_DOWN = 0;
     private final int CLIMB = 6500;
+    private final double CLAW_HALF = 0.6;
+    private final int ARM_BOARD_POSITION = 300;
     private boolean canLift = false;
     private boolean canOpen = false;
     private double driveSpeed = 1.0;
@@ -28,10 +30,11 @@ public class DuoOpMode extends LinearOpMode {
     private double leftPosition = LEFT_CLOSE;
     private double rotatorPosition = CLAW_UP;
     private int targetArmValue = ARM_DOWN;
-    private int hangingPosition = 0;
+    private int hangingPosition;
     private int slow = 1;
     private boolean armDisabled = false;
     private boolean armUp = false;
+    private boolean canAdjustArm = false;
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
@@ -49,7 +52,6 @@ public class DuoOpMode extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-
         //declare hardware
         leftFrontDrive = hardwareMap.get(DcMotor.class, "driveMotorFour");
         leftBackDrive = hardwareMap.get(DcMotor.class, "driveMotorOne");
@@ -64,8 +66,6 @@ public class DuoOpMode extends LinearOpMode {
         plane = hardwareMap.get(Servo.class, "plane");
 
         leftClaw.setDirection(Servo.Direction.REVERSE);
-
-        //IMU
 
         //Arm settings
         armMotorPower = 0.25;
@@ -85,19 +85,6 @@ public class DuoOpMode extends LinearOpMode {
         rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        liftRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        liftRight.setTargetPosition(0);
-        liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        liftLeft.setDirection(DcMotorSimple.Direction.FORWARD );
-        liftLeft.setTargetPosition(0);
-        liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        liftRight.setPower(0.8);
-        liftLeft.setPower(0.8);
-
         planePosition = 0.12;
         hangingPosition = 0;
 
@@ -105,12 +92,9 @@ public class DuoOpMode extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-
         waitForStart();
 
         while (opModeIsActive()) {
-            boolean armUp = this.gamepad2.dpad_up;
-            boolean armDown = this.gamepad2.dpad_down;
             boolean leftClose = this.gamepad1.left_trigger > 0.25;
             boolean leftOpen = this.gamepad1.left_bumper;
             boolean rightClose = this.gamepad1.right_trigger > 0.25;
@@ -122,7 +106,7 @@ public class DuoOpMode extends LinearOpMode {
             boolean liftInitiate = this.gamepad2.back;
             boolean liftStart = this.gamepad2.start;
             boolean launchPlane = this.gamepad2.left_stick_button;
-            boolean changeSpeed = this.gamepad1.left_stick_button;
+
             // Movement code
             double y = -gamepad1.left_stick_y; 
             double x = gamepad1.left_stick_x * 1.1;
@@ -134,8 +118,37 @@ public class DuoOpMode extends LinearOpMode {
             double rightFrontMotorPower = (y - x - rx) / denominator;
             double rightBackMotorPower = (y + x - rx) / denominator;
 
-
             //arm code
+            boolean armUp = this.gamepad2.dpad_up;
+            boolean armDown = this.gamepad2.dpad_down;
+
+            //preset positions:
+            if(this.gamepad2.a){//this is the preset down position
+                this.armUp = false;
+                targetArmValue = ARM_DOWN;
+                rotatorPosition = CLAW_UP;
+                closeBoth = true;
+                this.driveSpeed = 1.0;
+            }else if(this.gamepad2.y){//this is the preset up position
+                this.armUp = true;
+                targetArmValue = ARM_UP;
+                rotatorPosition = CLAW_UP;
+                canOpen = true;
+                this.driveSpeed = 0.50;
+            }else if(this.gamepad2.x){// this is the front-facing board position line 0
+                this.armUp = false;
+                targetArmValue = ARM_BOARD_POSITION - 160;
+                rotatorPosition = CLAW_HALF + 0.1;
+                canOpen = true;
+                this.driveSpeed = 0.50;
+            }else if(this.gamepad2.b){//this is the front-facing board position line 1
+                this.armUp = false;
+                targetArmValue = ARM_BOARD_POSITION + 100;
+                rotatorPosition = CLAW_HALF + 1 / 16;
+                canOpen = true;
+                this.driveSpeed = 0.50;
+            }
+
             if (armUp) {
                 this.armUp = true;
                 targetArmValue = ARM_UP;
@@ -145,6 +158,7 @@ public class DuoOpMode extends LinearOpMode {
             } else if (armDown) {
                 this.armUp = false;
                 targetArmValue = ARM_DOWN;
+                rotatorPosition = CLAW_UP;
                 closeBoth = true;
                 this.driveSpeed = 1.0;
             }
@@ -157,6 +171,7 @@ public class DuoOpMode extends LinearOpMode {
                 rotatorPosition = CLAW_DOWN;
                 canOpen = true;
             }
+
             if(this.armUp){
                 if ((rightOpen || openBoth) && canOpen) {
                     leftPosition = LEFT_OPEN;
@@ -196,25 +211,41 @@ public class DuoOpMode extends LinearOpMode {
 //                targetArmValue = 300;
                 hangingPosition = CLIMB;
                 canLift = false;
+                liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                liftRight.setDirection(DcMotorSimple.Direction.REVERSE);
+                liftRight.setTargetPosition(0);
+                liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                liftLeft.setDirection(DcMotorSimple.Direction.FORWARD );
+                liftLeft.setTargetPosition(0);
+                liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                liftRight.setPower(0.8);
+                liftLeft.setPower(0.8);
+                liftLeft.setTargetPosition(hangingPosition);
+                liftRight.setTargetPosition(hangingPosition);
             }
 
             //airplane
             if (launchPlane) {
                 planePosition = 0.0;
             }
-            //driveSpeed
 
-            if(this.gamepad1.dpad_left){
-                this.driveSpeed = 1.0;
-            }else if(this.gamepad1.dpad_right){
-                this.driveSpeed = 0.50;
-            }
             //reset arm encoder
-            if(this.gamepad2.left_stick_button){
+            if(this.gamepad2.right_stick_button){
+                arm.setPower(0);
                 arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 sleep(200);
                 arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                arm.setPower(armMotorPower);
                 targetArmValue = ARM_DOWN;
+            }
+
+            if(arm.getCurrentPosition() > 900){
+                arm.setPower(0.15);
+            }else{
+                arm.setPower(0.25);
             }
 
             // Set motor & servo power
@@ -222,8 +253,6 @@ public class DuoOpMode extends LinearOpMode {
             leftBackDrive.setPower(leftBackMotorPower * this.driveSpeed);
             rightFrontDrive.setPower(rightFrontMotorPower * this.driveSpeed);
             rightBackDrive.setPower(rightBackMotorPower * this.driveSpeed);
-            liftLeft.setTargetPosition(hangingPosition);
-            liftRight.setTargetPosition(hangingPosition);
             if(!armDisabled){
                 arm.setTargetPosition(targetArmValue);
                 arm.setPower(armMotorPower);
