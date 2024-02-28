@@ -137,14 +137,14 @@ public class DuoOpMode extends LinearOpMode {
                 this.driveSpeed = 0.50;
             }else if(this.gamepad2.x){// this is the front-facing board position line 0
                 this.armUp = false;
-                targetArmValue = ARM_BOARD_POSITION - 160;
-                rotatorPosition = CLAW_HALF + 0.1;
+                targetArmValue = ARM_BOARD_POSITION - 120;
+                rotatorPosition = CLAW_HALF + 1.2/16;
                 canOpen = true;
                 this.driveSpeed = 0.50;
             }else if(this.gamepad2.b){//this is the front-facing board position line 1
                 this.armUp = false;
                 targetArmValue = ARM_BOARD_POSITION + 100;
-                rotatorPosition = CLAW_HALF + 1 / 16;
+                rotatorPosition = CLAW_HALF + 1.0 / 16.0;
                 canOpen = true;
                 this.driveSpeed = 0.50;
             }
@@ -156,6 +156,7 @@ public class DuoOpMode extends LinearOpMode {
                 canOpen = true;
                 this.driveSpeed = 0.50;
             } else if (armDown) {
+                clawUp = true;
                 this.armUp = false;
                 targetArmValue = ARM_DOWN;
                 rotatorPosition = CLAW_UP;

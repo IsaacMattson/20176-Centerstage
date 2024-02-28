@@ -135,8 +135,8 @@ public class SoloOpMode extends LinearOpMode {
             //arm code
             if(this.gamepad1.dpad_left){// this is the lowest position, reaches line 0
                 this.armUp = false;
-                targetArmValue = ARM_BOARD_POSITION - 160;
-                rotatorPosition = CLAW_HALF - 0.1;
+                targetArmValue = ARM_BOARD_POSITION - 120;
+                rotatorPosition = CLAW_HALF - 1.2/16;
                 canOpen = true;
                 this.driveSpeed = 0.50;
             }else if(this.gamepad1.dpad_right){//this is the medium position, reaches line 1
@@ -155,6 +155,7 @@ public class SoloOpMode extends LinearOpMode {
                 this.armUp = false;
                 targetArmValue = ARM_DOWN;
                 closeBoth = true;
+                clawUp = true;
                 this.driveSpeed = 1.0;
             }
 
