@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -31,10 +31,10 @@ public class DuoOpMode extends LinearOpMode {
     private double rotatorPosition = CLAW_UP;
     private int targetArmValue = ARM_DOWN;
     private int hangingPosition;
-    private int slow = 1;
+    private final int slow = 1;
     private boolean armDisabled = false;
     private boolean armUp = false;
-    private boolean canAdjustArm = false;
+    private final boolean canAdjustArm = false;
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
@@ -46,8 +46,8 @@ public class DuoOpMode extends LinearOpMode {
     private Servo rightClaw = null;
     private Servo rotator = null;
     private Servo plane = null;
-    private ColorSensor Color = null;
-    private ColorRangeSensor ColorRange = null;
+    private final ColorSensor Color = null;
+    private final ColorRangeSensor ColorRange = null;
 
 
     @Override
@@ -108,7 +108,7 @@ public class DuoOpMode extends LinearOpMode {
             boolean launchPlane = this.gamepad2.left_stick_button;
 
             // Movement code
-            double y = -gamepad1.left_stick_y; 
+            double y = -gamepad1.left_stick_y;
             double x = gamepad1.left_stick_x * 1.1;
             double rx = gamepad1.right_stick_x;
 
@@ -123,25 +123,25 @@ public class DuoOpMode extends LinearOpMode {
             boolean armDown = this.gamepad2.dpad_down;
 
             //preset positions:
-            if(this.gamepad2.a){//this is the preset down position
+            if (this.gamepad2.a) {//this is the preset down position
                 this.armUp = false;
                 targetArmValue = ARM_DOWN;
                 rotatorPosition = CLAW_UP;
                 closeBoth = true;
                 this.driveSpeed = 1.0;
-            }else if(this.gamepad2.y){//this is the preset up position
+            } else if (this.gamepad2.y) {//this is the preset up position
                 this.armUp = true;
                 targetArmValue = ARM_UP;
                 rotatorPosition = CLAW_UP;
                 canOpen = true;
                 this.driveSpeed = 0.50;
-            }else if(this.gamepad2.x){// this is the front-facing board position line 0
+            } else if (this.gamepad2.x) {// this is the front-facing board position line 0
                 this.armUp = false;
                 targetArmValue = ARM_BOARD_POSITION - 120;
-                rotatorPosition = CLAW_HALF + 1.2/16;
+                rotatorPosition = CLAW_HALF + 1.2 / 16;
                 canOpen = true;
                 this.driveSpeed = 0.50;
-            }else if(this.gamepad2.b){//this is the front-facing board position line 1
+            } else if (this.gamepad2.b) {//this is the front-facing board position line 1
                 this.armUp = false;
                 targetArmValue = ARM_BOARD_POSITION + 100;
                 rotatorPosition = CLAW_HALF + 1.0 / 16.0;
@@ -174,7 +174,7 @@ public class DuoOpMode extends LinearOpMode {
                 canOpen = true;
             }
 
-            if(this.armUp){
+            if (this.armUp) {
                 if ((rightOpen || openBoth) && canOpen) {
                     leftPosition = LEFT_OPEN;
                 } else if (rightClose || closeBoth) {
@@ -186,7 +186,7 @@ public class DuoOpMode extends LinearOpMode {
                 } else if (leftClose || closeBoth) {
                     rightPosition = RIGHT_CLOSE;
                 }
-            }else {
+            } else {
                 if ((leftOpen || openBoth) && canOpen) {
                     leftPosition = LEFT_OPEN;
                 } else if (leftClose || closeBoth) {
@@ -219,7 +219,7 @@ public class DuoOpMode extends LinearOpMode {
                 liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                 liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                liftLeft.setDirection(DcMotorSimple.Direction.FORWARD );
+                liftLeft.setDirection(DcMotorSimple.Direction.FORWARD);
                 liftLeft.setTargetPosition(0);
                 liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -235,7 +235,7 @@ public class DuoOpMode extends LinearOpMode {
             }
 
             //reset arm encoder
-            if(this.gamepad2.right_stick_button){
+            if (this.gamepad2.right_stick_button) {
                 arm.setPower(0);
                 arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 sleep(200);
@@ -245,16 +245,15 @@ public class DuoOpMode extends LinearOpMode {
             }
 
 
-
             // Set motor & servo power
             leftFrontDrive.setPower(leftFrontMotorPower * this.driveSpeed);
             leftBackDrive.setPower(leftBackMotorPower * this.driveSpeed);
             rightFrontDrive.setPower(rightFrontMotorPower * this.driveSpeed);
             rightBackDrive.setPower(rightBackMotorPower * this.driveSpeed);
-            if(!armDisabled){
-                if(arm.getCurrentPosition() > 900){
+            if (!armDisabled) {
+                if (arm.getCurrentPosition() > 900) {
                     arm.setPower(0.15);
-                }else{
+                } else {
                     arm.setPower(0.25);
                 }
                 arm.setTargetPosition(targetArmValue);

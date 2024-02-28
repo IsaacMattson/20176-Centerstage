@@ -1,19 +1,12 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
-import com.qualcomm.hardware.lynx.LynxModule;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.*;
-
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp
 public class SoloOpMode extends LinearOpMode {
@@ -38,7 +31,7 @@ public class SoloOpMode extends LinearOpMode {
     private double rotatorPosition = CLAW_UP;
     private int targetArmValue = ARM_DOWN;
     private int hangingPosition;
-    private int slow = 1;
+    private final int slow = 1;
     private boolean armDisabled = false;
     private boolean armUp = false;
     private DcMotor leftFrontDrive = null;
@@ -52,8 +45,8 @@ public class SoloOpMode extends LinearOpMode {
     private Servo rightClaw = null;
     private Servo rotator = null;
     private Servo plane = null;
-    private ColorSensor Color = null;
-    private ColorRangeSensor ColorRange = null;
+    private final ColorSensor Color = null;
+    private final ColorRangeSensor ColorRange = null;
 
 
     @Override
@@ -95,7 +88,6 @@ public class SoloOpMode extends LinearOpMode {
         rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-
         planePosition = 0.12;
         hangingPosition = 0;
 
@@ -133,19 +125,19 @@ public class SoloOpMode extends LinearOpMode {
 
 
             //arm code
-            if(this.gamepad1.dpad_left){// this is the lowest position, reaches line 0
+            if (this.gamepad1.dpad_left) {// this is the lowest position, reaches line 0
                 this.armUp = false;
                 targetArmValue = ARM_BOARD_POSITION - 120;
-                rotatorPosition = CLAW_HALF - 1.2/16;
+                rotatorPosition = CLAW_HALF - 1.2 / 16;
                 canOpen = true;
                 this.driveSpeed = 0.50;
-            }else if(this.gamepad1.dpad_right){//this is the medium position, reaches line 1
+            } else if (this.gamepad1.dpad_right) {//this is the medium position, reaches line 1
                 this.armUp = false;
                 targetArmValue = ARM_BOARD_POSITION + 100;
-                rotatorPosition = CLAW_HALF + 1.0/16;
+                rotatorPosition = CLAW_HALF + 1.0 / 16;
                 canOpen = true;
                 this.driveSpeed = 0.50;
-            }else if (armUp) {
+            } else if (armUp) {
                 this.armUp = true;
                 targetArmValue = ARM_UP;
                 rotatorPosition = CLAW_UP;
@@ -168,7 +160,7 @@ public class SoloOpMode extends LinearOpMode {
                 rotatorPosition = CLAW_DOWN;
                 canOpen = true;
             }
-            if(this.armUp){
+            if (this.armUp) {
                 if ((rightOpen || openBoth) && canOpen) {
                     leftPosition = LEFT_OPEN;
                 } else if (rightClose || closeBoth) {
@@ -180,7 +172,7 @@ public class SoloOpMode extends LinearOpMode {
                 } else if (leftClose || closeBoth) {
                     rightPosition = RIGHT_CLOSE;
                 }
-            }else {
+            } else {
                 if ((leftOpen || openBoth) && canOpen) {
                     leftPosition = LEFT_OPEN;
                 } else if (leftClose || closeBoth) {
@@ -214,7 +206,7 @@ public class SoloOpMode extends LinearOpMode {
                 liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                 liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                liftLeft.setDirection(DcMotorSimple.Direction.FORWARD );
+                liftLeft.setDirection(DcMotorSimple.Direction.FORWARD);
                 liftLeft.setTargetPosition(0);
                 liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -229,7 +221,7 @@ public class SoloOpMode extends LinearOpMode {
                 planePosition = 0.0;
             }
             //reset arm encoder
-            if(this.gamepad1.left_stick_button){
+            if (this.gamepad1.left_stick_button) {
                 arm.setPower(0);
                 arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 sleep(200);
@@ -240,16 +232,15 @@ public class SoloOpMode extends LinearOpMode {
             //variable arm motor power
 
 
-
             // Set motor & servo power
             leftFrontDrive.setPower(leftFrontMotorPower * this.driveSpeed);
             leftBackDrive.setPower(leftBackMotorPower * this.driveSpeed);
             rightFrontDrive.setPower(rightFrontMotorPower * this.driveSpeed);
             rightBackDrive.setPower(rightBackMotorPower * this.driveSpeed);
-            if(!armDisabled){
-                if(arm.getCurrentPosition() > 900){
+            if (!armDisabled) {
+                if (arm.getCurrentPosition() > 900) {
                     arm.setPower(0.15);
-                }else{
+                } else {
                     arm.setPower(0.25);
                 }
                 arm.setTargetPosition(targetArmValue);
