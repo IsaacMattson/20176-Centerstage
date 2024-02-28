@@ -166,6 +166,7 @@ public class DuoOpMode extends LinearOpMode {
             //servo code
             if (clawUp) {
                 rotatorPosition = CLAW_UP;
+                closeBoth = true;
                 canOpen = false;
             } else if (clawDown) {
                 rotatorPosition = CLAW_DOWN;
@@ -221,8 +222,8 @@ public class DuoOpMode extends LinearOpMode {
                 liftLeft.setTargetPosition(0);
                 liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-                liftRight.setPower(0.8);
-                liftLeft.setPower(0.8);
+                liftRight.setPower(0.6);
+                liftLeft.setPower(0.6);
                 liftLeft.setTargetPosition(hangingPosition);
                 liftRight.setTargetPosition(hangingPosition);
             }
@@ -242,11 +243,7 @@ public class DuoOpMode extends LinearOpMode {
                 targetArmValue = ARM_DOWN;
             }
 
-            if(arm.getCurrentPosition() > 900){
-                arm.setPower(0.15);
-            }else{
-                arm.setPower(0.25);
-            }
+
 
             // Set motor & servo power
             leftFrontDrive.setPower(leftFrontMotorPower * this.driveSpeed);
@@ -254,6 +251,11 @@ public class DuoOpMode extends LinearOpMode {
             rightFrontDrive.setPower(rightFrontMotorPower * this.driveSpeed);
             rightBackDrive.setPower(rightBackMotorPower * this.driveSpeed);
             if(!armDisabled){
+                if(arm.getCurrentPosition() > 900){
+                    arm.setPower(0.15);
+                }else{
+                    arm.setPower(0.25);
+                }
                 arm.setTargetPosition(targetArmValue);
                 arm.setPower(armMotorPower);
             }
