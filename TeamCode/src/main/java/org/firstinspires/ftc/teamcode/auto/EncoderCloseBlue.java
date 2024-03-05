@@ -112,26 +112,26 @@ public class EncoderCloseBlue extends LinearOpMode {
 
         } else {
             ShuffleLeft(getTicksFromDistance(1.4));
-            ShuffleLeft(getTicksFromDistance(0.15));
+            ShuffleLeft(getTicksFromDistance(0.3));
             if (checkObject()) {
                 //---------------------------------------------------------------left
-                ShuffleRight(getTicksFromDistance(0.2));
+                ShuffleRight(getTicksFromDistance(0.85));
                 PivotLeft(getTicksFromDegree(90));
-                Backward(getTicksFromDistance(0.5));
                 rotator.setPosition(CLAW_DOWN);
-                sleep(600);
-//                Forward(getTicksFromDistance(0.1));
+                sleep(400);
                 useClaw();
+                sleep(200);
+                Forward(getTicksFromDistance(0.3));
                 ShuffleLeft(getTicksFromDistance(1.5));
+
                 // Reset robot
-//                Forward(getTicksFromDistance(0.4));
                 arm.setTargetPosition(ARM_BOARD_POSITION);
-                Forward(getTicksFromDistance(3.5));
-                ShuffleRight(getTicksFromDistance(1.2));
                 rotator.setPosition(CLAW_HALF);
-                sleep(500);
+                Forward(getTicksFromDistance(3));
+                ShuffleRight(getTicksFromDistance(1.3));
+                Forward(getTicksFromDistance(0.3));
                 leftClaw.setPosition(RIGHT_OPEN);
-                sleep(500);
+                sleep(400);
                 leftClaw.setPosition(RIGHT_CLOSE);
                 rotator.setPosition(CLAW_UP);
                 arm.setTargetPosition(0);
@@ -149,7 +149,7 @@ public class EncoderCloseBlue extends LinearOpMode {
                 PivotLeft(getTicksFromDegree(90));
                 arm.setTargetPosition(ARM_BOARD_POSITION);
                 Forward(getTicksFromDistance(3.0));
-                ShuffleRight(getTicksFromDistance(0.8));
+                ShuffleRight(getTicksFromDistance(1));
                 Forward(getTicksFromDistance(0.1));
                 rotator.setPosition(CLAW_HALF);
                 sleep(600);
@@ -210,7 +210,7 @@ public class EncoderCloseBlue extends LinearOpMode {
 
 
         while(Math.abs(leftBackDrive.getCurrentPosition() - lbt) > 10 ||
-                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 10 ||
+                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 5 ||
                 Math.abs(rightBackDrive.getCurrentPosition() - rbt) > 10 ||
                 Math.abs(rightFrontDrive.getCurrentPosition() - rft) > 10){
             sleep(10);
@@ -230,7 +230,7 @@ public class EncoderCloseBlue extends LinearOpMode {
 
 
         while(Math.abs(leftBackDrive.getCurrentPosition() - lbt) > 10 ||
-                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 10 ||
+                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 5 ||
                 Math.abs(rightBackDrive.getCurrentPosition() - rbt) > 10 ||
                 Math.abs(rightFrontDrive.getCurrentPosition() - rft) > 10){
             sleep(10);
@@ -250,7 +250,7 @@ public class EncoderCloseBlue extends LinearOpMode {
 
 
         while(Math.abs(leftBackDrive.getCurrentPosition() - lbt) > 10 ||
-                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 10 ||
+                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 5 ||
                 Math.abs(rightBackDrive.getCurrentPosition() - rbt) > 10 ||
                 Math.abs(rightFrontDrive.getCurrentPosition() - rft) > 10){
             sleep(10);
@@ -270,7 +270,7 @@ public class EncoderCloseBlue extends LinearOpMode {
 
 
         while(Math.abs(leftBackDrive.getCurrentPosition() - lbt) > 10 ||
-                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 10 ||
+                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 5 ||
                 Math.abs(rightBackDrive.getCurrentPosition() - rbt) > 10 ||
                 Math.abs(rightFrontDrive.getCurrentPosition() - rft) > 10){
             sleep(10);
@@ -290,7 +290,7 @@ public class EncoderCloseBlue extends LinearOpMode {
 
 
         while(Math.abs(leftBackDrive.getCurrentPosition() - lbt) > 10 ||
-                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 10 ||
+                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 5 ||
                 Math.abs(rightBackDrive.getCurrentPosition() - rbt) > 10 ||
                 Math.abs(rightFrontDrive.getCurrentPosition() - rft) > 10){
             sleep(10);
@@ -310,7 +310,7 @@ public class EncoderCloseBlue extends LinearOpMode {
 
 
         while(Math.abs(leftBackDrive.getCurrentPosition() - lbt) > 10 ||
-                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 10 ||
+                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 5 ||
                 Math.abs(rightBackDrive.getCurrentPosition() - rbt) > 10 ||
                 Math.abs(rightFrontDrive.getCurrentPosition() - rft) > 10){
             sleep(10);

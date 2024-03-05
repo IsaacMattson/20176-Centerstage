@@ -105,7 +105,7 @@ public class DuoOpMode extends LinearOpMode {
             boolean clawUp = this.gamepad1.y;
             boolean liftInitiate = this.gamepad2.back;
             boolean liftStart = this.gamepad2.start;
-            boolean launchPlane = this.gamepad2.left_stick_button;
+            boolean launchPlane = this.gamepad2.right_stick_button;
 
             // Movement code
             double y = -gamepad1.left_stick_y;
@@ -235,7 +235,7 @@ public class DuoOpMode extends LinearOpMode {
             }
 
             //reset arm encoder
-            if (this.gamepad2.right_stick_button) {
+            if (this.gamepad2.left_stick_button) {
                 arm.setPower(0);
                 arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 sleep(200);
