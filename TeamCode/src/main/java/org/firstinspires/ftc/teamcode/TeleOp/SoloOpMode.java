@@ -88,7 +88,7 @@ public class SoloOpMode extends LinearOpMode {
         rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-        planePosition = 0.12;
+        planePosition = 0.0;
         hangingPosition = 0;
 
         //initialize terminal
@@ -218,7 +218,7 @@ public class SoloOpMode extends LinearOpMode {
 
             //airplane
             if (launchPlane) {
-                planePosition = 0.0;
+                planePosition = 0.2;
             }
             //reset arm encoder
             if (this.gamepad1.left_stick_button) {
