@@ -112,6 +112,7 @@ public class SoloOpMode extends LinearOpMode {
             boolean liftInitiate = this.gamepad1.back;
             boolean liftStart = this.gamepad1.start;
             boolean launchPlane = this.gamepad1.right_stick_button;
+
             // Movement code
             double y = -gamepad1.left_stick_y;
             double x = gamepad1.left_stick_x * 1.1;
@@ -196,7 +197,6 @@ public class SoloOpMode extends LinearOpMode {
                 arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 arm.setPower(0);
                 armDisabled = true;
-//                targetArmValue = 300;
                 hangingPosition = CLIMB;
                 canLift = false;
 
@@ -220,8 +220,9 @@ public class SoloOpMode extends LinearOpMode {
             if (launchPlane) {
                 planePosition = 0.0;
             }
+
             //reset arm encoder
-            if (this.gamepad1.left_stick_button) {
+            if (this.gamepad1.left_stick_button && this.arm.getCurrentPosition() <= 50) {
                 arm.setPower(0);
                 arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 sleep(200);
@@ -229,14 +230,13 @@ public class SoloOpMode extends LinearOpMode {
                 arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 targetArmValue = ARM_DOWN;
             }
-            //variable arm motor power
-
 
             // Set motor & servo power
             leftFrontDrive.setPower(leftFrontMotorPower * this.driveSpeed);
             leftBackDrive.setPower(leftBackMotorPower * this.driveSpeed);
             rightFrontDrive.setPower(rightFrontMotorPower * this.driveSpeed);
             rightBackDrive.setPower(rightBackMotorPower * this.driveSpeed);
+
             if (!armDisabled) {
                 if (arm.getCurrentPosition() > 900) {
                     arm.setPower(0.15);
@@ -246,6 +246,7 @@ public class SoloOpMode extends LinearOpMode {
                 arm.setTargetPosition(targetArmValue);
                 arm.setPower(armMotorPower);
             }
+
             leftClaw.setPosition(leftPosition);
             rightClaw.setPosition(rightPosition);
             rotator.setPosition(rotatorPosition);

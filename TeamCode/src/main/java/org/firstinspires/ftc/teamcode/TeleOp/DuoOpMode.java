@@ -235,7 +235,7 @@ public class DuoOpMode extends LinearOpMode {
             }
 
             //reset arm encoder
-            if (this.gamepad2.left_stick_button) {
+            if (this.gamepad2.left_stick_button && this.arm.getCurrentPosition() <= 50) {
                 arm.setPower(0);
                 arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 sleep(200);
