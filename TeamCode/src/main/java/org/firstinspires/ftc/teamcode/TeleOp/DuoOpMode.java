@@ -85,7 +85,7 @@ public class DuoOpMode extends LinearOpMode {
         rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        planePosition = 0.12;
+        planePosition = 0.0;
         hangingPosition = 0;
 
         //initialize terminal
@@ -231,7 +231,7 @@ public class DuoOpMode extends LinearOpMode {
 
             //airplane
             if (launchPlane) {
-                planePosition = 0.0;
+                planePosition = 0.12;
             }
 
             //reset arm encoder
