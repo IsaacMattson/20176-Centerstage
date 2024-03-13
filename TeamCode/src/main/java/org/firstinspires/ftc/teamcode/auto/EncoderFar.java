@@ -85,42 +85,42 @@ public class EncoderFar extends LinearOpMode {
         waitForStart();
 
         Forward(getTicksFromDistance(2.65));
+        sleep(400);
         ShuffleRight(getTicksFromDistance(0.75));
         ShuffleRight(getTicksFromDistance(0.1));
-
         if (checkObject()) {
+            //-------------------------------------------------right
             ShuffleLeft(getTicksFromDistance(0.8));
             PivotRight(getTicksFromDegree(90));
-            Backward(getTicksFromDistance(0.4));
+            Backward(getTicksFromDistance(0.3));
             rotator.setPosition(CLAW_DOWN);
             sleep(500);
-//            Forward(getTicksFromDistance(0.1));
-//            Forward(getTicksFromDistance(0.2));
             useClaw();
         } else {
-            ShuffleLeft(getTicksFromDistance(1.6));
-            ShuffleLeft(getTicksFromDistance(0.1));
+            ShuffleLeft(getTicksFromDistance(1.4));
+            ShuffleLeft(getTicksFromDistance(0.3));
 
             if (checkObject()) {
-                ShuffleRight(getTicksFromDistance(0.7));
+                //---------------------------------------------------------------left
+                ShuffleRight(getTicksFromDistance(0.85));
                 PivotLeft(getTicksFromDegree(90));
-                Backward(getTicksFromDistance(0.6));
                 rotator.setPosition(CLAW_DOWN);
-                sleep(1000);
-//                Forward(getTicksFromDistance(0.1));
+                sleep(400);
                 useClaw();
-
+                sleep(200);
+                Forward(getTicksFromDistance(0.3));
+                ShuffleLeft(getTicksFromDistance(1.5));
             } else {
-                //middle
-                ShuffleRight(getTicksFromDistance(0.8));
-                Backward(getTicksFromDistance(0.9));
-                Forward(getTicksFromDistance(0.4));
+                //--------------------------------------------------------middle
+                ShuffleRight(getTicksFromDistance(0.4));
+                Backward(getTicksFromDistance(0.7));
                 rotator.setPosition(CLAW_DOWN);
-                sleep(1000);
+                sleep(600);
+                Forward(getTicksFromDistance(0.2));
                 useClaw();
+                Backward(getTicksFromDistance(0.5));
             }
         }
-
         telemetry.update();
     }
 
@@ -131,19 +131,19 @@ public class EncoderFar extends LinearOpMode {
         rotator.setPosition(CLAW_UP);
     }
 
-    public int getTicksFromDistance(double inches){
+    public int getTicksFromDistance(double inches) {
         return (int) (inches * 480.0);
     }
 
-    public int getTicksFromDegree(double degree){
+    public int getTicksFromDegree(double degree) {
         return (int) (degree/90*815);
     }
 
-    public boolean checkObject(){
+    public boolean checkObject() {
         int blue = 0, red = 0;
 
-        for (int counter = 0; counter < 10; counter++) {
-            if(colorRight.red() > 1200 || colorLeft.red() > 1200){
+        for (int counter = 0; counter < 20; counter++) {
+            if(colorRight.red() > 1200 || colorLeft.red() > 1200) {
                 red ++;
             } else if ((colorRight.blue() > 400 && colorRight.red() < colorRight.blue() / 2 + 100) ||
                     (colorLeft.blue() > 400 && colorLeft.red() < colorLeft.blue() / 2 + 100)) {
@@ -151,14 +151,14 @@ public class EncoderFar extends LinearOpMode {
             }
         }
 
-        if (red >= 3 && blue >= 3) {
+        if (red >= 12 || blue >= 12) {
             return true;
         } else {
             return false;
         }
     }
 
-    public void Forward(int distance){
+    public void Forward(int distance) {
         int lft = leftFrontDrive.getCurrentPosition() + distance;
         int lbt = leftBackDrive.getCurrentPosition() + distance;
         int rft = rightFrontDrive.getCurrentPosition() + distance;
@@ -170,15 +170,15 @@ public class EncoderFar extends LinearOpMode {
 
 
         while(Math.abs(leftBackDrive.getCurrentPosition() - lbt) > 10 ||
-                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 10 ||
+                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 5 ||
                 Math.abs(rightBackDrive.getCurrentPosition() - rbt) > 10 ||
-                Math.abs(rightFrontDrive.getCurrentPosition() - rft) > 10){
+                Math.abs(rightFrontDrive.getCurrentPosition() - rft) > 10) {
             sleep(10);
         }
         sleep(50);
     }
 
-    public void Backward(int distance){
+    public void Backward(int distance) {
         int lft = leftFrontDrive.getCurrentPosition() - distance;
         int lbt = leftBackDrive.getCurrentPosition() - distance;
         int rft = rightFrontDrive.getCurrentPosition() - distance;
@@ -190,15 +190,15 @@ public class EncoderFar extends LinearOpMode {
 
 
         while(Math.abs(leftBackDrive.getCurrentPosition() - lbt) > 10 ||
-                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 10 ||
+                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 5 ||
                 Math.abs(rightBackDrive.getCurrentPosition() - rbt) > 10 ||
-                Math.abs(rightFrontDrive.getCurrentPosition() - rft) > 10){
+                Math.abs(rightFrontDrive.getCurrentPosition() - rft) > 10) {
             sleep(10);
         }
         sleep(50);
     }
 
-    public void PivotRight(int distance){
+    public void PivotRight(int distance) {
         int lft = leftFrontDrive.getCurrentPosition() + distance;
         int lbt = leftBackDrive.getCurrentPosition() + distance;
         int rft = rightFrontDrive.getCurrentPosition() - distance;
@@ -210,15 +210,15 @@ public class EncoderFar extends LinearOpMode {
 
 
         while(Math.abs(leftBackDrive.getCurrentPosition() - lbt) > 10 ||
-                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 10 ||
+                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 5 ||
                 Math.abs(rightBackDrive.getCurrentPosition() - rbt) > 10 ||
-                Math.abs(rightFrontDrive.getCurrentPosition() - rft) > 10){
+                Math.abs(rightFrontDrive.getCurrentPosition() - rft) > 10) {
             sleep(10);
         }
         sleep(50);
     }
 
-    public void PivotLeft(int distance){
+    public void PivotLeft(int distance) {
         int lft = leftFrontDrive.getCurrentPosition() - distance;
         int lbt = leftBackDrive.getCurrentPosition() - distance;
         int rft = rightFrontDrive.getCurrentPosition() + distance;
@@ -230,15 +230,15 @@ public class EncoderFar extends LinearOpMode {
 
 
         while(Math.abs(leftBackDrive.getCurrentPosition() - lbt) > 10 ||
-                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 10 ||
+                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 5 ||
                 Math.abs(rightBackDrive.getCurrentPosition() - rbt) > 10 ||
-                Math.abs(rightFrontDrive.getCurrentPosition() - rft) > 10){
+                Math.abs(rightFrontDrive.getCurrentPosition() - rft) > 10) {
             sleep(10);
         }
         sleep(50);
     }
 
-    public void ShuffleLeft(int distance){
+    public void ShuffleLeft(int distance) {
         int lft = leftFrontDrive.getCurrentPosition() - distance;
         int lbt = leftBackDrive.getCurrentPosition() + distance;
         int rft = rightFrontDrive.getCurrentPosition() + distance;
@@ -250,15 +250,15 @@ public class EncoderFar extends LinearOpMode {
 
 
         while(Math.abs(leftBackDrive.getCurrentPosition() - lbt) > 10 ||
-                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 10 ||
+                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 5 ||
                 Math.abs(rightBackDrive.getCurrentPosition() - rbt) > 10 ||
-                Math.abs(rightFrontDrive.getCurrentPosition() - rft) > 10){
+                Math.abs(rightFrontDrive.getCurrentPosition() - rft) > 10) {
             sleep(10);
         }
         sleep(50);
     }
 
-    public void ShuffleRight(int distance){
+    public void ShuffleRight(int distance) {
         int lft = leftFrontDrive.getCurrentPosition() + distance;
         int lbt = leftBackDrive.getCurrentPosition() - distance;
         int rft = rightFrontDrive.getCurrentPosition() - distance;
@@ -270,10 +270,11 @@ public class EncoderFar extends LinearOpMode {
 
 
         while(Math.abs(leftBackDrive.getCurrentPosition() - lbt) > 10 ||
-                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 10 ||
+                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 5 ||
                 Math.abs(rightBackDrive.getCurrentPosition() - rbt) > 10 ||
-                Math.abs(rightFrontDrive.getCurrentPosition() - rft) > 10){
+                Math.abs(rightFrontDrive.getCurrentPosition() - rft) > 10) {
             sleep(10);
         }
         sleep(50);
-    }}
+    }
+}

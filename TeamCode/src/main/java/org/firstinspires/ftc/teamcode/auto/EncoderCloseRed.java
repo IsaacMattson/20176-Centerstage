@@ -14,6 +14,9 @@ public class EncoderCloseRed extends LinearOpMode {
     private final double DRIVE_MOTOR_POWER = 0.3;
     private final double CLAW_UP = 0.03;
     private final double CLAW_DOWN = 0.79;
+    private final int ARM_BOARD_POSITION = 220;
+    private final double CLAW_HALF = 0.6 - 0.8/16;
+
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
@@ -82,82 +85,108 @@ public class EncoderCloseRed extends LinearOpMode {
         
         waitForStart();
 
+        waitForStart();
+
         Forward(getTicksFromDistance(2.65));
-        ShuffleRight(getTicksFromDistance(0.9));
-        ShuffleRight(getTicksFromDistance(0.1));
+        sleep(400);
+        ShuffleLeft(getTicksFromDistance(0.75));
+        ShuffleLeft(getTicksFromDistance(0.1));
 
         if (checkObject()) {
-            ShuffleLeft(getTicksFromDistance(0.7));
-            ShuffleLeft(getTicksFromDistance(0.1));
+            //-------------------------------------------------right
+            ShuffleRight(getTicksFromDistance(0.8));
             PivotLeft(getTicksFromDegree(90));
-            Backward(getTicksFromDistance(0.6));
+            Backward(getTicksFromDistance(0.3));
             rotator.setPosition(CLAW_DOWN);
-            sleep(1000);
-            Forward(getTicksFromDistance(0.2));
-            useRightClaw();
-
-            // Reset robot
-            Forward(getTicksFromDistance(0.4));
-            PivotLeft(180);
+            sleep(500);
+            useClaw();
+            PivotLeft(getTicksFromDegree(180));
+            arm.setTargetPosition(ARM_BOARD_POSITION);
+            Forward(getTicksFromDistance(3.2));
+            ShuffleLeft(getTicksFromDistance(1.0));
+            rotator.setPosition(CLAW_HALF);
+            sleep(600);
+            leftClaw.setPosition(RIGHT_OPEN);
+            sleep(600);
+            leftClaw.setPosition(RIGHT_CLOSE);
+            rotator.setPosition(CLAW_UP);
+            arm.setTargetPosition(0);
+            Backward(getTicksFromDistance(0.3));
 
         } else {
-            ShuffleLeft(getTicksFromDistance(1.6));
-            ShuffleLeft(getTicksFromDistance(0.1));
+            ShuffleRight(getTicksFromDistance(1.4));
+            ShuffleRight(getTicksFromDistance(0.3));
 
             if (checkObject()) {
-                ShuffleRight(getTicksFromDistance(0.7));
+                //---------------------------------------------------------------left
+                ShuffleLeft(getTicksFromDistance(0.85));
                 PivotRight(getTicksFromDegree(90));
-                Backward(getTicksFromDistance(0.6));
                 rotator.setPosition(CLAW_DOWN);
-                sleep(1000);
-                Forward(getTicksFromDistance(0.2));
-                useRightClaw();
+                sleep(400);
+                useClaw();
+                sleep(200);
+                Forward(getTicksFromDistance(0.3));
+                ShuffleRight(getTicksFromDistance(1.5));
 
                 // Reset robot
-                Forward(getTicksFromDistance(0.4));
-
+                arm.setTargetPosition(ARM_BOARD_POSITION);
+                rotator.setPosition(CLAW_HALF);
+                Forward(getTicksFromDistance(3));
+                ShuffleLeft(getTicksFromDistance(1.3));
+                Forward(getTicksFromDistance(0.3));
+                leftClaw.setPosition(RIGHT_OPEN);
+                sleep(400);
+                leftClaw.setPosition(RIGHT_CLOSE);
+                rotator.setPosition(CLAW_UP);
+                arm.setTargetPosition(0);
+                Backward(getTicksFromDistance(0.3));
             } else {
-                //middle
-                ShuffleRight(getTicksFromDistance(0.8));
-                Backward(getTicksFromDistance(0.9));
-                Forward(getTicksFromDistance(0.4));
+                //--------------------------------------------------------middle
+                ShuffleLeft(getTicksFromDistance(0.4));
+                Backward(getTicksFromDistance(0.7));
                 rotator.setPosition(CLAW_DOWN);
-                sleep(1000);
-                useRightClaw();
-
-                // Reset robot
+                sleep(600);
+                Forward(getTicksFromDistance(0.2));
+                useClaw();
                 Backward(getTicksFromDistance(0.5));
                 PivotRight(getTicksFromDegree(90));
+                arm.setTargetPosition(ARM_BOARD_POSITION);
+                Forward(getTicksFromDistance(3.0));
+                ShuffleLeft(getTicksFromDistance(1));
+                Forward(getTicksFromDistance(0.1));
+                rotator.setPosition(CLAW_HALF);
+                sleep(600);
+                leftClaw.setPosition(RIGHT_OPEN);
+                sleep(600);
+                leftClaw.setPosition(RIGHT_CLOSE);
+                rotator.setPosition(CLAW_UP);
+                arm.setTargetPosition(0);
+                Backward(getTicksFromDistance(0.3));
             }
         }
-
-        Forward(getTicksFromDistance(2.2));
-        
-
         telemetry.update();
     }
 
-    private void useRightClaw() {
+    private void useClaw() {
         rightClaw.setPosition(RIGHT_OPEN);
-        sleep(1000);
+        sleep(600);
         rightClaw.setPosition(RIGHT_CLOSE);
         rotator.setPosition(CLAW_UP);
-        sleep(1000);
     }
 
-    public int getTicksFromDistance(double inches){
+    public int getTicksFromDistance(double inches) {
         return (int) (inches * 480.0);
     }
 
-    public int getTicksFromDegree(double degree){
-        return (int) (degree/90*820);
+    public int getTicksFromDegree(double degree) {
+        return (int) (degree/90*815);
     }
 
-    public boolean checkObject(){
+    public boolean checkObject() {
         int blue = 0, red = 0;
 
-        for (int counter = 0; counter < 50; counter++) {
-            if(colorRight.red() > 1200 || colorLeft.red() > 1200){
+        for (int counter = 0; counter < 20; counter++) {
+            if(colorRight.red() > 1200 || colorLeft.red() > 1200) {
                 red ++;
             } else if ((colorRight.blue() > 400 && colorRight.red() < colorRight.blue() / 2 + 100) ||
                     (colorLeft.blue() > 400 && colorLeft.red() < colorLeft.blue() / 2 + 100)) {
@@ -165,101 +194,130 @@ public class EncoderCloseRed extends LinearOpMode {
             }
         }
 
-        if ((red >= 20) || (blue >= 20)) {
+        if (red >= 12 || blue >= 12) {
             return true;
         } else {
             return false;
         }
     }
 
-    public void Forward(int distance){
-        leftFrontDrive.setTargetPosition(leftFrontDrive.getCurrentPosition() + distance);
-        leftBackDrive.setTargetPosition(leftBackDrive.getCurrentPosition() + distance);
-        rightFrontDrive.setTargetPosition(rightFrontDrive.getCurrentPosition() + distance);
-        rightBackDrive.setTargetPosition(rightBackDrive.getCurrentPosition() + distance);
+    public void Forward(int distance) {
+        int lft = leftFrontDrive.getCurrentPosition() + distance;
+        int lbt = leftBackDrive.getCurrentPosition() + distance;
+        int rft = rightFrontDrive.getCurrentPosition() + distance;
+        int rbt = rightBackDrive.getCurrentPosition() + distance;
+        leftFrontDrive.setTargetPosition(lft);
+        leftBackDrive.setTargetPosition(lbt);
+        rightFrontDrive.setTargetPosition(rft);
+        rightBackDrive.setTargetPosition(rbt);
 
-        while((leftBackDrive.isBusy()) ||
-        (leftFrontDrive.isBusy()) ||
-        (rightBackDrive.isBusy()) ||
-        (rightFrontDrive.isBusy())){
+
+        while(Math.abs(leftBackDrive.getCurrentPosition() - lbt) > 10 ||
+                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 5 ||
+                Math.abs(rightBackDrive.getCurrentPosition() - rbt) > 10 ||
+                Math.abs(rightFrontDrive.getCurrentPosition() - rft) > 10) {
             sleep(10);
         }
-        sleep(150);
+        sleep(50);
     }
 
-    public void Backward(int distance){
-        leftFrontDrive.setTargetPosition(leftFrontDrive.getCurrentPosition() - distance);
-        leftBackDrive.setTargetPosition(leftBackDrive.getCurrentPosition() - distance);
-        rightFrontDrive.setTargetPosition(rightFrontDrive.getCurrentPosition() - distance);
-        rightBackDrive.setTargetPosition(rightBackDrive.getCurrentPosition() - distance);
+    public void Backward(int distance) {
+        int lft = leftFrontDrive.getCurrentPosition() - distance;
+        int lbt = leftBackDrive.getCurrentPosition() - distance;
+        int rft = rightFrontDrive.getCurrentPosition() - distance;
+        int rbt = rightBackDrive.getCurrentPosition() - distance;
+        leftFrontDrive.setTargetPosition(lft);
+        leftBackDrive.setTargetPosition(lbt);
+        rightFrontDrive.setTargetPosition(rft);
+        rightBackDrive.setTargetPosition(rbt);
 
-        while((leftBackDrive.isBusy()) ||
-                (leftFrontDrive.isBusy()) ||
-                (rightBackDrive.isBusy()) ||
-                (rightFrontDrive.isBusy())){
+
+        while(Math.abs(leftBackDrive.getCurrentPosition() - lbt) > 10 ||
+                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 5 ||
+                Math.abs(rightBackDrive.getCurrentPosition() - rbt) > 10 ||
+                Math.abs(rightFrontDrive.getCurrentPosition() - rft) > 10) {
             sleep(10);
         }
-        sleep(150);
+        sleep(50);
     }
 
-    public void PivotRight(int distance){
-        leftFrontDrive.setTargetPosition(leftFrontDrive.getCurrentPosition() + distance);
-        leftBackDrive.setTargetPosition(leftBackDrive.getCurrentPosition() + distance);
-        rightFrontDrive.setTargetPosition(rightFrontDrive.getCurrentPosition() - distance);
-        rightBackDrive.setTargetPosition(rightBackDrive.getCurrentPosition() - distance);
+    public void PivotRight(int distance) {
+        int lft = leftFrontDrive.getCurrentPosition() + distance;
+        int lbt = leftBackDrive.getCurrentPosition() + distance;
+        int rft = rightFrontDrive.getCurrentPosition() - distance;
+        int rbt = rightBackDrive.getCurrentPosition() - distance;
+        leftFrontDrive.setTargetPosition(lft);
+        leftBackDrive.setTargetPosition(lbt);
+        rightFrontDrive.setTargetPosition(rft);
+        rightBackDrive.setTargetPosition(rbt);
 
-        while((leftBackDrive.isBusy()) ||
-                (leftFrontDrive.isBusy()) ||
-                (rightBackDrive.isBusy()) ||
-                (rightFrontDrive.isBusy())){
+
+        while(Math.abs(leftBackDrive.getCurrentPosition() - lbt) > 10 ||
+                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 5 ||
+                Math.abs(rightBackDrive.getCurrentPosition() - rbt) > 10 ||
+                Math.abs(rightFrontDrive.getCurrentPosition() - rft) > 10) {
             sleep(10);
         }
-        sleep(150);
+        sleep(50);
     }
 
-    public void PivotLeft(int distance){
-        leftFrontDrive.setTargetPosition(leftFrontDrive.getCurrentPosition() - distance);
-        leftBackDrive.setTargetPosition(leftBackDrive.getCurrentPosition() - distance);
-        rightFrontDrive.setTargetPosition(rightFrontDrive.getCurrentPosition() + distance);
-        rightBackDrive.setTargetPosition(rightBackDrive.getCurrentPosition() + distance);
+    public void PivotLeft(int distance) {
+        int lft = leftFrontDrive.getCurrentPosition() - distance;
+        int lbt = leftBackDrive.getCurrentPosition() - distance;
+        int rft = rightFrontDrive.getCurrentPosition() + distance;
+        int rbt = rightBackDrive.getCurrentPosition() + distance;
+        leftFrontDrive.setTargetPosition(lft);
+        leftBackDrive.setTargetPosition(lbt);
+        rightFrontDrive.setTargetPosition(rft);
+        rightBackDrive.setTargetPosition(rbt);
 
-        while((leftBackDrive.isBusy()) ||
-                (leftFrontDrive.isBusy()) ||
-                (rightBackDrive.isBusy()) ||
-                (rightFrontDrive.isBusy())){
+
+        while(Math.abs(leftBackDrive.getCurrentPosition() - lbt) > 10 ||
+                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 5 ||
+                Math.abs(rightBackDrive.getCurrentPosition() - rbt) > 10 ||
+                Math.abs(rightFrontDrive.getCurrentPosition() - rft) > 10) {
             sleep(10);
         }
-        sleep(150);
+        sleep(50);
     }
 
-    public void ShuffleLeft(int distance){
-        leftFrontDrive.setTargetPosition(leftFrontDrive.getCurrentPosition()-distance);
-        leftBackDrive.setTargetPosition(leftBackDrive.getCurrentPosition()+distance);
-        rightFrontDrive.setTargetPosition(rightFrontDrive.getCurrentPosition() + distance);
-        rightBackDrive.setTargetPosition(rightBackDrive.getCurrentPosition()-distance);
+    public void ShuffleLeft(int distance) {
+        int lft = leftFrontDrive.getCurrentPosition() - distance;
+        int lbt = leftBackDrive.getCurrentPosition() + distance;
+        int rft = rightFrontDrive.getCurrentPosition() + distance;
+        int rbt = rightBackDrive.getCurrentPosition() - distance;
+        leftFrontDrive.setTargetPosition(lft);
+        leftBackDrive.setTargetPosition(lbt);
+        rightFrontDrive.setTargetPosition(rft);
+        rightBackDrive.setTargetPosition(rbt);
 
-        while((leftBackDrive.isBusy()) ||
-                (leftFrontDrive.isBusy()) ||
-                (rightBackDrive.isBusy()) ||
-                (rightFrontDrive.isBusy())){
+
+        while(Math.abs(leftBackDrive.getCurrentPosition() - lbt) > 10 ||
+                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 5 ||
+                Math.abs(rightBackDrive.getCurrentPosition() - rbt) > 10 ||
+                Math.abs(rightFrontDrive.getCurrentPosition() - rft) > 10) {
             sleep(10);
         }
-        sleep(150);
-
+        sleep(50);
     }
 
-    public void ShuffleRight(int distance){
-        leftFrontDrive.setTargetPosition(leftFrontDrive.getCurrentPosition()+distance);
-        leftBackDrive.setTargetPosition(leftBackDrive.getCurrentPosition()-distance);
-        rightFrontDrive.setTargetPosition(rightFrontDrive.getCurrentPosition()-distance);
-        rightBackDrive.setTargetPosition(rightBackDrive.getCurrentPosition() +distance);
+    public void ShuffleRight(int distance) {
+        int lft = leftFrontDrive.getCurrentPosition() + distance;
+        int lbt = leftBackDrive.getCurrentPosition() - distance;
+        int rft = rightFrontDrive.getCurrentPosition() - distance;
+        int rbt = rightBackDrive.getCurrentPosition() + distance;
+        leftFrontDrive.setTargetPosition(lft);
+        leftBackDrive.setTargetPosition(lbt);
+        rightFrontDrive.setTargetPosition(rft);
+        rightBackDrive.setTargetPosition(rbt);
 
-        while((leftBackDrive.isBusy()) ||
-                (leftFrontDrive.isBusy()) ||
-                (rightBackDrive.isBusy()) ||
-                (rightFrontDrive.isBusy())){
+
+        while(Math.abs(leftBackDrive.getCurrentPosition() - lbt) > 10 ||
+                Math.abs(leftFrontDrive.getCurrentPosition() - lft) > 5 ||
+                Math.abs(rightBackDrive.getCurrentPosition() - rbt) > 10 ||
+                Math.abs(rightFrontDrive.getCurrentPosition() - rft) > 10) {
             sleep(10);
         }
-        sleep(150);
+        sleep(50);
     }
 }
