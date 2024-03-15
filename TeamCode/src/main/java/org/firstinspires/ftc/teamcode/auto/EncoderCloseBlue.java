@@ -94,13 +94,13 @@ public class EncoderCloseBlue extends LinearOpMode {
             //-------------------------------------------------right
             ShuffleLeft(getTicksFromDistance(0.8));
             PivotRight(getTicksFromDegree(90));
-            Backward(getTicksFromDistance(0.3));
+            Backward(getTicksFromDistance(0.35));
             rotator.setPosition(CLAW_DOWN);
             sleep(500);
             useClaw();
             PivotRight(getTicksFromDegree(180));
             arm.setTargetPosition(ARM_BOARD_POSITION);
-            Forward(getTicksFromDistance(3.2));
+            Forward(getTicksFromDistance(3.4));
             ShuffleRight(getTicksFromDistance(1.0));
             rotator.setPosition(CLAW_HALF);
             sleep(600);
@@ -112,8 +112,8 @@ public class EncoderCloseBlue extends LinearOpMode {
             Backward(getTicksFromDistance(0.3));
 
         } else {
-            ShuffleLeft(getTicksFromDistance(1.4));
-            ShuffleLeft(getTicksFromDistance(0.3));
+            ShuffleLeft(getTicksFromDistance(1.0));
+            ShuffleLeft(getTicksFromDistance(0.15));
 
             if (checkObject()) {
                 //---------------------------------------------------------------left
@@ -150,8 +150,6 @@ public class EncoderCloseBlue extends LinearOpMode {
                 PivotLeft(getTicksFromDegree(90));
                 arm.setTargetPosition(ARM_BOARD_POSITION);
                 Forward(getTicksFromDistance(3.0));
-                ShuffleRight(getTicksFromDistance(1));
-                Forward(getTicksFromDistance(0.1));
                 rotator.setPosition(CLAW_HALF);
                 sleep(600);
                 leftClaw.setPosition(RIGHT_OPEN);

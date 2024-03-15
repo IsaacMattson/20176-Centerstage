@@ -87,48 +87,46 @@ public class EncoderFar extends LinearOpMode {
         Forward(getTicksFromDistance(2.65));
         sleep(400);
         ShuffleRight(getTicksFromDistance(0.75));
-        ShuffleRight(getTicksFromDistance(0.1));
+        ShuffleRight(getTicksFromDistance(0.15));
         if (checkObject()) {
             //-------------------------------------------------right
             ShuffleLeft(getTicksFromDistance(0.8));
             PivotRight(getTicksFromDegree(90));
-            Backward(getTicksFromDistance(0.3));
+            Backward(getTicksFromDistance(0.4));
             rotator.setPosition(CLAW_DOWN);
-            sleep(500);
-            useClaw();
+            sleep(400);
         } else {
             ShuffleLeft(getTicksFromDistance(1.4));
-            ShuffleLeft(getTicksFromDistance(0.3));
+            ShuffleLeft(getTicksFromDistance(0.15));
 
             if (checkObject()) {
                 //---------------------------------------------------------------left
                 ShuffleRight(getTicksFromDistance(0.85));
                 PivotLeft(getTicksFromDegree(90));
+                ShuffleRight(getTicksFromDistance(0.2));
+                Backward(getTicksFromDistance(0.3));
                 rotator.setPosition(CLAW_DOWN);
                 sleep(400);
-                useClaw();
-                sleep(200);
-                Forward(getTicksFromDistance(0.3));
-                ShuffleLeft(getTicksFromDistance(1.5));
             } else {
                 //--------------------------------------------------------middle
-                ShuffleRight(getTicksFromDistance(0.4));
+                ShuffleRight(getTicksFromDistance(0.6));
                 Backward(getTicksFromDistance(0.7));
                 rotator.setPosition(CLAW_DOWN);
-                sleep(600);
+                sleep(400);
                 Forward(getTicksFromDistance(0.2));
-                useClaw();
-                Backward(getTicksFromDistance(0.5));
             }
         }
+        useClaw();
+
         telemetry.update();
     }
 
     private void useClaw() {
         rightClaw.setPosition(RIGHT_OPEN);
         sleep(600);
-        rightClaw.setPosition(RIGHT_CLOSE);
         rotator.setPosition(CLAW_UP);
+        rightClaw.setPosition(RIGHT_CLOSE);
+        sleep(1200);
     }
 
     public int getTicksFromDistance(double inches) {

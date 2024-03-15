@@ -15,7 +15,7 @@ public class EncoderCloseRed extends LinearOpMode {
     private final double CLAW_UP = 0.03;
     private final double CLAW_DOWN = 0.79;
     private final int ARM_BOARD_POSITION = 220;
-    private final double CLAW_HALF = 0.6 - 0.8/16;
+    private final double CLAW_HALF = 0.6 - 0.8 / 16;
 
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
@@ -114,8 +114,8 @@ public class EncoderCloseRed extends LinearOpMode {
             Backward(getTicksFromDistance(0.3));
 
         } else {
-            ShuffleRight(getTicksFromDistance(1.4));
-            ShuffleRight(getTicksFromDistance(0.3));
+            ShuffleRight(getTicksFromDistance(1.0));
+            ShuffleRight(getTicksFromDistance(0.15));
 
             if (checkObject()) {
                 //---------------------------------------------------------------left
@@ -145,19 +145,16 @@ public class EncoderCloseRed extends LinearOpMode {
                 ShuffleLeft(getTicksFromDistance(0.4));
                 Backward(getTicksFromDistance(0.7));
                 rotator.setPosition(CLAW_DOWN);
-                sleep(600);
                 Forward(getTicksFromDistance(0.2));
                 useClaw();
                 Backward(getTicksFromDistance(0.5));
                 PivotRight(getTicksFromDegree(90));
                 arm.setTargetPosition(ARM_BOARD_POSITION);
-                Forward(getTicksFromDistance(3.0));
-                ShuffleLeft(getTicksFromDistance(1));
-                Forward(getTicksFromDistance(0.1));
+                Forward(getTicksFromDistance(3.3));
                 rotator.setPosition(CLAW_HALF);
-                sleep(600);
+                sleep(400);
                 leftClaw.setPosition(RIGHT_OPEN);
-                sleep(600);
+                sleep(400);
                 leftClaw.setPosition(RIGHT_CLOSE);
                 rotator.setPosition(CLAW_UP);
                 arm.setTargetPosition(0);
